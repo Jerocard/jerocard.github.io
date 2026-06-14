@@ -476,6 +476,7 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
   <div id="wstats" style="background:var(--sf);border:1px solid var(--bdr);border-radius:12px;padding:14px;width:100%;max-width:320px;display:flex;flex-direction:column;gap:6px;"></div>
   <div style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px;">
     <button class="btn" id="rematchBtn" onclick="doRematch()" style="display:none;">🔄 재매치</button>
+    <button class="btn" id="spectatorJoinBtn" onclick="spectatorJoinRematch()" style="display:none;background:var(--blue);">👤 재게임 참가</button>
     <button class="btn sec" onclick="showScreen('st')">처음으로</button>
   </div>
 </div>
@@ -1417,10 +1418,15 @@ function showWinScreen(p,reason){
   }
   // 재매치 버튼: 로컬이거나 호스트일 때만
   const rb=document.getElementById('rematchBtn');
+  const sjb=document.getElementById('spectatorJoinBtn');
   if(rb){
     rb.style.display=(LOCAL||ME.isHost||(!LOCAL&&ME.idx>=0))?'block':'none';
     rb.textContent='🔄 재매치';
     rb.disabled=false;
+  }
+  // 관전자면 재게임 참가 버튼 표시
+  if(sjb){
+    sjb.style.display=(!LOCAL&&ME.idx===-1)?'block':'none';
   }
   ME_AVATAR=null; // 다음 게임 시 캐릭터 다시 선택
   showScreen('sw');
@@ -1446,17 +1452,25 @@ function listenRematch(code){
   db.ref(`rooms/${code}/rematch`).on('value',async snap=>{
     if(!snap.exists())return;
     const votes=snap.val();
-    const playerNames=G.players?G.players.map(p=>p.name):[];
+    // 관전자 포함 여부 체크 (spectators 필드)
+    const spectatorSnap=await db.ref(`rooms/${code}/spectators`).once('value');
+    const spectators=spectatorSnap.val()||{};
+    const activePlayers=G.players?G.players.filter(p=>!p.eliminated):[];
+    const playerNames=activePlayers.map(p=>p.name);
+    // 관전자 중 참가 원하는 사람
+    const spectatorJoins=Object.entries(spectators).filter(([,v])=>v===true).map(([k])=>k);
     const allReady=playerNames.length>1&&playerNames.every(n=>votes[n]);
     if(allReady){
       db.ref(`rooms/${code}/rematch`).off();
       await db.ref(`rooms/${code}/rematch`).set(null);
       if(ME.isHost){
-        const names=G.players.map(p=>p.name);
+        // 관전자 중 참가 원하는 사람 포함
+        const allNames=[...playerNames,...spectatorJoins];
         const mode=G.mode||'classic';
-        const newG=buildState(names,mode);
+        const newG=buildState(allNames,mode);
         newG.mode=mode;newG.winner=null;
         G=newG;
+        await db.ref(`rooms/${ME.roomId}/spectators`).set(null);
         await db.ref(`rooms/${ME.roomId}/status`).set('playing');
         await saveState();
       }
@@ -1465,6 +1479,12 @@ function listenRematch(code){
       listenRematch(code);
     }
   });
+}
+// 관전자 재게임 참가 신청
+window.spectatorJoinRematch=async function(){
+  if(!ME.roomId||!ME.name)return;
+  await db.ref(`rooms/${ME.roomId}/spectators/${ME.name}`).set(true);
+  toast('✅ 재게임 참가 신청 완료!');
 }
 // 온라인용 — Firebase에 winner 저장해서 양쪽 동시 승리화면
 async function saveWinAndShow(p,reason){
@@ -1490,8 +1510,20 @@ window.confirmQuit=function(){
     AI_MODE=false;
     if(ME.roomId&&ME.name){
       if(ME.isHost){
-        // 방장이 포기하면 방 전체 삭제
-        await db.ref(`rooms/${ME.roomId}`).remove();
+        // 방장이 포기: 플레이어 목록에서 제거하고 방장 이양
+        const snap=await db.ref(`rooms/${ME.roomId}/gameState/players`).once('value');
+        const players=snap.val()||[];
+        const remaining=players.filter(p=>p.name!==ME.name&&!p.eliminated);
+        if(remaining.length>=1){
+          // 게임 상태에서 나 제거 후 방장 이양
+          await handlePlayerLeave(ME.name);
+          await db.ref(`rooms/${ME.roomId}/host`).set(remaining[0].name);
+          // 새 방장 찾아서 이양 알림
+          await db.ref(`rooms/${ME.roomId}/hostTransferred`).set({from:ME.name,to:remaining[0].name,t:Date.now()});
+        } else {
+          // 남은 사람 없으면 방 삭제
+          await db.ref(`rooms/${ME.roomId}`).remove();
+        }
       } else {
         db.ref(`rooms/${ME.roomId}/online/${ME.name}`).set(false);
       }
@@ -1559,11 +1591,11 @@ function listenHomeChat(){
   db.ref('global_chat').limitToLast(20).on('value',snap=>{
     const log=document.getElementById('homechatlog');if(!log)return;
     log.innerHTML='';const data=snap.val();if(!data)return;
-    const now=Date.now();const TEN_MIN=10*60*1000;
+    const now=Date.now();const FIVE_MIN=5*60*1000;
     const entries=Object.entries(data).sort((a,b)=>a[1].t-b[1].t);
-    // 10분 지난 메시지 삭제
-    entries.forEach(([k,v])=>{if(now-v.t>TEN_MIN)db.ref('global_chat/'+k).set(null);});
-    const recent=entries.filter(([,v])=>now-v.t<=TEN_MIN);
+    // 5분 지난 메시지 삭제
+    entries.forEach(([k,v])=>{if(now-v.t>FIVE_MIN)db.ref('global_chat/'+k).set(null);});
+    const recent=entries.filter(([,v])=>now-v.t<=FIVE_MIN);
     if(recent.length>20)recent.slice(0,recent.length-20).forEach(([k])=>db.ref('global_chat/'+k).set(null));
     recent.slice(-20).forEach(([,{name,msg}])=>{
       const d=document.createElement('div');d.style.cssText='font-size:12px;line-height:1.4;';
@@ -1665,14 +1697,18 @@ window.goJoinRoom=async function(){
 window.leaveLobby=async function(){
   if(ME.roomId){
     db.ref(`rooms/${ME.roomId}`).off();
-    if(ME.isHost){
-      // 방장이 나가면 방 전체 삭제 → 참가자들에게 자동 알림
+    const snap=await db.ref(`rooms/${ME.roomId}/players`).once('value');
+    const pl=(snap.val()||[]).filter(p=>p!==ME.name);
+    if(pl.length===0){
+      // 마지막 사람이 나가면 방 삭제
       await db.ref(`rooms/${ME.roomId}`).remove();
     } else {
-      // 일반 참가자는 플레이어 목록에서 제거
-      const snap=await db.ref(`rooms/${ME.roomId}/players`).once('value');
-      const pl=(snap.val()||[]).filter(p=>p!==ME.name);
       await db.ref(`rooms/${ME.roomId}/players`).set(pl);
+      if(ME.isHost){
+        // 방장 권한 다음 사람에게 이양
+        await db.ref(`rooms/${ME.roomId}/host`).set(pl[0]);
+        await db.ref(`rooms/${ME.roomId}/hostTransferred`).set({from:ME.name,to:pl[0],t:Date.now()});
+      }
     }
   }
   ME={idx:null,name:'',roomId:null,isHost:false};
@@ -1687,20 +1723,30 @@ function listenLobby(code){
     const sb=document.getElementById('lobStartBtn');
     if(ME.isHost)sb.style.display=pl.length>=2?'':'none';
     document.getElementById('lobStatus').textContent=pl.length>=2?`${pl.length}명 참가됨!`:'친구가 참가하길 기다리는 중...';
-    // 사람이 없으면 방 자동 폭파
+    // 방에 아무도 없으면 방 삭제
     if(pl.length===0){
       db.ref(`rooms/${code}`).remove();
+    }
+  });
+  // 방장 이양 감지
+  db.ref(`rooms/${code}/host`).on('value',async snap=>{
+    if(!snap.exists())return;
+    const newHost=snap.val();
+    if(newHost===ME.name&&!ME.isHost){
+      ME.isHost=true;
+      document.getElementById('lobStartBtn').style.display='';
+      toast('👑 방장이 되었어요!');
     }
   });
   db.ref(`rooms/${code}/status`).on('value',snap=>{
     if(snap.val()==='playing')enterGame(code);
   });
-  // 방장이 방을 삭제하면 참가자들을 홈으로 이동
+  // 방이 사라지면 홈으로
   db.ref(`rooms/${code}`).on('value',snap=>{
     if(!snap.exists()&&!ME.isHost){
       db.ref(`rooms/${code}`).off();
       ME={idx:null,name:'',roomId:null,isHost:false};
-      toast('🚨 방장이 방을 나갔어요. 홈으로 돌아갑니다.');
+      toast('🚨 방이 사라졌어요. 홈으로 돌아갑니다.');
       showScreen('st');
     }
   });
@@ -1728,14 +1774,23 @@ function enterGame(code){
     db.ref(`rooms/${code}/online/${ME.name}`).set(true);
     db.ref(`rooms/${code}/online/${ME.name}`).onDisconnect().set(false);
   }
-  // 방장이 방을 삭제하면 게임 중에도 참가자들을 홈으로 이동
+  // 방이 사라지면 홈으로
   db.ref(`rooms/${code}`).on('value',snap=>{
     if(!snap.exists()&&!ME.isHost){
       db.ref(`rooms/${code}`).off();
       stopTimer();
       LOCAL=false;G={};ME={idx:null,name:'',roomId:null,isHost:false};
-      toast('🚨 방장이 방을 나갔어요. 홈으로 돌아갑니다.');
+      toast('🚨 방이 사라졌어요. 홈으로 돌아갑니다.');
       showScreen('st');
+    }
+  });
+  // 방장 이양 감지 (게임 중)
+  db.ref(`rooms/${code}/host`).on('value',snap=>{
+    if(!snap.exists())return;
+    const newHost=snap.val();
+    if(newHost===ME.name&&!ME.isHost){
+      ME.isHost=true;
+      toast('👑 방장이 되었어요!');
     }
   });
   showScreen('sg');
@@ -1748,7 +1803,7 @@ function enterGame(code){
 
 // 플레이어 이탈 감지
 function listenDisconnect(code){
-  db.ref(`rooms/${code}/online`).on('value',snap=>{
+  db.ref(`rooms/${code}/online`).on('value',async snap=>{
     if(!G||!G.players||!ME.roomId)return;
     const online=snap.val()||{};
     // 전원 오프라인이면 방 자동 폭파 (호스트만 처리)
@@ -1760,6 +1815,12 @@ function listenDisconnect(code){
       }
     }
     const activePlayers=G.players.filter(p=>!p.eliminated);
+    // 1명만 남으면 즉시 승리
+    if(ME.isHost&&activePlayers.length===1&&G.phase!=='winner'){
+      await saveState();
+      saveWinAndShow(activePlayers[0],'유일한 생존자 👑');
+      return;
+    }
     // 2명 이상 게임 중, 한 명이 오프라인 감지
     activePlayers.forEach((p,i)=>{
       if(online[p.name]===false||(!Object.keys(online).length&&G.phase!=='submit')){
@@ -1768,6 +1829,18 @@ function listenDisconnect(code){
         handlePlayerLeave(p.name);
       }
     });
+    // 방장이 오프라인이면 다음 온라인 플레이어가 방장 이양 처리
+    const roomSnap=await db.ref(`rooms/${code}/host`).once('value');
+    const currentHost=roomSnap.val();
+    if(currentHost&&online[currentHost]===false&&ME.name!==currentHost){
+      // 내가 온라인이고 알파벳 순으로 첫 번째 온라인 플레이어면 방장 이양 처리
+      const onlinePlayers=G.players.filter(p=>!p.eliminated&&online[p.name]!==false);
+      if(onlinePlayers.length>0&&onlinePlayers[0].name===ME.name){
+        await db.ref(`rooms/${code}/host`).set(ME.name);
+        ME.isHost=true;
+        toast('👑 방장이 되었어요!');
+      }
+    }
   });
 }
 
@@ -1979,16 +2052,22 @@ if(document.getElementById('logoimg'))document.getElementById('logoimg').src=IMG
 // roomList는 on()으로 항상 살아있게 — 화면 전환해도 엘리먼트가 DOM에 있으므로 바로 반영됨
 listenHomeChat();listenRoomList();listenOnlineCount();
 
-// 오래된 방 자동 정리 (10분 이상 waiting/playing 상태)
+// 오래된 방 자동 정리
 function cleanStaleRooms(){
   db.ref('rooms').once('value',snap=>{
     if(!snap.exists())return;
-    const now=Date.now();const TEN_MIN=10*60*1000;
+    const now=Date.now();const TEN_MIN=10*60*1000;const FIVE_MIN=5*60*1000;
     snap.forEach(child=>{
       const room=child.val();
       if(!room)return;
-      // lastAction 기준 — 없으면 createdAt 기준
       const lastAct=room.lastAction||room.createdAt||0;
+      // 1명만 있고 5분 비활동이면 삭제
+      const playerCount=room.players?(Array.isArray(room.players)?room.players.length:Object.keys(room.players).length):0;
+      if(playerCount<=1&&now-lastAct>FIVE_MIN){
+        db.ref('rooms/'+child.key).set(null);
+        return;
+      }
+      // 그 외 10분 비활동이면 삭제
       if(now-lastAct>TEN_MIN)db.ref('rooms/'+child.key).set(null);
     });
   });
