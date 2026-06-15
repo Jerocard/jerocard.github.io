@@ -1698,7 +1698,7 @@ window.goCreateRoom=async function(){
   const isPublic=!document.getElementById('isPrivate').checked;
   ME.name=name; ME.idx=0; ME.isHost=true; ME.avatar=ME_AVATAR||null;
   const code=genCode(); ME.roomId=code;
-  await db.ref(`rooms/${code}`).set({host:name,players:[name],status:'waiting',mode,gameState:null,chat:null,public:isPublic,createdAt:Date.now()});
+  await db.ref(`rooms/${code}`).set({host:name,players:[name],status:'waiting',mode,gameState:null,chat:null,public:isPublic,createdAt:Date.now(),lastAction:Date.now()});
   db.ref(`rooms/${code}/online/${name}`).set(true);
   db.ref(`rooms/${code}/online/${name}`).onDisconnect().set(false);
   document.getElementById('lobCode').textContent=code;
@@ -1767,8 +1767,14 @@ function listenLobby(code){
       db.ref(`rooms/${code}`).remove();
     }
   });
-  // 대기실 online 감지 → 새로고침/종료 시 자동 퇴장 (호스트만 처리)
+  // 대기실 online 감지 → 새로고침/종료 시 자동 퇴장
   db.ref(`rooms/${code}/online`).on('value',async snap=>{
+    const online=snap.val()||{};
+    // 전원 오프라인이면 누구든 방 삭제
+    if(Object.keys(online).length>0&&Object.values(online).every(v=>v===false)){
+      db.ref(`rooms/${code}`).remove();
+      return;
+    }
     if(!ME.isHost)return;
     const online=snap.val()||{};
     const plSnap=await db.ref(`rooms/${code}/players`).once('value');
@@ -1862,8 +1868,8 @@ function listenDisconnect(code){
   db.ref(`rooms/${code}/online`).on('value',async snap=>{
     if(!G||!G.players||!ME.roomId)return;
     const online=snap.val()||{};
-    // 전원 오프라인이면 방 자동 폭파 (호스트만 처리)
-    if(ME.isHost&&Object.keys(online).length>0){
+    // 전원 오프라인이면 방 자동 폭파 (누구든 처리 — 호스트 없어도 대응)
+    if(Object.keys(online).length>0){
       const allOff=Object.values(online).every(v=>v===false);
       if(allOff){
         db.ref(`rooms/${code}`).remove();
@@ -2120,24 +2126,31 @@ listenHomeChat();listenRoomList();listenOnlineCount();
 function cleanStaleRooms(){
   db.ref('rooms').once('value',snap=>{
     if(!snap.exists())return;
-    const now=Date.now();const TEN_MIN=10*60*1000;const FIVE_MIN=5*60*1000;
+    const now=Date.now();const TEN_MIN=10*60*1000;const TWO_MIN=2*60*1000;
     snap.forEach(child=>{
       const room=child.val();
       if(!room)return;
+      const key=child.key;
       const lastAct=room.lastAction||room.createdAt||0;
-      // 1명만 있고 5분 비활동이면 삭제
       const playerCount=room.players?(Array.isArray(room.players)?room.players.length:Object.keys(room.players).length):0;
-      if(playerCount<=1&&now-lastAct>FIVE_MIN){
-        db.ref('rooms/'+child.key).set(null);
-        return;
+      // 플레이어 0명이면 즉시 삭제
+      if(playerCount===0){db.ref('rooms/'+key).set(null);return;}
+      // online 필드가 있는 경우: 전원 false면 즉시 삭제
+      if(room.online){
+        const onlineVals=Object.values(room.online);
+        if(onlineVals.length>0&&onlineVals.every(v=>v===false)){
+          db.ref('rooms/'+key).set(null);return;
+        }
       }
+      // 1명 이하이고 2분 비활동이면 삭제
+      if(playerCount<=1&&now-lastAct>TWO_MIN){db.ref('rooms/'+key).set(null);return;}
       // 그 외 10분 비활동이면 삭제
-      if(now-lastAct>TEN_MIN)db.ref('rooms/'+child.key).set(null);
+      if(now-lastAct>TEN_MIN)db.ref('rooms/'+key).set(null);
     });
   });
 }
 setTimeout(cleanStaleRooms,2000);
-setInterval(cleanStaleRooms,5*60*1000);
+setInterval(cleanStaleRooms,60*1000);
 
 // ── 공유 & 설치 ──
 function shareWithFriend(){
