@@ -1130,7 +1130,8 @@ function renderHand(me){
     // 2줄 or 3줄 겹침 배치
     const perRow=Math.ceil(n/numRows);
     const cardW=46,cardH=66;
-    const maxGap=Math.floor((W-cardW)/Math.max(perRow-1,1));
+    const containerW=Math.min(window.innerWidth-48,380); // 패딩/테두리 여유
+    const maxGap=Math.floor((containerW-cardW)/Math.max(perRow-1,1));
     const gap=Math.min(30,maxGap);
     const rowH=cardH+14;
     el.style.height=(numRows*rowH+4)+'px';
@@ -1140,7 +1141,7 @@ function renderHand(me){
       const col=idx%perRow;
       const rowCount=row<numRows-1?perRow:n-(numRows-1)*perRow;
       const rowSpread=(rowCount-1)*gap;
-      const offsetX=Math.max(0,Math.floor((W-cardW-rowSpread)/2));
+      const offsetX=Math.max(0,Math.floor((containerW-cardW-rowSpread)/2));
       const d=document.createElement('div');
       d.style.cssText=`position:absolute;width:${cardW}px;height:${cardH}px;border-radius:6px;overflow:hidden;border:2px solid #3a3a5a;cursor:pointer;box-shadow:0 2px 6px #0006;transition:border-color .15s,transform .15s;left:${offsetX+col*gap}px;top:${row*rowH}px;z-index:${idx};`;
       if(me._sel.includes(i)){d.style.borderColor='var(--gold)';d.style.transform='translateY(-10px)';}
