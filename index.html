@@ -1098,64 +1098,32 @@ function renderHand(me){
   });
   const n=sorted.length;
   const W=Math.min(window.innerWidth-24,420);
+  // 카드 크기는 고정, 겹침으로 공간 조절
   const cardW=56,cardH=80;
-
-  // 20장 초과 시 2줄 배치
-  if(n>20){
-    const rows=2;
-    const half=Math.ceil(n/rows);
-    const mo=Math.min(38,Math.floor((W-cardW)/(half-1||1)));
-    el.style.height='200px';
-    el.style.position='relative';
-    sorted.forEach(({c,i},idx)=>{
-      const row=idx<half?0:1;
-      const posInRow=idx<half?idx:idx-half;
-      const rowCount=row===0?half:n-half;
-      const spread=Math.min(W-cardW,(rowCount-1)*mo);
-      const gap=rowCount>1?spread/(rowCount-1):0;
-      const d=document.createElement('div');d.className='card';
-      if(me._sel.includes(i))d.classList.add('sel');
-      const img=document.createElement('img');img.src=cardSrc(c);d.appendChild(img);
-      d.style.left=posInRow*gap+'px';
-      d.style.bottom=row===0?'105px':'0px';
-      d.style.zIndex=posInRow;
-      if(me._sel.includes(i))d.style.transform='translateY(-18px)';
-      d.onclick=()=>{
-        if(AI_MODE&&G.cur===1)return;
-        if(!me._sel)me._sel=[];
-        const ix=me._sel.indexOf(i);
-        if(ix>=0){me._sel.splice(ix,1);if(navigator.vibrate)navigator.vibrate(15);}
-        else if(me._sel.length<6){me._sel.push(i);if(navigator.vibrate)navigator.vibrate(25);}
-        renderHand(me);
-      };
-      el.appendChild(d);
-    });
-  } else {
-    // 기존 1줄 배치 (20장 이하)
-    const mo=n<=10?38:n<=15?28:20;
-    const spread=Math.min(W-cardW,(n-1)*mo);
-    const gap=n>1?spread/(n-1):0;
-    const ma=n<=10?3:n<=15?2:1.5;
-    const total=(n-1)*ma;
-    el.style.height='100px';
-    sorted.forEach(({c,i},idx)=>{
-      const d=document.createElement('div');d.className='card';
-      if(me._sel.includes(i))d.classList.add('sel');
-      const img=document.createElement('img');img.src=cardSrc(c);d.appendChild(img);
-      const angle=-total/2+idx*ma,baseY=Math.abs(angle)*1.2;
-      if(!me._sel.includes(i))d.style.transform=`rotate(${angle}deg) translateY(${baseY}px)`;
-      d.style.left=idx*gap+'px';d.style.bottom='0';d.style.zIndex=idx;
-      d.onclick=()=>{
-        if(AI_MODE&&G.cur===1)return;
-        if(!me._sel)me._sel=[];
-        const ix=me._sel.indexOf(i);
-        if(ix>=0){me._sel.splice(ix,1);if(navigator.vibrate)navigator.vibrate(15);}
-        else if(me._sel.length<6){me._sel.push(i);if(navigator.vibrate)navigator.vibrate(25);}
-        renderHand(me);
-      };
-      el.appendChild(d);
-    });
-  }
+  const mo=n<=10?38:n<=15?28:n<=20?20:n<=30?15:11;
+  const spread=Math.min(W-cardW,(n-1)*mo);
+  const gap=n>1?spread/(n-1):0;
+  const ma=n<=10?3:n<=20?2:n<=30?1.5:1;
+  const total=(n-1)*ma;
+  const hh=100;
+  el.style.height=hh+'px';
+  sorted.forEach(({c,i},idx)=>{
+    const d=document.createElement('div');d.className='card';
+    if(me._sel.includes(i))d.classList.add('sel');
+    const img=document.createElement('img');img.src=cardSrc(c);d.appendChild(img);
+    const angle=-total/2+idx*ma,baseY=Math.abs(angle)*1.2;
+    if(!me._sel.includes(i))d.style.transform=`rotate(${angle}deg) translateY(${baseY}px)`;
+    d.style.left=idx*gap+'px';d.style.bottom='0';d.style.zIndex=idx;
+    d.onclick=()=>{
+      if(AI_MODE&&G.cur===1)return; // AI 턴엔 카드 선택 불가
+      if(!me._sel)me._sel=[];
+      const ix=me._sel.indexOf(i);
+      if(ix>=0){me._sel.splice(ix,1);if(navigator.vibrate)navigator.vibrate(15);}
+      else if(me._sel.length<6){me._sel.push(i);if(navigator.vibrate)navigator.vibrate(25);}
+      renderHand(me);
+    };
+    el.appendChild(d);
+  });
   document.getElementById('seli').textContent=(me._sel.length>0)?`${me._sel.length}장 선택됨`:' ';
 }
 
@@ -1515,11 +1483,20 @@ function listenRematch(code){
       if(ME.isHost){
         // 관전자 중 참가 원하는 사람 포함
         const allNames=[...playerNames,...spectatorJoins];
+        // 들어온 순서(playerNames 먼저, spectatorJoins 나중) 기준 최대 6명만 플레이어
+        const playNames=allNames.slice(0,6);
+        const leftOutNames=allNames.slice(6); // 7명 이상이면 나머지는 관전
         const mode=G.mode||'classic';
-        const newG=buildState(allNames,mode);
+        const newG=buildState(playNames,mode);
         newG.mode=mode;newG.winner=null;
         G=newG;
         await db.ref(`rooms/${ME.roomId}/spectators`).set(null);
+        // 초과 인원 다시 관전자로 등록
+        if(leftOutNames.length>0){
+          const specObj={};leftOutNames.forEach(n=>{specObj[n]=false;});
+          await db.ref(`rooms/${ME.roomId}/spectators`).set(specObj);
+          toast(`👁 ${leftOutNames.join(', ')} 님은 관전으로 참가`);
+        }
         await db.ref(`rooms/${ME.roomId}/status`).set('playing');
         await saveState();
       }
