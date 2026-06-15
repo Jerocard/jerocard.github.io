@@ -976,6 +976,7 @@ window.localWithdraw=function(){
   showBetPopup(`🏳️ 철회!`,`${name} 이(가) 거짓 외침을 취소했어요`,`var(--blue)`);
   G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
+  if(G.players[ai].hand.length===0){showWinScreen(G.players[ai],'손패 소진');return;}
   G.cur=(pc+1)%G.players.length; G.round++;
   localRefresh();
 }
@@ -1672,7 +1673,10 @@ window.quickJoin=async function(code){
   ME.name=name; ME.idx=players.length; ME.isHost=false; ME.roomId=code;
   players.push(name);
   await db.ref(`rooms/${code}/players`).set(players);
+  db.ref(`rooms/${code}/online/${name}`).set(true);
+  db.ref(`rooms/${code}/online/${name}`).onDisconnect().set(false);
   document.getElementById('lobCode').textContent=code;
+  document.getElementById('lobCodeSection').style.display='none';
   showScreen('slob');
   listenLobby(code);
   listenGameChat(code);
@@ -1695,6 +1699,8 @@ window.goCreateRoom=async function(){
   ME.name=name; ME.idx=0; ME.isHost=true; ME.avatar=ME_AVATAR||null;
   const code=genCode(); ME.roomId=code;
   await db.ref(`rooms/${code}`).set({host:name,players:[name],status:'waiting',mode,gameState:null,chat:null,public:isPublic,createdAt:Date.now()});
+  db.ref(`rooms/${code}/online/${name}`).set(true);
+  db.ref(`rooms/${code}/online/${name}`).onDisconnect().set(false);
   document.getElementById('lobCode').textContent=code;
   document.getElementById('lobCodeSection').style.display=isPublic?'none':'block';
   showScreen('slob');
@@ -1705,10 +1711,6 @@ window.goCreateRoom=async function(){
 // ── 온라인: 방 참가 ──
 window.goJoinRoom=async function(){
   if(!ME_AVATAR){showAvatarSelect(()=>goJoinRoom());return;}
-  const snap0=await db.ref(`rooms/${document.getElementById('joinCodeInput').value.trim()}`).once('value');
-  const existPlayers0=(snap0.exists()&&snap0.val().players)||[];
-  const autoName0='P'+(existPlayers0.length+1);
-  const name=document.getElementById('myNameInput').value.trim()||autoName0;
   const code=document.getElementById('joinCodeInput').value.trim();
   if(!code){toast('방 코드를 입력하세요');return;}
   const snap=await db.ref(`rooms/${code}`).once('value');
@@ -1717,10 +1719,15 @@ window.goJoinRoom=async function(){
   if(room.status!=='waiting'){toast('이미 시작된 게임이에요');return;}
   const players=room.players||[];
   if(players.length>=6){toast('방이 가득 찼어요 (최대 6명)\n관전은 방 목록에서 👁 버튼을 이용하세요');return;}
+  const autoName='P'+(players.length+1);
+  const name=document.getElementById('myNameInput').value.trim()||autoName;
   ME.name=name; ME.idx=players.length; ME.isHost=false; ME.roomId=code;
   players.push(name);
   await db.ref(`rooms/${code}/players`).set(players);
+  db.ref(`rooms/${code}/online/${name}`).set(true);
+  db.ref(`rooms/${code}/online/${name}`).onDisconnect().set(false);
   document.getElementById('lobCode').textContent=code;
+  document.getElementById('lobCodeSection').style.display='none';
   showScreen('slob');
   listenLobby(code);
   listenGameChat(code);
@@ -1759,6 +1766,23 @@ function listenLobby(code){
     if(pl.length===0){
       db.ref(`rooms/${code}`).remove();
     }
+  });
+  // 대기실 online 감지 → 새로고침/종료 시 자동 퇴장 (호스트만 처리)
+  db.ref(`rooms/${code}/online`).on('value',async snap=>{
+    if(!ME.isHost)return;
+    const online=snap.val()||{};
+    const plSnap=await db.ref(`rooms/${code}/players`).once('value');
+    const pl=(plSnap.val()||[]);
+    const left=pl.filter(n=>online[n]===false);
+    if(!left.length)return;
+    const remaining=pl.filter(n=>online[n]!==false);
+    await db.ref(`rooms/${code}/players`).set(remaining);
+    const hostSnap=await db.ref(`rooms/${code}/host`).once('value');
+    if(left.includes(hostSnap.val())&&remaining.length>0){
+      await db.ref(`rooms/${code}/host`).set(remaining[0]);
+    }
+    for(const n of left) await db.ref(`rooms/${code}/online/${n}`).remove();
+    if(remaining.length===0) await db.ref(`rooms/${code}`).remove();
   });
   // 방장 이양 감지
   db.ref(`rooms/${code}/host`).on('value',async snap=>{
@@ -2073,6 +2097,7 @@ async function actionWithdraw(){
   broadcastPopup('bet',{label:'🏳️ 철회!',sub:`${name} 이(가) 거짓 외침을 취소했어요`,color:'var(--blue)'});
   G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
+  if(G.players[ai].hand.length===0){saveWinAndShow(G.players[ai],'손패 소진');return;}
   G.cur=(pc+1)%G.players.length; G.round++;
   await saveState();
 }
