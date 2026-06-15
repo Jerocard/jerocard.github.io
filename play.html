@@ -1099,32 +1099,64 @@ function renderHand(me){
   });
   const n=sorted.length;
   const W=Math.min(window.innerWidth-24,420);
-  // 카드 크기는 고정, 겹침으로 공간 조절
-  const cardW=56,cardH=80;
-  const mo=n<=10?38:n<=15?28:n<=20?20:n<=30?15:11;
-  const spread=Math.min(W-cardW,(n-1)*mo);
-  const gap=n>1?spread/(n-1):0;
-  const ma=n<=10?3:n<=20?2:n<=30?1.5:1;
-  const total=(n-1)*ma;
-  const hh=100;
-  el.style.height=hh+'px';
-  sorted.forEach(({c,i},idx)=>{
-    const d=document.createElement('div');d.className='card';
-    if(me._sel.includes(i))d.classList.add('sel');
-    const img=document.createElement('img');img.src=cardSrc(c);d.appendChild(img);
-    const angle=-total/2+idx*ma,baseY=Math.abs(angle)*1.2;
-    if(!me._sel.includes(i))d.style.transform=`rotate(${angle}deg) translateY(${baseY}px)`;
-    d.style.left=idx*gap+'px';d.style.bottom='0';d.style.zIndex=idx;
-    d.onclick=()=>{
-      if(AI_MODE&&G.cur===1)return; // AI 턴엔 카드 선택 불가
-      if(!me._sel)me._sel=[];
-      const ix=me._sel.indexOf(i);
-      if(ix>=0){me._sel.splice(ix,1);if(navigator.vibrate)navigator.vibrate(15);}
-      else if(me._sel.length<6){me._sel.push(i);if(navigator.vibrate)navigator.vibrate(25);}
-      renderHand(me);
-    };
-    el.appendChild(d);
-  });
+  const numRows=n>=41?3:n>=21?2:1;
+  if(numRows===1){
+    // 1줄 팬 배치
+    const cardW=56;
+    const mo=n<=10?38:n<=15?28:20;
+    const spread=Math.min(W-cardW,(n-1)*mo);
+    const gap=n>1?spread/(n-1):0;
+    const ma=n<=10?3:n<=20?2:1.5;
+    const total=(n-1)*ma;
+    el.style.height='100px';
+    sorted.forEach(({c,i},idx)=>{
+      const d=document.createElement('div');d.className='card';
+      if(me._sel.includes(i))d.classList.add('sel');
+      const img=document.createElement('img');img.src=cardSrc(c);d.appendChild(img);
+      const angle=-total/2+idx*ma,baseY=Math.abs(angle)*1.2;
+      if(!me._sel.includes(i))d.style.transform=`rotate(${angle}deg) translateY(${baseY}px)`;
+      d.style.left=idx*gap+'px';d.style.bottom='0';d.style.zIndex=idx;
+      d.onclick=()=>{
+        if(AI_MODE&&G.cur===1)return;
+        if(!me._sel)me._sel=[];
+        const ix=me._sel.indexOf(i);
+        if(ix>=0){me._sel.splice(ix,1);if(navigator.vibrate)navigator.vibrate(15);}
+        else if(me._sel.length<6){me._sel.push(i);if(navigator.vibrate)navigator.vibrate(25);}
+        renderHand(me);
+      };
+      el.appendChild(d);
+    });
+  } else {
+    // 2줄 or 3줄 겹침 배치
+    const perRow=Math.ceil(n/numRows);
+    const cardW=46,cardH=66;
+    const maxGap=Math.floor((W-cardW)/Math.max(perRow-1,1));
+    const gap=Math.min(30,maxGap);
+    const rowH=cardH+14;
+    el.style.height=(numRows*rowH+4)+'px';
+    el.style.position='relative';
+    sorted.forEach(({c,i},idx)=>{
+      const row=Math.floor(idx/perRow);
+      const col=idx%perRow;
+      const rowCount=row<numRows-1?perRow:n-(numRows-1)*perRow;
+      const rowSpread=(rowCount-1)*gap;
+      const offsetX=Math.max(0,Math.floor((W-cardW-rowSpread)/2));
+      const d=document.createElement('div');
+      d.style.cssText=`position:absolute;width:${cardW}px;height:${cardH}px;border-radius:6px;overflow:hidden;border:2px solid #3a3a5a;cursor:pointer;box-shadow:0 2px 6px #0006;transition:border-color .15s,transform .15s;left:${offsetX+col*gap}px;top:${row*rowH}px;z-index:${idx};`;
+      if(me._sel.includes(i)){d.style.borderColor='var(--gold)';d.style.transform='translateY(-10px)';}
+      const img=document.createElement('img');img.src=cardSrc(c);img.style.cssText='width:100%;height:100%;object-fit:cover;pointer-events:none;';
+      d.appendChild(img);
+      d.onclick=()=>{
+        if(AI_MODE&&G.cur===1)return;
+        if(!me._sel)me._sel=[];
+        const ix=me._sel.indexOf(i);
+        if(ix>=0){me._sel.splice(ix,1);if(navigator.vibrate)navigator.vibrate(15);}
+        else if(me._sel.length<6){me._sel.push(i);if(navigator.vibrate)navigator.vibrate(25);}
+        renderHand(me);
+      };
+      el.appendChild(d);
+    });
+  }
   document.getElementById('seli').textContent=(me._sel.length>0)?`${me._sel.length}장 선택됨`:' ';
 }
 
