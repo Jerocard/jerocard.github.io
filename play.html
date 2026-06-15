@@ -1776,7 +1776,6 @@ function listenLobby(code){
       return;
     }
     if(!ME.isHost)return;
-    const online=snap.val()||{};
     const plSnap=await db.ref(`rooms/${code}/players`).once('value');
     const pl=(plSnap.val()||[]);
     const left=pl.filter(n=>online[n]===false);
