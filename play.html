@@ -885,7 +885,8 @@ function localRefresh(){
 window.localSubmit=function(){
   const p=G.players[G.cur];
   const sel=p._sel||[];
-  if(sel.length<2||sel.length>6){toast('카드 2~6장 선택하세요');return;}
+  const minCards=p.hand.length===1?1:2;
+  if(sel.length<minCards||sel.length>6){toast(p.hand.length===1?'마지막 카드 1장을 내세요':'카드 2~6장 선택하세요');return;}
   if(!G._dn){toast('선언 숫자를 선택하세요');return;}
   snd('submit'); showSubmitImpact(G._dn,sel.length);
   const cards=[...sel].sort((a,b)=>b-a).map(i=>p.hand.splice(i,1)[0]);
@@ -1955,7 +1956,8 @@ function listenGameChat(code){
 async function actionSubmit(me){
   const player=G.players[G.cur];
   const sel=player._sel||[];
-  if(sel.length<2||sel.length>6){toast('카드 2~6장 선택하세요');return;}
+  const minCards=player.hand.length===1?1:2;
+  if(sel.length<minCards||sel.length>6){toast(player.hand.length===1?'마지막 카드 1장을 내세요':'카드 2~6장 선택하세요');return;}
   if(!G._dn){toast('선언 숫자를 선택하세요');return;}
   if(!Array.isArray(player.hand))player.hand=Object.values(player.hand);
   snd('submit');showSubmitImpact(G._dn,sel.length);
