@@ -1521,7 +1521,7 @@ function showWinScreen(p,reason){
       stats.innerHTML='<div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">최종 순위</div>'+
         rankings.map(({name,rank,player})=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);">`+
           `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}</span>`+
-          `<span style="color:var(--gold)">🪙${player?player.coins:0}</span></div>`).join('');
+          `<span style="color:var(--gold)">🪙${G.finalCoins&&G.finalCoins[name]!=null?G.finalCoins[name]:(player?player.coins:0)}</span></div>`).join('');
     }
   }
   // 재매치 버튼: 로컬이거나 호스트일 때만
@@ -1600,12 +1600,18 @@ function recordWin(name){  // 손패소진 — 완주 순서대로 1위,2위...
   if(!G.winOrder.includes(name))G.winOrder.push(name);
   if(!G.rankOrder)G.rankOrder=[];
   if(!G.rankOrder.includes(name))G.rankOrder.push(name);
+  if(!G.finalCoins)G.finalCoins={};
+  const pw=G.players.find(p=>p.name===name);
+  if(pw&&G.finalCoins[name]==null)G.finalCoins[name]=pw.coins;
 }
 function recordLose(name){ // 주화소진 — 먼저 탈락할수록 꼴등
   if(!G.loseOrder)G.loseOrder=[];
   if(!G.loseOrder.includes(name))G.loseOrder.push(name);
   if(!G.rankOrder)G.rankOrder=[];
   if(!G.rankOrder.includes(name))G.rankOrder.push(name);
+  // 주화소진 탈락 시점 주화는 0으로 스냅샷
+  if(!G.finalCoins)G.finalCoins={};
+  if(G.finalCoins[name]==null)G.finalCoins[name]=0;
 }
 function recordElimination(name){ recordLose(name); } // 하위호환
 
@@ -1653,7 +1659,7 @@ function showResultModal(winner,reason){
     rankings.map(({name,rank,player})=>
       `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bdr);">`+
       `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}${ME.name===name?' <span style="color:var(--blue);font-size:11px;">(나)</span>':''}</span>`+
-      `<span style="color:var(--gold);font-size:13px;">🪙${player?player.coins:0}</span></div>`
+      `<span style="color:var(--gold);font-size:13px;">🪙${G.finalCoins&&G.finalCoins[name]!=null?G.finalCoins[name]:(player?player.coins:0)}</span></div>`
     ).join('');
   document.getElementById('mcards').innerHTML='';
   const btns=document.getElementById('mbtns');btns.innerHTML='';
@@ -1664,8 +1670,11 @@ function showResultModal(winner,reason){
 
 // 온라인용 — Firebase에 winner 저장해서 양쪽 동시 승리화면
 async function saveWinAndShow(p,reason){
+  // 승자 주화도 스냅샷
+  if(!G.finalCoins)G.finalCoins={};
+  if(p&&G.finalCoins[p.name]==null)G.finalCoins[p.name]=p.coins;
   if(!LOCAL&&ME.roomId){
-    G.winner={name:p.name,reason,rankOrder:G.rankOrder||[],winOrder:G.winOrder||[],loseOrder:G.loseOrder||[]};
+    G.winner={name:p.name,reason,rankOrder:G.rankOrder||[],winOrder:G.winOrder||[],loseOrder:G.loseOrder||[],finalCoins:G.finalCoins||{}};
     await saveState();
   }
   // 관전자(탈락자)면 결과 모달만, 생존자면 승리화면
@@ -2125,6 +2134,7 @@ function listenGameState(code){
       if(G.winner.rankOrder)G.rankOrder=G.winner.rankOrder;
       if(G.winner.winOrder)G.winOrder=G.winner.winOrder;
       if(G.winner.loseOrder)G.loseOrder=G.winner.loseOrder;
+      if(G.winner.finalCoins)G.finalCoins=G.winner.finalCoins;
       const wp=G.players.find(p=>p.name===G.winner.name)||G.winner;
       if(ME.idx===-1){
         showResultModal(wp,G.winner.reason);
@@ -2132,6 +2142,15 @@ function listenGameState(code){
         showWinScreen(wp,G.winner.reason);
       }
       return;
+    }
+    // Firebase에서 받은 상태에서 내가 eliminated면 관전 전환
+    if(ME.idx!==-1&&ME.name){
+      const myP=G.players.find(p=>p.name===ME.name);
+      if(myP&&myP.eliminated){
+        ME.idx=-1;
+        const tb=document.getElementById('turnbanner');
+        if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
+      }
     }
     renderGame();
   });
