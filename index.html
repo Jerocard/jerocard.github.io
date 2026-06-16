@@ -889,7 +889,7 @@ function buildState(players,mode){
     }
     shuffle(deck);
   }
-  return {players:players.map((name,i)=>({name,coins,hand:deck.slice(i*pp,(i+1)*pp),_sel:[],avatar:null})),cur:0,round:1,log:[],table:null,discard:[],replay:[],phase:'submit',_dn:null,mode,rankOrder:[]};
+  return {players:players.map((name,i)=>({name,coins,hand:deck.slice(i*pp,(i+1)*pp),_sel:[],avatar:null})),cur:0,round:1,log:[],table:null,discard:[],replay:[],phase:'submit',_dn:null,mode,rankOrder:[],winOrder:[],loseOrder:[]};
 }
 
 // ── 로컬 핵심: 항상 G.cur 기준 렌더링 ──
@@ -931,12 +931,12 @@ window.localTruth=function(){
   G.table=null; G.phase='submit';
   G.round++;
   if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
-    submitter.eliminated=true;recordElimination(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
+    submitter.eliminated=true;recordWin(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     const activeT=G.players.filter(p=>!p.eliminated);
-    if(activeT.length<=1){showWinScreen(activeT[0]||G.players[0],'유일한 생존자 👑');return;}
+    if(activeT.length<=1){showWinScreen(activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
   }
   const active=G.players.filter(p=>p.coins>0);
-  if(active.length<=1){showWinScreen(active[0]||G.players[0],'유일한 생존자 👑');return;}
+  if(active.length<=1){showWinScreen(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
   localRefresh();
 }
 window.localBluff=function(){
@@ -967,11 +967,11 @@ window.localReveal=function(wasBet,betAmt){
   G.replay.push({type:'reveal',ab,cards:tc});
   // 판정 팝업(1.7초) 동안 화면 유지 후 갱신
   setTimeout(()=>{
-    if(!ab&&A.hand.length===0&&!A.eliminated){A.eliminated=true;recordElimination(A.name);midToast('🏆',`${A.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');}
-    G.players.forEach(p=>{if(p.hand.length===0&&!p.eliminated){p.eliminated=true;recordElimination(p.name);midToast('🏆',`${p.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');}});
-    G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordElimination(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 경기 계속','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
+    if(!ab&&A.hand.length===0&&!A.eliminated){A.eliminated=true;recordWin(A.name);midToast('🏆',`${A.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');}
+    G.players.forEach(p=>{if(p.hand.length===0&&!p.eliminated){p.eliminated=true;recordWin(p.name);midToast('🏆',`${p.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');}});
+    G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 경기 계속','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
     const active=G.players.filter(p=>!p.eliminated);
-    if(active.length<=1){showWinScreen(active[0]||G.players[0],'유일한 생존자 👑');return;}
+    if(active.length<=1){showWinScreen(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
     let next=bi!=null?bi:0;
     for(let i=0;i<G.players.length;i++){if(!G.players[next].eliminated)break;next=(next+1)%G.players.length;}
     G.cur=next; G.round++;
@@ -997,9 +997,9 @@ window.localWithdraw=function(){
   G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
   if(G.players[ai].hand.length===0&&!G.players[ai].eliminated){
-    G.players[ai].eliminated=true;recordElimination(G.players[ai].name);midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
+    G.players[ai].eliminated=true;recordWin(G.players[ai].name);midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
     const activeW=G.players.filter(p=>!p.eliminated);
-    if(activeW.length<=1){showWinScreen(activeW[0]||G.players[0],'유일한 생존자 👑');return;}
+    if(activeW.length<=1){showWinScreen(activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
   }
   G.cur=(pc+1)%G.players.length; G.round++;
   localRefresh();
@@ -1047,8 +1047,15 @@ window.renderGame=function(){
     const h=document.createElement('div');h.className='ophead';
     // 아바타 이미지
     const avImg=p.avatar&&AVATARS[p.avatar]?`<img src="${AVATARS[p.avatar].img}" style="width:36px;height:36px;border-radius:6px;image-rendering:pixelated;border:1px solid var(--bdr);flex-shrink:0;">`:'';
-    const pRankLabel=(()=>{if(!p.eliminated)return '';const ro=G.rankOrder||[];const ri=ro.indexOf(p.name);if(ri===-1)return '💀';return (G.players.length-ri)+'위';})();
-    h.innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${avImg}<span style="font-size:13px;font-weight:700;color:${p.eliminated?'#555':'inherit'};">${p.eliminated?pRankLabel+' 💀 ':G.cur===i&&!LOCAL?'▶ ':''}${p.name}</span></div><span style="display:flex;gap:6px;"><span style="background:#2a1a00;border:1px solid ${p.eliminated?'#444':'var(--gold)'};border-radius:8px;padding:2px 8px;font-size:12px;color:${p.eliminated?'#555':'var(--gold)'};font-weight:700;">🪙${p.coins}</span><span style="background:var(--cb);border:1px solid #4a4a6a;border-radius:8px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:700;">🃏${p.hand.length}장</span></span>`;
+    const pRankLabel=(()=>{
+      if(!p.eliminated)return {label:'',icon:''};
+      const wo=G.winOrder||[];const lo=G.loseOrder||[];
+      const wi=wo.indexOf(p.name);const li=lo.indexOf(p.name);
+      if(wi!==-1)return {label:(wi+1)+'위',icon:'🏆'};
+      if(li!==-1)return {label:(wo.length+1+(lo.length-1-li))+'위',icon:'💀'};
+      return {label:'',icon:'💀'};
+    })();
+    h.innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${avImg}<span style="font-size:13px;font-weight:700;color:${p.eliminated?'#555':'inherit'};">${p.eliminated?pRankLabel.label+' '+pRankLabel.icon+' ':G.cur===i&&!LOCAL?'▶ ':''}${p.name}</span></div><span style="display:flex;gap:6px;"><span style="background:#2a1a00;border:1px solid ${p.eliminated?'#444':'var(--gold)'};border-radius:8px;padding:2px 8px;font-size:12px;color:${p.eliminated?'#555':'var(--gold)'};font-weight:700;">🪙${p.coins}</span><span style="background:var(--cb);border:1px solid #4a4a6a;border-radius:8px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:700;">🃏${p.hand.length}장</span></span>`;
     d.appendChild(h);
     const cc=document.createElement('div');cc.style.cssText='position:relative;height:50px;margin-top:6px;';
     const cnt=p.hand.length,maxW=window.innerWidth-60,gap=cnt>1?Math.min(20,(maxW-32)/(cnt-1)):0;
@@ -1091,7 +1098,15 @@ window.renderGame=function(){
       border:${isMe&&!isActive?'1px solid var(--gold)':'1px solid transparent'};
       opacity:${isElim?0.4:1};
       position:relative;`;
-    const elimRank=(()=>{if(!isElim)return '';const ro=G.rankOrder||[];const ri=ro.indexOf(p.name);if(ri===-1)return '💀';const total=G.players.length;return (total-ri)+'위 💀';})();
+    const elimRank=(()=>{
+      if(!isElim)return '';
+      const wo=G.winOrder||[];const lo=G.loseOrder||[];
+      const wi=wo.indexOf(p.name);const li=lo.indexOf(p.name);
+      if(wi!==-1){return (wi+1)+'위 🏆';}
+      // 주화소진: 전체인원 - loseOrder인덱스 (늦게탈락=높은순위)
+      if(li!==-1){const wo2=G.winOrder||[];return (wo2.length+1+(lo.length-1-li))+'위 💀';}
+      return '💀';
+    })();
     chip.textContent=(isElim?elimRank+' ':isActive?'▶ ':'')+p.name;
     to.appendChild(chip);
   });
@@ -1496,12 +1511,18 @@ function showWinScreen(p,reason){
   document.getElementById('wreason').textContent=reason;
   const stats=document.getElementById('wstats');
   if(stats&&G.players){
-    const medals=['🥇','🥈','🥉'];
-    const rankings=getRankings(p);
-    stats.innerHTML='<div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">최종 순위</div>'+
-      rankings.map(({name,rank,player})=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);">`+
-        `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}</span>`+
-        `<span style="color:var(--gold)">🪙${player?player.coins:0}</span></div>`).join('');
+    // 2인 게임은 순위표 없음
+    if(G.players.length<=2){
+      stats.style.display='none';
+    } else {
+      stats.style.display='flex';
+      const medals=['🥇','🥈','🥉'];
+      const rankings=getRankings(p);
+      stats.innerHTML='<div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">최종 순위</div>'+
+        rankings.map(({name,rank,player})=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);">`+
+          `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}</span>`+
+          `<span style="color:var(--gold)">🪙${player?player.coins:0}</span></div>`).join('');
+    }
   }
   // 재매치 버튼: 로컬이거나 호스트일 때만
   const rb=document.getElementById('rematchBtn');
@@ -1573,11 +1594,20 @@ window.spectatorJoinRematch=async function(){
   await db.ref(`rooms/${ME.roomId}/spectators/${ME.name}`).set(true);
   toast('✅ 재게임 참가 신청 완료!');
 }
-// 탈락 순위 기록
-function recordElimination(name){
+// 순위 기록: 손패소진(완주) vs 주화소진(탈락) 분리
+function recordWin(name){  // 손패소진 — 완주 순서대로 1위,2위...
+  if(!G.winOrder)G.winOrder=[];
+  if(!G.winOrder.includes(name))G.winOrder.push(name);
   if(!G.rankOrder)G.rankOrder=[];
   if(!G.rankOrder.includes(name))G.rankOrder.push(name);
 }
+function recordLose(name){ // 주화소진 — 먼저 탈락할수록 꼴등
+  if(!G.loseOrder)G.loseOrder=[];
+  if(!G.loseOrder.includes(name))G.loseOrder.push(name);
+  if(!G.rankOrder)G.rankOrder=[];
+  if(!G.rankOrder.includes(name))G.rankOrder.push(name);
+}
+function recordElimination(name){ recordLose(name); } // 하위호환
 
 // 탈락 시 나 자신이면 관전 모드로 전환
 function enterSpectatorIfMe(name){
@@ -1591,12 +1621,25 @@ function enterSpectatorIfMe(name){
 }
 
 // 순위 계산
+// 손패소진자 있음: 손패소진 순(1위~) → 최후생존자(꼴등) → 주화소진 역순(늦게탈락=상위)
+// 손패소진자 없음: 최후생존자(1위) → 주화소진 역순(늦게탈락=상위)
 function getRankings(winner){
-  const order=G.rankOrder||[];
-  const all=G.players.map(p=>p.name);
-  const unranked=all.filter(n=>!order.includes(n)&&n!==winner.name);
-  const full=[winner.name,...unranked,...[...order].reverse()];
-  return full.map((name,i)=>({name,rank:i+1,player:G.players.find(p=>p.name===name)}));
+  const wins=G.winOrder||[];   // 손패소진 순
+  const loses=G.loseOrder||[]; // 주화소진 순 (먼저탈락=꼴등)
+  const survivorName=winner.name;
+  const loseRev=[...loses].reverse(); // 늦게탈락=상위
+  let full;
+  if(wins.length>0){
+    // 손패소진자 있음 → 최후생존자는 꼴등
+    full=[...wins, ...loseRev, survivorName];
+  } else {
+    // 손패소진자 없음(주화전쟁) → 최후생존자 1위
+    full=[survivorName, ...loseRev];
+  }
+  // 중복 제거
+  const seen=new Set();
+  const deduped=full.filter(n=>{if(seen.has(n))return false;seen.add(n);return true;});
+  return deduped.map((name,i)=>({name,rank:i+1,player:G.players.find(p=>p.name===name)}));
 }
 
 // 결과 모달 — 관전자(탈락자)용
@@ -1622,7 +1665,7 @@ function showResultModal(winner,reason){
 // 온라인용 — Firebase에 winner 저장해서 양쪽 동시 승리화면
 async function saveWinAndShow(p,reason){
   if(!LOCAL&&ME.roomId){
-    G.winner={name:p.name,reason,rankOrder:G.rankOrder||[]};
+    G.winner={name:p.name,reason,rankOrder:G.rankOrder||[],winOrder:G.winOrder||[],loseOrder:G.loseOrder||[]};
     await saveState();
   }
   // 관전자(탈락자)면 결과 모달만, 생존자면 승리화면
@@ -1999,7 +2042,7 @@ function listenDisconnect(code){
     // 1명만 남으면 즉시 승리
     if(ME.isHost&&activePlayers.length===1&&G.phase!=='winner'){
       await saveState();
-      saveWinAndShow(activePlayers[0],'유일한 생존자 👑');
+      saveWinAndShow(activePlayers[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));
       return;
     }
     // 2명 이상 게임 중, 한 명이 오프라인 감지
@@ -2080,6 +2123,8 @@ function listenGameState(code){
     if(G.winner){
       // rankOrder 복원
       if(G.winner.rankOrder)G.rankOrder=G.winner.rankOrder;
+      if(G.winner.winOrder)G.winOrder=G.winner.winOrder;
+      if(G.winner.loseOrder)G.loseOrder=G.winner.loseOrder;
       const wp=G.players.find(p=>p.name===G.winner.name)||G.winner;
       if(ME.idx===-1){
         showResultModal(wp,G.winner.reason);
@@ -2167,14 +2212,14 @@ async function actionTruth(){
   G.round++;
   // 제출자 손패 0이면 탈락 처리
   if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
-    submitter.eliminated=true;recordElimination(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+    submitter.eliminated=true;recordWin(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
     addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(submitter.name);
     const activeT=G.players.filter(p=>!p.eliminated);
-    if(activeT.length<=1){saveWinAndShow(activeT[0]||G.players[0],'유일한 생존자 👑');return;}
+    if(activeT.length<=1){saveWinAndShow(activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
   }
   const active=G.players.filter(p=>p.coins>0);
-  if(active.length<=1){saveWinAndShow(active[0]||G.players[0],'유일한 생존자 👑');return;}
+  if(active.length<=1){saveWinAndShow(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
   // G.cur 유지 — 참을 누른 판단자가 다음 제출자
   await saveState();
 }
@@ -2208,7 +2253,7 @@ async function actionReveal(wasBet,betAmt){
   // 손패 소진 → 탈락 처리 (즉시 승리 X, 게임 계속)
   if(!ab&&A.hand.length===0&&!A.eliminated){
     A.eliminated=true;
-    recordElimination(A.name);
+    recordWin(A.name);
     midToast('🏆',`${A.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
     addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(A.name);
@@ -2216,15 +2261,15 @@ async function actionReveal(wasBet,betAmt){
   G.players.forEach(p=>{
     if(p.hand.length===0&&!p.eliminated){
       p.eliminated=true;
-      recordElimination(p.name);
+      recordWin(p.name);
       midToast('🏆',`${p.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
       addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');
       enterSpectatorIfMe(p.name);
     }
   });
-  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordElimination(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 관전 모드로 전환','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
+  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 관전 모드로 전환','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
   const active=G.players.filter(p=>!p.eliminated);
-  if(active.length<=1){saveWinAndShow(active[0]||G.players[0],'유일한 생존자 👑');return;}
+  if(active.length<=1){saveWinAndShow(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
   let next=bi!=null?bi:0;
   for(let i=0;i<G.players.length;i++){if(!G.players[next].eliminated)break;next=(next+1)%G.players.length;}
   G.cur=next; G.round++;
@@ -2250,12 +2295,12 @@ async function actionWithdraw(){
   G.table=null; G.phase='submit';
   if(G.players[ai].hand.length===0&&!G.players[ai].eliminated){
     G.players[ai].eliminated=true;
-    recordElimination(G.players[ai].name);
+    recordWin(G.players[ai].name);
     midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
     addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(G.players[ai].name);
     const activeW=G.players.filter(p=>!p.eliminated);
-    if(activeW.length<=1){saveWinAndShow(activeW[0]||G.players[0],'유일한 생존자 👑');return;}
+    if(activeW.length<=1){saveWinAndShow(activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
   }
   G.cur=(pc+1)%G.players.length; G.round++;
   await saveState();
