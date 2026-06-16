@@ -152,6 +152,11 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 .emote-toast .en{font-size:14px;color:#fff;font-family:"Black Han Sans",sans-serif;}
 @keyframes et{0%{opacity:0;transform:translateX(-50%) scale(.3);}30%{opacity:1;transform:translateX(-50%) scale(1.2);}80%{opacity:1;}100%{opacity:0;transform:translateX(-50%) translateY(-30px);}}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:9px 16px;border-radius:18px;font-size:13px;z-index:300;pointer-events:none;}
+.mid-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;pointer-events:none;text-align:center;animation:midtoast 2.8s ease-out forwards;}
+.mid-toast .mt-icon{font-size:52px;display:block;margin-bottom:8px;}
+.mid-toast .mt-title{font-family:"Black Han Sans",sans-serif;font-size:22px;letter-spacing:2px;display:block;margin-bottom:4px;}
+.mid-toast .mt-sub{font-size:13px;opacity:.8;display:block;}
+@keyframes midtoast{0%{opacity:0;transform:translate(-50%,-50%) scale(0.7);}15%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}25%{transform:translate(-50%,-50%) scale(1);}75%{opacity:1;}100%{opacity:0;transform:translate(-50%,-50%) scale(0.95);}}
 .discard-cards{position:relative;height:36px;flex:1;}
 .dc{position:absolute;top:0;width:24px;height:34px;border-radius:4px;overflow:hidden;border:1px solid rgba(201,168,76,.4);}
 .dc img{width:100%;height:100%;object-fit:cover;}
@@ -692,6 +697,13 @@ function closeModal(){document.getElementById('modal').classList.remove('open');
 function showGameMenu(){document.getElementById('gamemenu').classList.add('open');}
 function closeGameMenu(){document.getElementById('gamemenu').classList.remove('open');}
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
+function midToast(icon,title,sub,color){
+  document.querySelectorAll('.mid-toast').forEach(e=>e.remove());
+  const d=document.createElement('div');d.className='mid-toast';
+  d.innerHTML=`<span class="mt-icon">${icon}</span><span class="mt-title" style="color:${color};">${title}</span><span class="mt-sub">${sub}</span>`;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),2800);
+}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]];}}
 function genCode(){return String(Math.floor(1000+Math.random()*9000));}
 function addLog(msg,cls=''){
@@ -877,7 +889,7 @@ function buildState(players,mode){
     }
     shuffle(deck);
   }
-  return {players:players.map((name,i)=>({name,coins,hand:deck.slice(i*pp,(i+1)*pp),_sel:[],avatar:null})),cur:0,round:1,log:[],table:null,discard:[],replay:[],phase:'submit',_dn:null,mode};
+  return {players:players.map((name,i)=>({name,coins,hand:deck.slice(i*pp,(i+1)*pp),_sel:[],avatar:null})),cur:0,round:1,log:[],table:null,discard:[],replay:[],phase:'submit',_dn:null,mode,rankOrder:[]};
 }
 
 // ── 로컬 핵심: 항상 G.cur 기준 렌더링 ──
@@ -918,7 +930,11 @@ window.localTruth=function(){
   if(G.table)G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
   G.round++;
-  if(submitter&&submitter.hand.length===0){showWinScreen(submitter,'손패 소진');return;}
+  if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
+    submitter.eliminated=true;recordElimination(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
+    const activeT=G.players.filter(p=>!p.eliminated);
+    if(activeT.length<=1){showWinScreen(activeT[0]||G.players[0],'유일한 생존자 👑');return;}
+  }
   const active=G.players.filter(p=>p.coins>0);
   if(active.length<=1){showWinScreen(active[0]||G.players[0],'유일한 생존자 👑');return;}
   localRefresh();
@@ -951,10 +967,9 @@ window.localReveal=function(wasBet,betAmt){
   G.replay.push({type:'reveal',ab,cards:tc});
   // 판정 팝업(1.7초) 동안 화면 유지 후 갱신
   setTimeout(()=>{
-    if(!ab&&A.hand.length===0){showWinScreen(A,'손패 소진');return;}
-    const winner=G.players.find(p=>p.hand.length===0);
-    if(winner){showWinScreen(winner,'손패 소진');return;}
-    G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
+    if(!ab&&A.hand.length===0&&!A.eliminated){A.eliminated=true;recordElimination(A.name);midToast('🏆',`${A.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');}
+    G.players.forEach(p=>{if(p.hand.length===0&&!p.eliminated){p.eliminated=true;recordElimination(p.name);midToast('🏆',`${p.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');}});
+    G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordElimination(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 경기 계속','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
     const active=G.players.filter(p=>!p.eliminated);
     if(active.length<=1){showWinScreen(active[0]||G.players[0],'유일한 생존자 👑');return;}
     let next=bi!=null?bi:0;
@@ -981,7 +996,11 @@ window.localWithdraw=function(){
   showBetPopup(`🏳️ 철회!`,`${name} 이(가) 거짓 외침을 취소했어요`,`var(--blue)`);
   G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
-  if(G.players[ai].hand.length===0){showWinScreen(G.players[ai],'손패 소진');return;}
+  if(G.players[ai].hand.length===0&&!G.players[ai].eliminated){
+    G.players[ai].eliminated=true;recordElimination(G.players[ai].name);midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
+    const activeW=G.players.filter(p=>!p.eliminated);
+    if(activeW.length<=1){showWinScreen(activeW[0]||G.players[0],'유일한 생존자 👑');return;}
+  }
   G.cur=(pc+1)%G.players.length; G.round++;
   localRefresh();
 }
@@ -997,11 +1016,12 @@ window.localConfirm=function(amt){
 // ── 렌더링 ──
 window.renderGame=function(){
   if(!G||!G.players)return;
+  // ME.idx===-1 이면 관전자 (외부 관전자 or 탈락 후 관전 전환)
   const isSpectator=!LOCAL&&ME.idx===-1;
   const mi=isSpectator?G.cur:(LOCAL?G.cur:(ME.idx!=null?ME.idx:0));
   const me=G.players[mi];
   if(!me)return;
-  const isMT=LOCAL||(G.cur===mi);
+  const isMT=!isSpectator&&(LOCAL||(G.cur===mi));
 
   // 상단
   document.getElementById('rlbl').textContent=`R${G.round}`;
@@ -1027,7 +1047,8 @@ window.renderGame=function(){
     const h=document.createElement('div');h.className='ophead';
     // 아바타 이미지
     const avImg=p.avatar&&AVATARS[p.avatar]?`<img src="${AVATARS[p.avatar].img}" style="width:36px;height:36px;border-radius:6px;image-rendering:pixelated;border:1px solid var(--bdr);flex-shrink:0;">`:'';
-    h.innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${avImg}<span style="font-size:13px;font-weight:700;">${p.name}${G.cur===i&&!LOCAL?'<span style="color:var(--gold);margin-left:6px;">▶</span>':''}</span></div><span style="display:flex;gap:6px;"><span style="background:#2a1a00;border:1px solid var(--gold);border-radius:8px;padding:2px 8px;font-size:12px;color:var(--gold);font-weight:700;">🪙${p.coins}</span><span style="background:var(--cb);border:1px solid #4a4a6a;border-radius:8px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:700;">🃏${p.hand.length}장</span></span>`;
+    const pRankLabel=(()=>{if(!p.eliminated)return '';const ro=G.rankOrder||[];const ri=ro.indexOf(p.name);if(ri===-1)return '💀';return (G.players.length-ri)+'위';})();
+    h.innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${avImg}<span style="font-size:13px;font-weight:700;color:${p.eliminated?'#555':'inherit'};">${p.eliminated?pRankLabel+' 💀 ':G.cur===i&&!LOCAL?'▶ ':''}${p.name}</span></div><span style="display:flex;gap:6px;"><span style="background:#2a1a00;border:1px solid ${p.eliminated?'#444':'var(--gold)'};border-radius:8px;padding:2px 8px;font-size:12px;color:${p.eliminated?'#555':'var(--gold)'};font-weight:700;">🪙${p.coins}</span><span style="background:var(--cb);border:1px solid #4a4a6a;border-radius:8px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:700;">🃏${p.hand.length}장</span></span>`;
     d.appendChild(h);
     const cc=document.createElement('div');cc.style.cssText='position:relative;height:50px;margin-top:6px;';
     const cnt=p.hand.length,maxW=window.innerWidth-60,gap=cnt>1?Math.min(20,(maxW-32)/(cnt-1)):0;
@@ -1070,20 +1091,29 @@ window.renderGame=function(){
       border:${isMe&&!isActive?'1px solid var(--gold)':'1px solid transparent'};
       opacity:${isElim?0.4:1};
       position:relative;`;
-    chip.textContent=(isElim?'💀':isActive?'▶ ':'')+p.name;
+    const elimRank=(()=>{if(!isElim)return '';const ro=G.rankOrder||[];const ri=ro.indexOf(p.name);if(ri===-1)return '💀';const total=G.players.length;return (total-ri)+'위 💀';})();
+    chip.textContent=(isElim?elimRank+' ':isActive?'▶ ':'')+p.name;
     to.appendChild(chip);
   });
   const phaseBadge=document.createElement('div');
   phaseBadge.style.cssText='font-size:10px;color:var(--dim);text-align:center;margin-top:2px;width:100%;';
   phaseBadge.textContent=phaseLabel;to.appendChild(phaseBadge);
 
-  // 내 정보 (아바타 포함)
-  const myAv=ME_AVATAR&&AVATARS[ME_AVATAR]?`<img src="${AVATARS[ME_AVATAR].img}" style="width:${isMT?'40px':'32px'};height:${isMT?'40px':'32px'};border-radius:8px;image-rendering:pixelated;border:2px solid ${isMT?'var(--gold)':'var(--bdr)'};transition:all .3s;flex-shrink:0;">`:'';
-  document.getElementById('myname').innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${myAv}<div><div style="font-size:${isMT?'16px':'13px'};font-weight:${isMT?'700':'400'};color:${isMT?'var(--gold)':'var(--dim)'};">${me.name}</div><span style="background:var(--cb);border:1px solid ${isMT?'var(--gold)':'#4a4a6a'};border-radius:8px;padding:2px 8px;font-size:${isMT?'12px':'10px'};color:${isMT?'#fff':'#ccc'};">🃏${me.hand.length}장</span></div></div>`;
-  document.getElementById('mycoins').innerHTML=`<span style="background:#2a1a00;border:1px solid var(--gold);border-radius:8px;padding:2px 8px;font-size:12px;color:var(--gold);font-weight:700;">🪙${me.coins}</span>`;
-
-  // 손패
-  renderHand(me);
+  // 내 정보 (아바타 포함) — 관전자면 관전 배너만
+  if(isSpectator){
+    // 내가 탈락한 경우 내 원래 정보 찾기
+    const myP=ME.name?G.players.find(p=>p.name===ME.name):null;
+    document.getElementById('myname').innerHTML=`<div style="display:flex;align-items:center;gap:8px;"><div style="font-size:13px;color:var(--blue);">👁 관전 중${myP?' ('+myP.name+')':('')} </div></div>`;
+    document.getElementById('mycoins').innerHTML=myP?`<span style="background:#2a1a00;border:1px solid #555;border-radius:8px;padding:2px 8px;font-size:12px;color:#777;">🪙${myP.coins}</span>`:'';
+    document.getElementById('myhand').innerHTML='<div style="text-align:center;padding:20px;color:var(--dim);font-size:13px;">💀 탈락 — 관전 모드</div>';
+    document.getElementById('seli').textContent=' ';
+  }else{
+    const myAv=ME_AVATAR&&AVATARS[ME_AVATAR]?`<img src="${AVATARS[ME_AVATAR].img}" style="width:${isMT?'40px':'32px'};height:${isMT?'40px':'32px'};border-radius:8px;image-rendering:pixelated;border:2px solid ${isMT?'var(--gold)':'var(--bdr)'};transition:all .3s;flex-shrink:0;">`:'';
+    document.getElementById('myname').innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${myAv}<div><div style="font-size:${isMT?'16px':'13px'};font-weight:${isMT?'700':'400'};color:${isMT?'var(--gold)':'var(--dim)'};">${me.name}</div><span style="background:var(--cb);border:1px solid ${isMT?'var(--gold)':'#4a4a6a'};border-radius:8px;padding:2px 8px;font-size:${isMT?'12px':'10px'};color:${isMT?'#fff':'#ccc'};">🃏${me.hand.length}장</span></div></div>`;
+    document.getElementById('mycoins').innerHTML=`<span style="background:#2a1a00;border:1px solid var(--gold);border-radius:8px;padding:2px 8px;font-size:12px;color:var(--gold);font-weight:700;">🪙${me.coins}</span>`;
+    // 손패
+    renderHand(me);
+  }
 
   // 이모티콘 바
   const eb=document.getElementById('emotebar');
@@ -1466,11 +1496,12 @@ function showWinScreen(p,reason){
   document.getElementById('wreason').textContent=reason;
   const stats=document.getElementById('wstats');
   if(stats&&G.players){
-    const sorted=[...G.players].sort((a,b)=>a.name===p.name?-1:b.name===p.name?1:b.coins-a.coins);
-    stats.innerHTML='<div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">최종 결과</div>'+
-      sorted.map((pl,i)=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);">`+
-        `<span>${['🥇','🥈','🥉'][i]||'·'} ${pl.name}</span>`+
-        `<span style="color:var(--gold)">🪙${pl.coins}</span></div>`).join('');
+    const medals=['🥇','🥈','🥉'];
+    const rankings=getRankings(p);
+    stats.innerHTML='<div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">최종 순위</div>'+
+      rankings.map(({name,rank,player})=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);">`+
+        `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}</span>`+
+        `<span style="color:var(--gold)">🪙${player?player.coins:0}</span></div>`).join('');
   }
   // 재매치 버튼: 로컬이거나 호스트일 때만
   const rb=document.getElementById('rematchBtn');
@@ -1542,13 +1573,64 @@ window.spectatorJoinRematch=async function(){
   await db.ref(`rooms/${ME.roomId}/spectators/${ME.name}`).set(true);
   toast('✅ 재게임 참가 신청 완료!');
 }
+// 탈락 순위 기록
+function recordElimination(name){
+  if(!G.rankOrder)G.rankOrder=[];
+  if(!G.rankOrder.includes(name))G.rankOrder.push(name);
+}
+
+// 탈락 시 나 자신이면 관전 모드로 전환
+function enterSpectatorIfMe(name){
+  if(LOCAL)return;
+  if(ME.name===name&&ME.idx!==-1){
+    ME.idx=-1;
+    toast('💀 탈락! 관전 모드로 전환됩니다 👁');
+    const tb=document.getElementById('turnbanner');
+    if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
+  }
+}
+
+// 순위 계산
+function getRankings(winner){
+  const order=G.rankOrder||[];
+  const all=G.players.map(p=>p.name);
+  const unranked=all.filter(n=>!order.includes(n)&&n!==winner.name);
+  const full=[winner.name,...unranked,...[...order].reverse()];
+  return full.map((name,i)=>({name,rank:i+1,player:G.players.find(p=>p.name===name)}));
+}
+
+// 결과 모달 — 관전자(탈락자)용
+function showResultModal(winner,reason){
+  const rankings=getRankings(winner);
+  const medals=['🥇','🥈','🥉'];
+  openModal();
+  document.getElementById('mtit').textContent='🏁 게임 종료';
+  document.getElementById('mbody').innerHTML=
+    `<div style="font-size:13px;color:var(--dim);margin-bottom:8px;">${winner.name} 승리 — ${reason}</div>`+
+    rankings.map(({name,rank,player})=>
+      `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bdr);">`+
+      `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}${ME.name===name?' <span style="color:var(--blue);font-size:11px;">(나)</span>':''}</span>`+
+      `<span style="color:var(--gold);font-size:13px;">🪙${player?player.coins:0}</span></div>`
+    ).join('');
+  document.getElementById('mcards').innerHTML='';
+  const btns=document.getElementById('mbtns');btns.innerHTML='';
+  const row=document.createElement('div');row.className='brow';
+  const cb=document.createElement('button');cb.className='btn sec';cb.textContent='계속 관전';cb.onclick=closeModal;
+  row.appendChild(cb);btns.appendChild(row);
+}
+
 // 온라인용 — Firebase에 winner 저장해서 양쪽 동시 승리화면
 async function saveWinAndShow(p,reason){
   if(!LOCAL&&ME.roomId){
-    G.winner={name:p.name,reason};
+    G.winner={name:p.name,reason,rankOrder:G.rankOrder||[]};
     await saveState();
   }
-  showWinScreen(p,reason);
+  // 관전자(탈락자)면 결과 모달만, 생존자면 승리화면
+  if(!LOCAL&&ME.idx===-1){
+    showResultModal(p,reason);
+  } else {
+    showWinScreen(p,reason);
+  }
 }
 
 // ── 메뉴/포기 ──
@@ -1952,7 +2034,7 @@ async function handlePlayerLeave(name){
   addLog(`⚠️ ${name} 이(가) 나갔습니다 — 카드 버림`,'bl');
   // 카드 전부 버림더미로
   G.discard.push(...(p.hand||[]));
-  p.hand=[];p.eliminated=true;
+  p.hand=[];p.eliminated=true;recordElimination(p.name);midToast('🚪',`${p.name} 이탈`,'경기 계속','var(--dim)');
   // 테이블에 관련있으면 정리
   if(G.table&&(G.table.pi===pi||G.table.ci===pi)){
     G.discard.push(...(G.table.cards||[]));
@@ -1996,8 +2078,14 @@ function listenGameState(code){
     G._dn=(G.cur===ME.idx)?myDn:null;
     if(G.players&&G.players[ME.idx])G.players[ME.idx]._sel=mySel||[];
     if(G.winner){
+      // rankOrder 복원
+      if(G.winner.rankOrder)G.rankOrder=G.winner.rankOrder;
       const wp=G.players.find(p=>p.name===G.winner.name)||G.winner;
-      showWinScreen(wp,G.winner.reason);
+      if(ME.idx===-1){
+        showResultModal(wp,G.winner.reason);
+      } else {
+        showWinScreen(wp,G.winner.reason);
+      }
       return;
     }
     renderGame();
@@ -2077,8 +2165,14 @@ async function actionTruth(){
   if(G.table)G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
   G.round++;
-  // 제출자 손패 0이면 승리
-  if(submitter&&submitter.hand.length===0){saveWinAndShow(submitter,'손패 소진');return;}
+  // 제출자 손패 0이면 탈락 처리
+  if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
+    submitter.eliminated=true;recordElimination(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+    addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
+    enterSpectatorIfMe(submitter.name);
+    const activeT=G.players.filter(p=>!p.eliminated);
+    if(activeT.length<=1){saveWinAndShow(activeT[0]||G.players[0],'유일한 생존자 👑');return;}
+  }
   const active=G.players.filter(p=>p.coins>0);
   if(active.length<=1){saveWinAndShow(active[0]||G.players[0],'유일한 생존자 👑');return;}
   // G.cur 유지 — 참을 누른 판단자가 다음 제출자
@@ -2111,10 +2205,24 @@ async function actionReveal(wasBet,betAmt){
   G.replay.push({type:'reveal',ab,cards:tc});
   // 판정 팝업(1.7초) 동안 대기 후 상태 저장 및 화면 갱신
   await new Promise(r=>setTimeout(r,2000));
-  if(!ab&&A.hand.length===0){saveWinAndShow(A,'손패 소진');return;}
-  const winner=G.players.find(p=>p.hand.length===0);
-  if(winner){saveWinAndShow(winner,'손패 소진');return;}
-  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
+  // 손패 소진 → 탈락 처리 (즉시 승리 X, 게임 계속)
+  if(!ab&&A.hand.length===0&&!A.eliminated){
+    A.eliminated=true;
+    recordElimination(A.name);
+    midToast('🏆',`${A.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+    addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');
+    enterSpectatorIfMe(A.name);
+  }
+  G.players.forEach(p=>{
+    if(p.hand.length===0&&!p.eliminated){
+      p.eliminated=true;
+      recordElimination(p.name);
+      midToast('🏆',`${p.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+      addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');
+      enterSpectatorIfMe(p.name);
+    }
+  });
+  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordElimination(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 관전 모드로 전환','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
   const active=G.players.filter(p=>!p.eliminated);
   if(active.length<=1){saveWinAndShow(active[0]||G.players[0],'유일한 생존자 👑');return;}
   let next=bi!=null?bi:0;
@@ -2140,7 +2248,15 @@ async function actionWithdraw(){
   broadcastPopup('bet',{label:'🏳️ 철회!',sub:`${name} 이(가) 거짓 외침을 취소했어요`,color:'var(--blue)'});
   G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
-  if(G.players[ai].hand.length===0){saveWinAndShow(G.players[ai],'손패 소진');return;}
+  if(G.players[ai].hand.length===0&&!G.players[ai].eliminated){
+    G.players[ai].eliminated=true;
+    recordElimination(G.players[ai].name);
+    midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+    addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
+    enterSpectatorIfMe(G.players[ai].name);
+    const activeW=G.players.filter(p=>!p.eliminated);
+    if(activeW.length<=1){saveWinAndShow(activeW[0]||G.players[0],'유일한 생존자 👑');return;}
+  }
   G.cur=(pc+1)%G.players.length; G.round++;
   await saveState();
 }
