@@ -933,10 +933,10 @@ window.localTruth=function(){
   if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
     submitter.eliminated=true;recordWin(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     const activeT=G.players.filter(p=>!p.eliminated);
-    if(activeT.length<=1){showWinScreen(activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+    if(activeT.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
   const active=G.players.filter(p=>p.coins>0);
-  if(active.length<=1){showWinScreen(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+  if(active.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   localRefresh();
 }
 window.localBluff=function(){
@@ -971,7 +971,7 @@ window.localReveal=function(wasBet,betAmt){
     G.players.forEach(p=>{if(p.hand.length===0&&!p.eliminated){p.eliminated=true;recordWin(p.name);midToast('🏆',`${p.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');}});
     G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 경기 계속','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
     const active=G.players.filter(p=>!p.eliminated);
-    if(active.length<=1){showWinScreen(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+    if(active.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
     let next=bi!=null?bi:0;
     for(let i=0;i<G.players.length;i++){if(!G.players[next].eliminated)break;next=(next+1)%G.players.length;}
     G.cur=next; G.round++;
@@ -999,7 +999,7 @@ window.localWithdraw=function(){
   if(G.players[ai].hand.length===0&&!G.players[ai].eliminated){
     G.players[ai].eliminated=true;recordWin(G.players[ai].name);midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
     const activeW=G.players.filter(p=>!p.eliminated);
-    if(activeW.length<=1){showWinScreen(activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+    if(activeW.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
   G.cur=(pc+1)%G.players.length; G.round++;
   localRefresh();
@@ -2042,7 +2042,7 @@ function listenDisconnect(code){
     // 1명만 남으면 즉시 승리
     if(ME.isHost&&activePlayers.length===1&&G.phase!=='winner'){
       await saveState();
-      saveWinAndShow(activePlayers[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));
+      saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||activePlayers[0]:activePlayers[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));
       return;
     }
     // 2명 이상 게임 중, 한 명이 오프라인 감지
@@ -2216,10 +2216,10 @@ async function actionTruth(){
     addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(submitter.name);
     const activeT=G.players.filter(p=>!p.eliminated);
-    if(activeT.length<=1){saveWinAndShow(activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+    if(activeT.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
   const active=G.players.filter(p=>p.coins>0);
-  if(active.length<=1){saveWinAndShow(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+  if(active.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   // G.cur 유지 — 참을 누른 판단자가 다음 제출자
   await saveState();
 }
@@ -2269,7 +2269,7 @@ async function actionReveal(wasBet,betAmt){
   });
   G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 관전 모드로 전환','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
   const active=G.players.filter(p=>!p.eliminated);
-  if(active.length<=1){saveWinAndShow(active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+  if(active.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   let next=bi!=null?bi:0;
   for(let i=0;i<G.players.length;i++){if(!G.players[next].eliminated)break;next=(next+1)%G.players.length;}
   G.cur=next; G.round++;
@@ -2300,7 +2300,7 @@ async function actionWithdraw(){
     addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(G.players[ai].name);
     const activeW=G.players.filter(p=>!p.eliminated);
-    if(activeW.length<=1){saveWinAndShow(activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'마지막까지 버팀 🛡':'주화 최후 승자 👑'));return;}
+    if(activeW.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
   G.cur=(pc+1)%G.players.length; G.round++;
   await saveState();
