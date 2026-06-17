@@ -2181,10 +2181,10 @@ function listenGameState(code){
       }
       return;
     }
-    // Firebase에서 받은 상태에서 내가 eliminated면 관전 전환
+    // Firebase에서 받은 상태에서 내가 eliminated면 관전 전환 (1:1 제외)
     if(ME.idx!==-1&&ME.name){
       const myP=G.players.find(p=>p.name===ME.name);
-      if(myP&&myP.eliminated){
+      if(myP&&myP.eliminated&&!(G.players&&G.players.length<=2)){
         ME.idx=-1;
         const tb=document.getElementById('turnbanner');
         if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
