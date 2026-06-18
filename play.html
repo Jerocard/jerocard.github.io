@@ -1645,7 +1645,14 @@ function listenRematch(code){
         await saveState();
         await db.ref(`rooms/${ME.roomId}/status`).set('playing');
       }
-      // 게임 화면으로 전환
+      // 재매치 시작: 탈락자도 정식 플레이어로 복원
+      if(ME.idx===-1){
+        const pSnap2=await db.ref(`rooms/${code}/players`).once('value');
+        const pNames=pSnap2.val()||[];
+        const myIdx=pNames.indexOf(ME.name);
+        if(myIdx!==-1) ME.idx=myIdx;
+      }
+      closeModal();
       showScreen('sg');
       toast('🔄 재매치 시작!');
       // 다음 재매치를 위해 리스너 재등록
@@ -1741,7 +1748,10 @@ function showResultModal(winner,reason){
     await db.ref(`rooms/${ME.roomId}/rematch/${ME.name}`).set(true);
     toast('✅ 재매치 준비! 다른 플레이어를 기다리는 중...');
   };
-  const cb=document.createElement('button');cb.className='btn sec';cb.textContent='계속 관전';cb.onclick=closeModal;
+  const cb=document.createElement('button');cb.className='btn sec';
+  // 탈락자(관전중)면 "계속 관전", 아니면 "닫기"
+  cb.textContent=(ME.idx===-1)?'계속 관전':'닫기';
+  cb.onclick=closeModal;
   row.appendChild(rb);row.appendChild(cb);btns.appendChild(row);
 }
 
@@ -1754,8 +1764,8 @@ async function saveWinAndShow(p,reason){
     G.winner={name:p.name,reason,rankOrder:G.rankOrder||[],winOrder:G.winOrder||[],loseOrder:G.loseOrder||[],finalCoins:G.finalCoins||{}};
     await saveState();
   }
-  // 관전자(탈락자)면 결과 모달만, 생존자면 승리화면
-  if(!LOCAL&&ME.idx===-1){
+  // 1등(winner)만 승리화면, 나머지(탈락자·2등 이상)는 결과 모달
+  if(!LOCAL&&ME.name!==p.name){
     showResultModal(p,reason);
   } else {
     showWinScreen(p,reason);
@@ -2224,7 +2234,7 @@ function listenGameState(code){
       if(G.winner.loseOrder)G.loseOrder=G.winner.loseOrder;
       if(G.winner.finalCoins)G.finalCoins=G.winner.finalCoins;
       const wp=G.players.find(p=>p.name===G.winner.name)||G.winner;
-      if(ME.idx===-1){
+      if(ME.name!==G.winner.name){
         showResultModal(wp,G.winner.reason);
       } else {
         showWinScreen(wp,G.winner.reason);
