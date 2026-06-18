@@ -1685,9 +1685,9 @@ function enterSpectatorIfMe(name){
   if(LOCAL)return;
   if(ME.name===name&&ME.idx!==-1){
     // 1:1 대전이면 관전 모드로 전환하지 않음 (saveWinAndShow가 곧 게임 종료 처리)
-    if(G&&G.players&&G.players.length<=2){
-      return;
-    }
+    if(G&&G.players&&G.players.length<=2) return;
+    // 손패 소진 완주자는 관전 모드로 전환하지 않음 (승리 화면을 봐야 함)
+    if(G&&G.winOrder&&G.winOrder.includes(name)) return;
     ME.idx=-1;
     toast('💀 탈락! 관전 모드로 전환됩니다 👁');
     const tb=document.getElementById('turnbanner');
@@ -1733,8 +1733,16 @@ function showResultModal(winner,reason){
   document.getElementById('mcards').innerHTML='';
   const btns=document.getElementById('mbtns');btns.innerHTML='';
   const row=document.createElement('div');row.className='brow';
+  // 탈락자도 재매치 투표 가능
+  const rb=document.createElement('button');rb.className='btn grn';rb.textContent='🔄 재매치';
+  rb.onclick=async function(){
+    if(!ME.roomId)return;
+    rb.disabled=true;rb.textContent='⏳ 대기 중...';
+    await db.ref(`rooms/${ME.roomId}/rematch/${ME.name}`).set(true);
+    toast('✅ 재매치 준비! 다른 플레이어를 기다리는 중...');
+  };
   const cb=document.createElement('button');cb.className='btn sec';cb.textContent='계속 관전';cb.onclick=closeModal;
-  row.appendChild(cb);btns.appendChild(row);
+  row.appendChild(rb);row.appendChild(cb);btns.appendChild(row);
 }
 
 // 온라인용 — Firebase에 winner 저장해서 양쪽 동시 승리화면
@@ -2223,10 +2231,11 @@ function listenGameState(code){
       }
       return;
     }
-    // Firebase에서 받은 상태에서 내가 eliminated면 관전 전환 (1:1 제외)
+    // Firebase에서 받은 상태에서 내가 eliminated면 관전 전환 (1:1 제외, 손패소진 완주자 제외)
     if(ME.idx!==-1&&ME.name){
       const myP=G.players.find(p=>p.name===ME.name);
-      if(myP&&myP.eliminated&&!(G.players&&G.players.length<=2)){
+      const isWinElim=myP&&myP.eliminated&&G.winOrder&&G.winOrder.includes(ME.name);
+      if(myP&&myP.eliminated&&!isWinElim&&!(G.players&&G.players.length<=2)){
         ME.idx=-1;
         const tb=document.getElementById('turnbanner');
         if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
