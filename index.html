@@ -2336,7 +2336,7 @@ async function actionTruth(){
     submitter.eliminated=true;recordWin(submitter.name);
     G._bannerLocked=true;
     midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
-    setTimeout(()=>{G._bannerLocked=false;},2900);
+    setTimeout(()=>{G._bannerLocked=false;renderGame();},2900);
     addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(submitter.name);
     const activeT=G.players.filter(p=>!p.eliminated);
@@ -2385,7 +2385,7 @@ async function actionReveal(wasBet,betAmt){
     recordWin(A.name);
     G._bannerLocked=true;
     midToast('🏆',`${A.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
-    setTimeout(()=>{G._bannerLocked=false;},2900);
+    setTimeout(()=>{G._bannerLocked=false;renderGame();},2900);
     addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(A.name);
   }
@@ -2395,7 +2395,7 @@ async function actionReveal(wasBet,betAmt){
       recordWin(p.name);
       G._bannerLocked=true;
       midToast('🏆',`${p.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
-      setTimeout(()=>{G._bannerLocked=false;},2900);
+      setTimeout(()=>{G._bannerLocked=false;renderGame();},2900);
       addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');
       enterSpectatorIfMe(p.name);
     }
