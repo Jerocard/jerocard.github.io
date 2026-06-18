@@ -516,7 +516,7 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
   <div style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px;">
     <button class="btn" id="rematchBtn" onclick="doRematch()" style="display:none;">🔄 재매치</button>
     <button class="btn" id="spectatorJoinBtn" onclick="spectatorJoinRematch()" style="display:none;background:var(--blue);">👤 재게임 참가</button>
-    <button class="btn sec" onclick="showScreen('st')">처음으로</button>
+    <button class="btn sec" onclick="leaveToHome()">처음으로</button>
   </div>
 </div>
 
@@ -1572,14 +1572,39 @@ function showWinScreen(p,reason){
     sjb.style.display=(!LOCAL&&ME.idx===-1)?'block':'none';
   }
   ME_AVATAR=null; // 다음 게임 시 캐릭터 다시 선택
+  // 온라인 상태 false 설정 (방 자동 정리 트리거)
+  if(!LOCAL&&ME.roomId&&ME.name){
+    db.ref(`rooms/${ME.roomId}/online/${ME.name}`).set(false);
+  }
   showScreen('sw');
 }
+window.leaveToHome=async function(){
+  if(ME.roomId&&ME.name){
+    try{
+      await db.ref(`rooms/${ME.roomId}/online/${ME.name}`).set(false);
+      // 전원 오프라인이면 방 삭제
+      const snap=await db.ref(`rooms/${ME.roomId}/online`).once('value');
+      const online=snap.val()||{};
+      if(Object.values(online).every(v=>v===false)){
+        await db.ref(`rooms/${ME.roomId}`).remove();
+      }
+    }catch(e){}
+  }
+  ME.roomId=null; ME.isHost=false;
+  showScreen('st');
+};
 window.doRematch=async function(){
   if(LOCAL){
     const names=G.players.map(p=>p.name);
     const mode=G.mode||'classic';
-    G=buildState(names,mode);G.mode=mode;ME.idx=0;
-    showScreen('sg');localRefresh();toast('🔄 재매치 시작!');
+    const doLocalRematch=()=>{
+      G=buildState(names,mode);G.mode=mode;ME.idx=0;
+      G.players[0].avatar=ME_AVATAR;
+      if(AI_MODE&&G.players[1]){G.players[1].avatar=AI_AVATARS[Math.floor(Math.random()*AI_AVATARS.length)];}
+      showScreen('sg');localRefresh();toast('🔄 재매치 시작!');
+    };
+    if(!ME_AVATAR){showAvatarSelect(doLocalRematch);return;}
+    doLocalRematch();return;
   } else {
     if(!ME.roomId)return;
     // 재매치 투표 — 내 준비 상태 저장
