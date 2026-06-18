@@ -2251,7 +2251,8 @@ function listenGameState(code){
         if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
       }
     }
-    renderGame();
+    // 완주/탈락 토스트 표시 중이면 renderGame 잠시 보류
+    if(!G._bannerLocked) renderGame();
   });
 }
 
@@ -2332,7 +2333,10 @@ async function actionTruth(){
   G.round++;
   // 제출자 손패 0이면 탈락 처리
   if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
-    submitter.eliminated=true;recordWin(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+    submitter.eliminated=true;recordWin(submitter.name);
+    G._bannerLocked=true;
+    midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+    setTimeout(()=>{G._bannerLocked=false;},2900);
     addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(submitter.name);
     const activeT=G.players.filter(p=>!p.eliminated);
@@ -2379,7 +2383,9 @@ async function actionReveal(wasBet,betAmt){
   if(!ab&&A.hand.length===0&&!A.eliminated){
     A.eliminated=true;
     recordWin(A.name);
+    G._bannerLocked=true;
     midToast('🏆',`${A.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+    setTimeout(()=>{G._bannerLocked=false;},2900);
     addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(A.name);
   }
@@ -2387,7 +2393,9 @@ async function actionReveal(wasBet,betAmt){
     if(p.hand.length===0&&!p.eliminated){
       p.eliminated=true;
       recordWin(p.name);
+      G._bannerLocked=true;
       midToast('🏆',`${p.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
+      setTimeout(()=>{G._bannerLocked=false;},2900);
       addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');
       enterSpectatorIfMe(p.name);
     }
