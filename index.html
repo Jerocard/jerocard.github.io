@@ -958,8 +958,12 @@ window.localTruth=function(){
     const activeT=G.players.filter(p=>!p.eliminated);
     if(activeT.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
-  const active=G.players.filter(p=>p.coins>0);
+  const active=G.players.filter(p=>p.coins>0&&!p.eliminated);
   if(active.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+  // G.cur 재조정 — 탈락자 건너뜀
+  let nextT=G.cur;
+  for(let i=0;i<G.players.length;i++){if(!G.players[nextT].eliminated)break;nextT=(nextT+1)%G.players.length;}
+  G.cur=nextT;
   localRefresh();
 }
 window.localBluff=function(){
@@ -1024,7 +1028,9 @@ window.localWithdraw=function(){
     const activeW=G.players.filter(p=>!p.eliminated);
     if(activeW.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
-  G.cur=(pc+1)%G.players.length; G.round++;
+  let nextW=(pc+1)%G.players.length;
+  for(let i=0;i<G.players.length;i++){if(!G.players[nextW].eliminated)break;nextW=(nextW+1)%G.players.length;}
+  G.cur=nextW; G.round++;
   localRefresh();
 }
 window.localConfirm=function(amt){
@@ -2275,9 +2281,14 @@ async function actionTruth(){
     const activeT=G.players.filter(p=>!p.eliminated);
     if(activeT.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
-  const active=G.players.filter(p=>p.coins>0);
+  // 주화소진 탈락 체크
+  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 관전 모드로 전환','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
+  const active=G.players.filter(p=>!p.eliminated);
   if(active.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
-  // G.cur 유지 — 참을 누른 판단자가 다음 제출자
+  // G.cur 재조정 — 탈락자 건너뜀
+  let nextT=G.cur;
+  for(let i=0;i<G.players.length;i++){if(!G.players[nextT].eliminated)break;nextT=(nextT+1)%G.players.length;}
+  G.cur=nextT;
   await saveState();
 }
 async function actionCallBluff(){
@@ -2359,7 +2370,9 @@ async function actionWithdraw(){
     const activeW=G.players.filter(p=>!p.eliminated);
     if(activeW.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
   }
-  G.cur=(pc+1)%G.players.length; G.round++;
+  let nextW=(pc+1)%G.players.length;
+  for(let i=0;i<G.players.length;i++){if(!G.players[nextW].eliminated)break;nextW=(nextW+1)%G.players.length;}
+  G.cur=nextW; G.round++;
   await saveState();
 }
 async function actionConfirm(amt){
