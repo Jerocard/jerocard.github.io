@@ -1572,10 +1572,8 @@ function showWinScreen(p,reason){
     sjb.style.display=(!LOCAL&&ME.idx===-1)?'block':'none';
   }
   ME_AVATAR=null; // 다음 게임 시 캐릭터 다시 선택
-  // 온라인 상태 false 설정 (방 자동 정리 트리거)
-  if(!LOCAL&&ME.roomId&&ME.name){
-    db.ref(`rooms/${ME.roomId}/online/${ME.name}`).set(false);
-  }
+  // 온라인 상태는 유지 (false로 바꾸면 listenDisconnect가 방을 폭파시킴)
+  // 방 정리는 leaveToHome() 또는 실제 연결 해제(onDisconnect) 시에만 수행
   showScreen('sw');
 }
 window.leaveToHome=async function(){
@@ -1617,18 +1615,22 @@ window.doRematch=async function(){
 
 // 재매치 투표 리스너
 function listenRematch(code){
+  // 중복 등록 방지: 기존 리스너 먼저 제거
+  db.ref(`rooms/${code}/rematch`).off();
   db.ref(`rooms/${code}/rematch`).on('value',async snap=>{
     if(!snap.exists())return;
     const votes=snap.val();
+    // 참가 중인 플레이어 목록은 Firebase에서 최신 값으로 읽음 (G.players 대신)
+    const pSnap=await db.ref(`rooms/${code}/players`).once('value');
+    const playerNames=(pSnap.val()||[]);
     // 관전자 포함 여부 체크 (spectators 필드)
     const spectatorSnap=await db.ref(`rooms/${code}/spectators`).once('value');
     const spectators=spectatorSnap.val()||{};
-    const activePlayers=G.players?G.players.filter(p=>!p.eliminated):[];
-    const playerNames=activePlayers.map(p=>p.name);
     // 관전자 중 참가 원하는 사람
     const spectatorJoins=Object.entries(spectators).filter(([,v])=>v===true).map(([k])=>k);
     const allReady=playerNames.length>1&&playerNames.every(n=>votes[n]);
     if(allReady){
+      // 리스너 먼저 off
       db.ref(`rooms/${code}/rematch`).off();
       await db.ref(`rooms/${code}/rematch`).set(null);
       if(ME.isHost){
@@ -1639,11 +1641,14 @@ function listenRematch(code){
         newG.mode=mode;newG.winner=null;
         G=newG;
         await db.ref(`rooms/${ME.roomId}/spectators`).set(null);
-        await db.ref(`rooms/${ME.roomId}/status`).set('playing');
+        // gameState 먼저 저장, 그 다음 status 변경 (비호스트가 빈 상태로 진입 방지)
         await saveState();
+        await db.ref(`rooms/${ME.roomId}/status`).set('playing');
       }
+      // 게임 화면으로 전환
       showScreen('sg');
       toast('🔄 재매치 시작!');
+      // 다음 재매치를 위해 리스너 재등록
       listenRematch(code);
     }
   });
