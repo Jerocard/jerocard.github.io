@@ -942,7 +942,9 @@ window.localSubmit=function(){
   G.phase='judge'; G._dn=null; p._sel=[];
   addLog(`${p.name}: "${G.table.claim}" ${cards.length}장 제출`,'act');
   if(p.hand.length===0)showLastCardImpact(p.name,G.cur===ME.idx);
-  G.cur=(G.cur+1)%G.players.length; G.round++;
+  let nextS=(G.cur+1)%G.players.length;
+  for(let i=0;i<G.players.length;i++){if(!G.players[nextS].eliminated)break;nextS=(nextS+1)%G.players.length;}
+  G.cur=nextS; G.round++;
   localRefresh();
 }
 window.localTruth=function(){
@@ -2262,7 +2264,9 @@ async function actionSubmit(me){
     showLastCardImpact(player.name,true);
     broadcastPopup('lastcard',{name:player.name});
   }
-  G.cur=(G.cur+1)%G.players.length; G.round++;
+  let nextS=(G.cur+1)%G.players.length;
+  for(let i=0;i<G.players.length;i++){if(!G.players[nextS].eliminated)break;nextS=(nextS+1)%G.players.length;}
+  G.cur=nextS; G.round++;
   await saveState();
 }
 async function actionTruth(){
