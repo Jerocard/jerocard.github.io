@@ -782,7 +782,7 @@ function showSubmitImpact(num,count){
   document.querySelectorAll('.submit-banner,.bluff-banner,.bet-banner').forEach(e=>e.remove());
   const f=document.createElement('div');f.className='submit-flash';document.body.appendChild(f);setTimeout(()=>f.remove(),600);
   const b=document.createElement('div');b.className='submit-banner';
-  b.innerHTML=`<div class="bnum">${num}</div><div class="bsub">${count}장 제출!</div>`;
+  b.innerHTML=`<div class="bnum">${num}</div><div class="bsub">${isEN()?`Played ${count}!`:count+'장 제출!'}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),1500);
   if(navigator.vibrate)navigator.vibrate([30,20,60]);
 }
@@ -790,7 +790,7 @@ function showBluffImpact(isBluff){
   document.querySelectorAll('.submit-banner,.bluff-banner,.bet-banner').forEach(e=>e.remove());
   const f=document.createElement('div');f.className='bluff-flash';document.body.appendChild(f);setTimeout(()=>f.remove(),600);
   const b=document.createElement('div');b.className='bluff-banner';
-  b.innerHTML=isBluff?'<div class="bico">💥</div><div class="btxt">거짓 적발!</div>':'<div class="bico">✅</div><div class="btxt">참말이었다!</div>';
+  b.innerHTML=isBluff?`<div class="bico">💥</div><div class="btxt">${isEN()?'Bluff caught!':'거짓 적발!'}</div>`:`<div class="bico">✅</div><div class="btxt">${isEN()?'It was true!':'참말이었다!'}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),1700);
   if(navigator.vibrate)navigator.vibrate(isBluff?[50,30,100]:[30,20,30]);
 }
@@ -852,7 +852,7 @@ function showAllinImpact(name,isMe){
   b.innerHTML=`
     <div style="font-size:54px;line-height:1;">💸</div>
     <div style="font-family:\'Black Han Sans\',sans-serif;font-size:32px;color:#e05252;text-shadow:0 0 40px #e05252aa;margin-top:4px;">ALL IN!</div>
-    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?'주화 전부 걸었어요!':name+' 올인!'}</div>`;
+    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?(isEN()?'Bet all your coins!':'주화 전부 걸었어요!'):(isEN()?name+' is all in!':name+' 올인!')}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),2000);
   // 사운드 — 드라마틱한 하강음
   if(!_ac)try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
@@ -877,8 +877,8 @@ function showLastCardImpact(name,isMe){
   b.style.cssText=`position:fixed;top:35%;left:50%;transform:translate(-50%,-50%);z-index:601;pointer-events:none;text-align:center;animation:bn 2.2s ease-out forwards;`;
   b.innerHTML=`
     <div style="font-size:52px;line-height:1;">🃏</div>
-    <div style="font-family:'Black Han Sans',sans-serif;font-size:28px;color:var(--gold);text-shadow:0 0 30px #c9a84c;margin-top:6px;">${isMe?'마지막 카드!':name}</div>
-    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?'이제 판정만 남았어요':'의 마지막 카드!'}</div>`;
+    <div style="font-family:'Black Han Sans',sans-serif;font-size:28px;color:var(--gold);text-shadow:0 0 30px #c9a84c;margin-top:6px;">${isMe?(isEN()?'Last card!':'마지막 카드!'):name}</div>
+    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?(isEN()?'Time for the verdict':'이제 판정만 남았어요'):(isEN()?"'s last card!":'의 마지막 카드!')}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),2200);
   // 사운드 — 고조되는 3음
   if(!_ac)try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
@@ -1108,10 +1108,10 @@ window.renderGame=function(){
     const avImg=p.avatar&&AVATARS[p.avatar]?`<img src="${AVATARS[p.avatar].img}" style="width:36px;height:36px;border-radius:6px;image-rendering:pixelated;border:1px solid var(--bdr);flex-shrink:0;">`:'';
     const pRankLabel=(()=>{
       if(!p.eliminated)return {label:'',icon:''};
-      const wo=G.winOrder||[];const lo=G.loseOrder||[];
-      const wi=wo.indexOf(p.name);const li=lo.indexOf(p.name);
+      const wo=G.winOrder||[];
+      const wi=wo.indexOf(p.name);
       if(wi!==-1)return {label:isEN()?`#${wi+1}`:(wi+1)+'위',icon:'🏆'};
-      if(li!==-1)return {label:isEN()?`#${wo.length+1+(lo.length-1-li)}`:(wo.length+1+(lo.length-1-li))+'위',icon:'💀'};
+      // 주화소진(탈락): 게임 진행 중에는 최종 순위가 확정되지 않으므로 숫자 없이 해골만 표시
       return {label:'',icon:'💀'};
     })();
     h.innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${avImg}<span style="font-size:13px;font-weight:700;color:${p.eliminated?'#555':'inherit'};">${p.eliminated?pRankLabel.label+' '+pRankLabel.icon+' ':G.cur===i&&!LOCAL?'▶ ':''}${p.name}</span></div><span style="display:flex;gap:6px;"><span style="background:#2a1a00;border:1px solid ${p.eliminated?'#444':'var(--gold)'};border-radius:8px;padding:2px 8px;font-size:12px;color:${p.eliminated?'#555':'var(--gold)'};font-weight:700;">🪙${p.coins}</span><span style="background:var(--cb);border:1px solid #4a4a6a;border-radius:8px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:700;">🃏${p.hand.length}${isEN()?'':'장'}</span></span>`;
@@ -1744,9 +1744,9 @@ function enterSpectatorIfMe(name){
     if(G&&G.players&&G.players.length<=2) return;
     const isWin=G&&G.winOrder&&G.winOrder.includes(name);
     ME.idx=-1;
-    toast(isWin?'🏆 완주! 관전 모드로 전환됩니다 👁':'💀 탈락! 관전 모드로 전환됩니다 👁');
+    toast(isWin?(isEN()?'🏆 Cleared! Switching to spectator mode 👁':'🏆 완주! 관전 모드로 전환됩니다 👁'):(isEN()?'💀 Eliminated! Switching to spectator mode 👁':'💀 탈락! 관전 모드로 전환됩니다 👁'));
     const tb=document.getElementById('turnbanner');
-    if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
+    if(tb){tb.innerHTML=isEN()?'👁 Spectating':'👁 관전 중';tb.className='turn-banner op';}
   }
 }
 
@@ -1912,7 +1912,7 @@ window.sendChat=function(){
 }
 window.sendHomeChat=function(){
   const inp=document.getElementById('homechatinput');const msg=inp.value.trim();if(!msg)return;inp.value='';
-  const name=document.getElementById('myNameInput').value.trim()||'익명';
+  const name=document.getElementById('myNameInput').value.trim()||(isEN()?'Anonymous':'익명');
   db.ref('global_chat').push({name,msg,t:Date.now()});
 }
 function listenHomeChat(){
@@ -2249,7 +2249,7 @@ async function handlePlayerLeave(name){
   const active=G.players.filter(p=>!p.eliminated);
   if(active.length<=1){
     await saveState();
-    saveWinAndShow(active[0]||G.players[0],'상대방 이탈로 승리 👑');
+    saveWinAndShow(active[0]||G.players[0],isEN()?'Won by opponent leaving 👑':'상대방 이탈로 승리 👑');
     return;
   }
   await saveState();
@@ -2306,7 +2306,7 @@ function listenGameState(code){
       if(myP&&myP.eliminated&&!(G.players&&G.players.length<=2)){
         ME.idx=-1;
         const tb=document.getElementById('turnbanner');
-        if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
+        if(tb){tb.innerHTML=isEN()?'👁 Spectating':'👁 관전 중';tb.className='turn-banner op';}
       }
     }
     renderGame();
