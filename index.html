@@ -1927,7 +1927,7 @@ function syncTurnTimer(){
     if(_turnTickHandle)clearInterval(_turnTickHandle);
     _turnTickHandle=setInterval(tickTurnTimer,250);
   }
-  elWrap.style.display='';
+  elWrap.style.display='flex';
   tickTurnTimer();
 }
 
