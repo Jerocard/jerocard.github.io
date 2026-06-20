@@ -2088,6 +2088,34 @@ window.leaveLobby=async function(){
 }
 window.copyLobCode=function(){navigator.clipboard.writeText(ME.roomId).then(()=>toast((isEN()?'Code copied! ':'코드 복사됨! ')+ME.roomId));}
 
+// ── 연결 끊김 유예시간(Grace Period) 관리 ──
+// 카톡 등 다른 앱으로 잠깐 전환해도 즉시 강퇴되지 않도록, 오프라인 감지 시
+// 바로 처리하지 않고 GRACE_MS만큼 기다렸다가 그래도 오프라인이면 처리한다.
+const GRACE_MS=30000; // 30초 유예
+const _leaveTimers={};
+function scheduleLeaveTimer(name,cb){
+  if(_leaveTimers[name])return; // 이미 예약됨
+  _leaveTimers[name]=setTimeout(()=>{ delete _leaveTimers[name]; cb(); },GRACE_MS);
+}
+function cancelLeaveTimer(name){
+  if(_leaveTimers[name]){ clearTimeout(_leaveTimers[name]); delete _leaveTimers[name]; }
+}
+let _allOfflineTimer=null;
+function scheduleAllOfflineRemoval(code){
+  if(_allOfflineTimer)return;
+  _allOfflineTimer=setTimeout(async()=>{
+    _allOfflineTimer=null;
+    const snap=await db.ref(`rooms/${code}/online`).once('value');
+    const online=snap.val()||{};
+    if(Object.keys(online).length>0&&Object.values(online).every(v=>v===false)){
+      db.ref(`rooms/${code}`).remove();
+    }
+  },GRACE_MS);
+}
+function cancelAllOfflineRemoval(){
+  if(_allOfflineTimer){ clearTimeout(_allOfflineTimer); _allOfflineTimer=null; }
+}
+
 function listenLobby(code){
   db.ref(`rooms/${code}/players`).on('value',snap=>{
     const pl=snap.val()||[];
@@ -2100,27 +2128,40 @@ function listenLobby(code){
       db.ref(`rooms/${code}`).remove();
     }
   });
-  // 대기실 online 감지 → 새로고침/종료 시 자동 퇴장
+  // 대기실 online 감지 → 새로고침/종료 시 자동 퇴장 (단, 일시적 연결 끊김(백그라운드 전환 등)은 유예시간(GRACE_MS) 동안 봐줌)
   db.ref(`rooms/${code}/online`).on('value',async snap=>{
     const online=snap.val()||{};
-    // 전원 오프라인이면 누구든 방 삭제
+    // 다시 온라인이 된 사람은 대기중인 강퇴 타이머 취소
+    Object.keys(online).forEach(n=>{ if(online[n]!==false) cancelLeaveTimer(n); });
+    // 전원 오프라인이면 → 유예 후에도 그대로면 방 삭제
     if(Object.keys(online).length>0&&Object.values(online).every(v=>v===false)){
-      db.ref(`rooms/${code}`).remove();
+      scheduleAllOfflineRemoval(code);
       return;
+    } else {
+      cancelAllOfflineRemoval();
     }
     if(!ME.isHost)return;
     const plSnap=await db.ref(`rooms/${code}/players`).once('value');
     const pl=(plSnap.val()||[]);
     const left=pl.filter(n=>online[n]===false);
-    if(!left.length)return;
-    const remaining=pl.filter(n=>online[n]!==false);
-    await db.ref(`rooms/${code}/players`).set(remaining);
-    const hostSnap=await db.ref(`rooms/${code}/host`).once('value');
-    if(left.includes(hostSnap.val())&&remaining.length>0){
-      await db.ref(`rooms/${code}/host`).set(remaining[0]);
-    }
-    for(const n of left) await db.ref(`rooms/${code}/online/${n}`).remove();
-    if(remaining.length===0) await db.ref(`rooms/${code}`).remove();
+    left.forEach(n=>{
+      scheduleLeaveTimer(n,async()=>{
+        // 유예시간 경과 후에도 여전히 오프라인이면 실제 강퇴 처리
+        const curSnap=await db.ref(`rooms/${code}/online`).once('value');
+        const curOnline=curSnap.val()||{};
+        if(curOnline[n]!==false)return; // 그새 복귀함
+        const plSnap2=await db.ref(`rooms/${code}/players`).once('value');
+        const pl2=(plSnap2.val()||[]);
+        const remaining=pl2.filter(x=>x!==n);
+        await db.ref(`rooms/${code}/players`).set(remaining);
+        const hostSnap=await db.ref(`rooms/${code}/host`).once('value');
+        if(hostSnap.val()===n&&remaining.length>0){
+          await db.ref(`rooms/${code}/host`).set(remaining[0]);
+        }
+        await db.ref(`rooms/${code}/online/${n}`).remove();
+        if(remaining.length===0) await db.ref(`rooms/${code}`).remove();
+      });
+    });
   });
   // 방장 이양 감지
   db.ref(`rooms/${code}/host`).on('value',async snap=>{
@@ -2195,32 +2236,44 @@ function enterGame(code){
   listenDisconnect(code);
 }
 
-// 플레이어 이탈 감지
+// 플레이어 이탈 감지 (카톡 등으로 잠깐 나갔다 와도 즉시 강퇴되지 않도록 유예시간(GRACE_MS) 적용)
 function listenDisconnect(code){
   db.ref(`rooms/${code}/online`).on('value',async snap=>{
     if(!G||!G.players||!ME.roomId)return;
     const online=snap.val()||{};
-    // 전원 오프라인이면 방 자동 폭파 (누구든 처리 — 호스트 없어도 대응)
+    // 다시 온라인이 된 사람은 대기중인 강퇴 타이머 취소
+    Object.keys(online).forEach(n=>{ if(online[n]!==false) cancelLeaveTimer(n); });
+    // 전원 오프라인이면 → 유예 후에도 그대로면 방 자동 폭파 (누구든 처리 — 호스트 없어도 대응)
     if(Object.keys(online).length>0){
       const allOff=Object.values(online).every(v=>v===false);
       if(allOff){
-        db.ref(`rooms/${code}`).remove();
+        scheduleAllOfflineRemoval(code);
         return;
+      } else {
+        cancelAllOfflineRemoval();
       }
     }
     const activePlayers=G.players.filter(p=>!p.eliminated);
-    // 1명만 남으면 즉시 승리
-    if(ME.isHost&&activePlayers.length===1&&G.phase!=='winner'){
-      await saveState();
-      saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||activePlayers[0]:activePlayers[0],(G.winOrder&&G.winOrder.length>0?'handout':'lastone'));
-      return;
-    }
-    // 2명 이상 게임 중, 한 명이 오프라인 감지
+    // 2명 이상 게임 중, 한 명이 오프라인 감지 → 즉시 강퇴 대신 유예시간 후 재확인
     activePlayers.forEach((p,i)=>{
       if(online[p.name]===false||(!Object.keys(online).length&&G.phase!=='submit')){
         // 이탈한 플레이어 처리는 호스트만
         if(!ME.isHost)return;
-        handlePlayerLeave(p.name);
+        scheduleLeaveTimer(p.name,async()=>{
+          // 유예시간 경과 후 재확인: 그새 복귀했으면 무시
+          const curSnap=await db.ref(`rooms/${code}/online`).once('value');
+          const curOnline=curSnap.val()||{};
+          if(curOnline[p.name]!==false)return;
+          if(!G||!G.players)return;
+          const stillActive=G.players.filter(x=>!x.eliminated);
+          // 1명만 남으면 즉시 승리 처리
+          if(stillActive.length===1&&G.phase!=='winner'){
+            await saveState();
+            saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(x=>x.name===G.winOrder[0])||stillActive[0]:stillActive[0],(G.winOrder&&G.winOrder.length>0?'handout':'lastone'));
+            return;
+          }
+          handlePlayerLeave(p.name);
+        });
       }
     });
     // 방장이 오프라인이면 다음 온라인 플레이어가 방장 이양 처리
@@ -2566,6 +2619,17 @@ function shareWithFriend(){
 
 let _pwaPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwaPrompt=e;});
+
+// 카톡 등 다른 앱 갔다가 복귀 시, 내 online 상태를 즉시 true로 복구
+// (백그라운드 전환 중 Firebase 연결이 끊겨 onDisconnect가 발동했더라도 빠르게 복구)
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&ME.name&&ME.roomId){
+    const ref=db.ref(`rooms/${ME.roomId}/online/${ME.name}`);
+    ref.set(true);
+    ref.onDisconnect().set(false);
+  }
+});
+
 function installPWA(){
   if(_pwaPrompt){
     _pwaPrompt.prompt();
