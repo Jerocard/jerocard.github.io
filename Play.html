@@ -538,7 +538,7 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
   <div class="gtop"><span class="gtit">📖 <span id="guide_top_title">게임 방법</span></span><button id="guide_top_close" class="btn sec" onclick="showScreen('st')" style="width:auto;padding:6px 10px;font-size:11px;">닫기</button></div>
   <div style="padding:14px;display:flex;flex-direction:column;gap:12px;max-width:480px;margin:0 auto;">
 
-    <a href="https://youtube.com/shorts/ckGdqVfyYfo?si=xcGa5MgwoWS9gfir" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#f5c842,#e0a800);border-radius:14px;padding:14px;text-decoration:none;">
+    <a id="guide_video_link" href="https://youtube.com/shorts/ckGdqVfyYfo?si=xcGa5MgwoWS9gfir" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#f5c842,#e0a800);border-radius:14px;padding:14px;text-decoration:none;">
       <span style="font-size:24px;">▶</span>
       <span id="guide_video_btn" style="font-family:'Black Han Sans',sans-serif;font-size:17px;color:#1a1000;letter-spacing:1px;">플레이 영상 보기</span>
     </a>
@@ -2792,6 +2792,14 @@ function applyLang() {
   // 버튼 UI 업데이트
   document.getElementById('langKO').style.color = isEN ? 'rgba(201,168,76,0.35)' : '#c9a84c';
   document.getElementById('langEN').style.color = isEN ? '#c9a84c' : 'rgba(201,168,76,0.35)';
+
+  // 플레이 영상 바로가기: 언어별 링크 전환
+  const guideVideoLink = document.getElementById('guide_video_link');
+  if (guideVideoLink) {
+    guideVideoLink.href = isEN
+      ? 'https://www.youtube.com/shorts/yRX3m4lcIfA'
+      : 'https://youtube.com/shorts/ckGdqVfyYfo?si=xcGa5MgwoWS9gfir';
+  }
 
   // 텍스트 일괄 전환 (내용이 단순한 요소들)
   const texts = {
