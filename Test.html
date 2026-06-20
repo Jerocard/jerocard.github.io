@@ -1616,17 +1616,18 @@ function showWinScreen(p,reason){
           `<span style="color:var(--gold)">🪙${G.finalCoins&&G.finalCoins[name]!=null?G.finalCoins[name]:(player?player.coins:0)}</span></div>`).join('');
     }
   }
-  // 재매치 버튼: 로컬이거나 호스트일 때만
+  // 재매치 버튼: 로컬이거나, 원래 이 게임에 참가했던 사람(완주자/탈락자 포함)이면 항상 표시
   const rb=document.getElementById('rematchBtn');
   const sjb=document.getElementById('spectatorJoinBtn');
+  const wasPlayer=!LOCAL&&G&&G.players&&ME.name&&G.players.some(p=>p.name===ME.name);
   if(rb){
-    rb.style.display=(LOCAL||ME.isHost||(!LOCAL&&ME.idx>=0))?'block':'none';
+    rb.style.display=(LOCAL||ME.isHost||wasPlayer)?'block':'none';
     rb.textContent=isEN?'🔄 Rematch':'🔄 재매치';
     rb.disabled=false;
   }
-  // 관전자면 재게임 참가 버튼 표시
+  // 진짜 신규 관전자(원래 게임에 참가하지 않았던 사람)만 "재게임 참가" 버튼 표시
   if(sjb){
-    sjb.style.display=(!LOCAL&&ME.idx===-1)?'block':'none';
+    sjb.style.display=(!LOCAL&&ME.idx===-1&&!wasPlayer)?'block':'none';
   }
   ME_AVATAR=null; // 다음 게임 시 캐릭터 다시 선택
   // 온라인 상태는 유지 (false로 바꾸면 listenDisconnect가 방을 폭파시킴)
