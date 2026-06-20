@@ -172,6 +172,14 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 .mid-toast .mt-title{font-family:"Black Han Sans",sans-serif;font-size:22px;letter-spacing:2px;display:block;margin-bottom:4px;}
 .mid-toast .mt-sub{font-size:13px;opacity:.8;display:block;}
 @keyframes midtoast{0%{opacity:0;transform:translate(-50%,-50%) scale(0.7);}15%{opacity:1;transform:translate(-50%,-50%) scale(1.05);}25%{transform:translate(-50%,-50%) scale(1);}75%{opacity:1;}100%{opacity:0;transform:translate(-50%,-50%) scale(0.95);}}
+#turnTimer{position:relative;width:30px;height:30px;flex-shrink:0;display:none;}
+#turnTimer svg{width:100%;height:100%;transform:rotate(-90deg);}
+#turnTimer circle{fill:none;stroke-width:3;}
+#turnTimer .tt-bg{stroke:var(--bdr);}
+#turnTimer .tt-fg{stroke:var(--gold);stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s;}
+#turnTimer.warn .tt-fg{stroke:var(--red);}
+#turnTimer .tt-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold);font-family:"Noto Sans KR",sans-serif;}
+#turnTimer.warn .tt-num{color:var(--red);}
 .discard-cards{position:relative;height:36px;flex:1;}
 .dc{position:absolute;top:0;width:24px;height:34px;border-radius:4px;overflow:hidden;border:1px solid rgba(201,168,76,.4);}
 .dc img{width:100%;height:100%;object-fit:cover;}
@@ -482,6 +490,13 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
     <button onclick="showGameMenu()" style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0 4px;">☰</button>
     <span class="gtit" id="sg_title">참·거짓 DUEL</span>
     <span id="rlbl" style="font-size:11px;color:var(--dim);"></span>
+    <div id="turnTimer">
+      <svg viewBox="0 0 30 30">
+        <circle class="tt-bg" cx="15" cy="15" r="13"></circle>
+        <circle class="tt-fg" id="turnTimerCircle" cx="15" cy="15" r="13"></circle>
+      </svg>
+      <div class="tt-num" id="turnTimerNum"></div>
+    </div>
   </div>
   <div class="gi">
     <div id="turnorder" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;padding:4px 0;"></div>
@@ -529,7 +544,7 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
   <div style="display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px;">
     <button class="btn" id="rematchBtn" onclick="doRematch()" style="display:none;">🔄 재매치</button>
     <button class="btn" id="spectatorJoinBtn" onclick="spectatorJoinRematch()" style="display:none;background:var(--blue);">👤 재게임 참가</button>
-    <button class="btn sec" onclick="leaveToHome()">처음으로</button>
+    <button class="btn sec" id="btn_backhome" onclick="leaveToHome()">처음으로</button>
   </div>
 </div>
 
@@ -728,6 +743,7 @@ function showScreen(id){
     document.body.className='';
     const tb=document.getElementById('turnbanner');
     if(tb){tb.innerHTML='';tb.className='turn-banner';}
+    stopTimer();
   }
   // 언어 토글 버튼: 타이틀 화면에서만 표시
   const langBtn=document.getElementById('langToggleBtn');
@@ -918,6 +934,7 @@ window.startLocalGame=function(){
   const names=Array.from({length:n},(_,i)=>document.getElementById(`lpn${i}`).value.trim()||`P${i+1}`);
   LOCAL=true; ME.idx=0; ME.name=names[0]; ME.roomId=null;
   G=buildState(names,mode);
+  stopTimer();
   showScreen('sg');
   localRefresh();
 }
@@ -1202,6 +1219,9 @@ window.renderGame=function(){
 
   // 액션
   renderActions(me,mi);
+
+  // 턴 카운트다운 동기화
+  syncTurnTimer();
 }
 
 function renderHand(me){
@@ -1427,6 +1447,7 @@ window.startAIGame=function(){
   G.mode=mode;
   G.players[0].avatar=ME_AVATAR;
   G.players[1].avatar=aiAv;
+  stopTimer();
   showScreen('sg');
   ME.idx=0;
   localRefresh();
@@ -1604,6 +1625,7 @@ function reasonText(reason){
 }
 
 function showWinScreen(p,reason){
+  stopTimer();
   const isEN=(typeof currentLang!=='undefined'&&currentLang==='en');
   snd('win');launchConfetti();if(navigator.vibrate)navigator.vibrate([100,50,100,50,200]);
   document.getElementById('wname').textContent=p.name+(isEN?' Wins! 🎉':' 승리! 🎉');
@@ -1872,11 +1894,83 @@ window.confirmQuit=function(){
   row.appendChild(cb);row.appendChild(qb);btns.appendChild(row);
 }
 
-// ── 타이머 ──
-function stopTimer(){clearInterval(G._ti);G._ti=null;clearTurnTimeout();}
+// ── 턴 카운트다운 타이머 (UI 표시 + 로컬모드 자동처리) ──
+const TURN_LIMIT_S=30;
+const TT_CIRC=2*Math.PI*13;
+let _turnTickHandle=null;   // setInterval id
+let _turnDeadline=0;        // 이 턴이 끝나는 시각(ms, Date.now() 기준)
+let _turnKey='';            // 같은 턴(같은 cur+phase)인지 식별
+
+function stopTimer(){
+  if(_turnTickHandle){clearInterval(_turnTickHandle);_turnTickHandle=null;}
+  clearTurnTimeout();
+  _turnKey=''; // 다음 syncTurnTimer() 호출 시 무조건 새 턴으로 인식하고 재시작
+  const el=document.getElementById('turnTimer');
+  if(el)el.style.display='none';
+}
+
+// 매 renderGame()마다 호출. 현재 턴(cur+phase)이 바뀌었을 때만 새로 30초를 잰다.
+function syncTurnTimer(){
+  const elWrap=document.getElementById('turnTimer');
+  if(!G||!G.players||!G.players[G.cur]||!elWrap){stopTimer();return;}
+  // 게임 화면이 아니거나 승부가 끝났으면 표시 안 함
+  const isGameScreen=document.getElementById('sg')&&document.getElementById('sg').classList.contains('active');
+  if(!isGameScreen||G.winner){stopTimer();return;}
+  // AI 모드에서 AI 차례는 AI가 곧바로 행동하므로 카운트다운 불필요
+  if(typeof AI_MODE!=='undefined'&&AI_MODE&&G.cur===1){stopTimer();return;}
+
+  const key=G.cur+'|'+G.phase;
+  if(key!==_turnKey){
+    // 새 턴/페이즈 시작 — 30초 다시 카운트
+    _turnKey=key;
+    _turnDeadline=Date.now()+TURN_LIMIT_S*1000;
+    if(_turnTickHandle)clearInterval(_turnTickHandle);
+    _turnTickHandle=setInterval(tickTurnTimer,250);
+  }
+  elWrap.style.display='';
+  tickTurnTimer();
+}
+
+function tickTurnTimer(){
+  const elWrap=document.getElementById('turnTimer');
+  const elNum=document.getElementById('turnTimerNum');
+  const elCircle=document.getElementById('turnTimerCircle');
+  if(!elWrap||!elNum||!elCircle)return;
+  const remainMs=Math.max(0,_turnDeadline-Date.now());
+  const remainS=Math.ceil(remainMs/1000);
+  elNum.textContent=remainS;
+  const ratio=Math.max(0,Math.min(1,remainMs/(TURN_LIMIT_S*1000)));
+  elCircle.style.strokeDasharray=TT_CIRC;
+  elCircle.style.strokeDashoffset=TT_CIRC*(1-ratio);
+  elWrap.classList.toggle('warn',remainS<=10);
+  if(remainMs<=0){
+    clearInterval(_turnTickHandle);_turnTickHandle=null;
+    handleTurnTimeUp();
+  }
+}
+
+// 로컬(혼자 플레이/AI) 모드 한정: 시간 초과 시 자동 처리.
+// 온라인 모드는 호스트 측 scheduleTurnTimeout()이 이미 동일 시점(30초)에 자동 처리하므로 여기선 표시만 한다.
+function handleTurnTimeUp(){
+  if(!LOCAL||!G||!G.players)return;
+  const key=G.cur+'|'+G.phase;
+  if(key!==_turnKey)return; // 그 사이 이미 다음 턴으로 넘어갔으면 무시
+  const p=G.players[G.cur];
+  if(!p||p.eliminated)return;
+  addLog(isEN()?`⏱️ ${p.name} took too long — auto-handled`:`⏱️ ${p.name} 시간 초과 — 자동 처리`,'bl');
+  if(G.phase==='judge'){
+    // 판단 시간 초과 → 가장 소극적인 디폴트: 참으로 믿고 통과
+    localTruth();
+  }else if(G.phase==='betA'||G.phase==='betB'){
+    // 베팅 단계 시간 초과 → 거짓 외침 철회
+    localWithdraw();
+  }
+  // submit 단계(카드 선택)는 자동으로 대신 낼 카드를 정할 수 없으므로 자동 처리하지 않고
+  // 카운트다운만 0에서 멈춰 있다가 다음 턴 전환 시 다시 시작된다.
+}
+
 function startTimer(s,cb){
-  stopTimer();G._ts=s;
-  G._ti=setInterval(()=>{G._ts--;if(G._ts<=0){stopTimer();if(cb)cb();}},1000);
+  // (레거시 호환용 — 더 이상 내부적으로 사용하지 않음)
 }
 
 // ── 리플레이 ──
@@ -1945,37 +2039,41 @@ function listenHomeChat(){
     log.scrollTop=log.scrollHeight;
   });
 }
+let _lastRoomData=undefined; // 마지막 Firebase 응답 캐시 — 언어 전환 시 재렌더링용
+function renderRoomList(data){
+  const el=document.getElementById('roomList');
+  if(!el)return;
+  const isEN=(typeof currentLang!=='undefined'&&currentLang==='en');
+  const noRoomsTxt=isEN?'No public rooms':'공개 방이 없어요';
+  if(!data){el.innerHTML=`<div id="txt_norooms" style="font-size:12px;color:var(--dim);text-align:center;padding:10px;">${noRoomsTxt}</div>`;return;}
+  const all=Object.entries(data)
+    .filter(([,r])=>r&&r.public===true&&(r.status==='waiting'||r.status==='playing'))
+    .sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0))
+    .slice(0,10);
+  if(!all.length){el.innerHTML=`<div id="txt_norooms" style="font-size:12px;color:var(--dim);text-align:center;padding:10px;">${noRoomsTxt}</div>`;return;}
+  el.innerHTML=all.map(([code,r])=>{
+    const isPlaying=r.status==='playing';
+    const playerCount=r.players?Object.values(r.players).length:0;
+    const hostLabel=isEN?`${r.host||'?'}'s Room`:`${r.host||'?'}의 방`;
+    const statusLabel=isPlaying
+      ?(isEN?`🔴 Playing ${playerCount}p`:`🔴 진행중 ${playerCount}명`)
+      :(isEN?`👥 Waiting ${playerCount}p`:`👥 대기중 ${playerCount}명`);
+    const watchTxt=isEN?'👁 Watch':'👁 관전';
+    const joinTxt=isEN?'Join':'참가';
+    const btn=isPlaying
+      ?`<button onclick="spectateRoom('${code}')" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">${watchTxt}</button>`
+      :`<button onclick="quickJoin('${code}')" style="background:var(--green);color:#111;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">${joinTxt}</button>`;
+    return `<div style="background:var(--cb);border:1px solid ${isPlaying?'var(--blue)':'var(--bdr)'};border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <div>
+        <span style="font-weight:700;font-size:13px;">${hostLabel}</span>
+        <div style="font-size:11px;color:var(--dim);">${statusLabel} · ${r.mode||'classic'}</div>
+      </div>${btn}</div>`;
+  }).join('');
+}
 function listenRoomList(){
   db.ref('rooms').on('value',snap=>{
-    const el=document.getElementById('roomList');
-    if(!el)return;
-    const isEN=(typeof currentLang!=='undefined'&&currentLang==='en');
-    const noRoomsTxt=isEN?'No public rooms':'공개 방이 없어요';
-    const data=snap.val();
-    if(!data){el.innerHTML=`<div style="font-size:12px;color:var(--dim);text-align:center;padding:10px;">${noRoomsTxt}</div>`;return;}
-    const all=Object.entries(data)
-      .filter(([,r])=>r&&r.public===true&&(r.status==='waiting'||r.status==='playing'))
-      .sort((a,b)=>(b[1].createdAt||0)-(a[1].createdAt||0))
-      .slice(0,10);
-    if(!all.length){el.innerHTML=`<div style="font-size:12px;color:var(--dim);text-align:center;padding:10px;">${noRoomsTxt}</div>`;return;}
-    el.innerHTML=all.map(([code,r])=>{
-      const isPlaying=r.status==='playing';
-      const playerCount=r.players?Object.values(r.players).length:0;
-      const hostLabel=isEN?`${r.host||'?'}'s Room`:`${r.host||'?'}의 방`;
-      const statusLabel=isPlaying
-        ?(isEN?`🔴 Playing ${playerCount}p`:`🔴 진행중 ${playerCount}명`)
-        :(isEN?`👥 Waiting ${playerCount}p`:`👥 대기중 ${playerCount}명`);
-      const watchTxt=isEN?'👁 Watch':'👁 관전';
-      const joinTxt=isEN?'Join':'참가';
-      const btn=isPlaying
-        ?`<button onclick="spectateRoom('${code}')" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">${watchTxt}</button>`
-        :`<button onclick="quickJoin('${code}')" style="background:var(--green);color:#111;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">${joinTxt}</button>`;
-      return `<div style="background:var(--cb);border:1px solid ${isPlaying?'var(--blue)':'var(--bdr)'};border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
-        <div>
-          <span style="font-weight:700;font-size:13px;">${hostLabel}</span>
-          <div style="font-size:11px;color:var(--dim);">${statusLabel} · ${r.mode||'classic'}</div>
-        </div>${btn}</div>`;
-    }).join('');
+    _lastRoomData=snap.val();
+    renderRoomList(_lastRoomData);
   });
 }
 window.spectateRoom=async function(code){
@@ -2232,6 +2330,7 @@ window.hostStartGame=async function(){
 }
 
 function enterGame(code){
+  stopTimer();
   // 내 아바타를 gameState에 저장
   if(ME.avatar&&ME.roomId&&G.players&&G.players[ME.idx]){
     G.players[ME.idx].avatar=ME.avatar;
@@ -2884,6 +2983,7 @@ function applyLang() {
     guide_mode4_d: ['조커 4장, 예측 불가능한 혼돈의 판', '4 jokers — an unpredictable, chaotic match'],
     guide_mode5_t: ['하이롤러', 'High Roller'],
     guide_mode5_d: ['주화 20개, 여유롭게 즐기는 장기전', '20 coins — a relaxed, long-haul match'],
+    btn_backhome: ['처음으로', 'Home'],
   };
 
   for (const [id, vals] of Object.entries(texts)) {
@@ -3181,10 +3281,9 @@ function applyLang() {
     ocEl.textContent=isEN?`🟢 ${n} Online`:`🟢 접속자 ${n}명`;
   }
 
-  // roomList 내 동적 텍스트 즉시 갱신 (Firebase 재호출 없이)
-  const roomListEl=document.getElementById('roomList');
-  if(roomListEl&&roomListEl.children.length===1&&roomListEl.children[0].id==='txt_norooms'){
-    roomListEl.children[0].textContent=isEN?'No public rooms':'공개 방이 없어요';
+  // roomList 즉시 갱신 (Firebase 재호출 없이 마지막 캐시 데이터로 다시 렌더링)
+  if(typeof renderRoomList==='function'&&document.getElementById('roomList')){
+    renderRoomList(_lastRoomData);
   }
 }
 
