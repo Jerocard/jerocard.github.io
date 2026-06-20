@@ -6,6 +6,19 @@
 <title>참·거짓 | Bluff Duel - 온라인 블러핑 카드게임</title>
 <meta name="description" content="거짓말과 심리전으로 승부하는 온라인 블러핑 카드게임. 최대 6인까지! Bluff Duel에서 상대의 거짓말을 간파하고 승리하세요.">
 <meta name="keywords" content="블러프, 블러핑, 블러프 게임, 거짓말 게임, 거짓말 카드, 심리 게임, 눈치 게임, 온라인 보드게임, 웹 카드게임, Bluff Duel, 블러프 듀얼, 참거짓, 참 거짓, 참거짓 게임, 포커페이스, 카드 심리전">
+<!-- Open Graph (카카오톡, 페이스북 등 링크 미리보기) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="참·거짓 | Bluff Duel - 온라인 블러핑 카드게임">
+<meta property="og:description" content="거짓말과 심리전으로 승부하는 온라인 블러핑 카드게임! 최대 6인까지 같이 해요 🃏">
+<meta property="og:image" content="https://jerocard.github.io/icon-192.png">
+<meta property="og:url" content="https://jerocard.github.io/">
+<meta property="og:site_name" content="Bluff Duel">
+<meta property="og:locale" content="ko_KR">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="참·거짓 | Bluff Duel - 온라인 블러핑 카드게임">
+<meta name="twitter:description" content="거짓말과 심리전으로 승부하는 온라인 블러핑 카드게임! 최대 6인까지 같이 해요 🃏">
+<meta name="twitter:image" content="https://jerocard.github.io/icon-192.png">
 <link rel="manifest" href="./manifest.json">
 <meta name="naver-site-verification" content="9bf67ff1e4104e73e9c3c9965cb9d3215a7018f8" />
 <meta name="google-site-verification" content="eMqE4yQgT6fRUWkn6P5C7QvSVvbaU2Gob_xlHBCKiNc" />
@@ -324,11 +337,11 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
     <!-- 닫기 버튼 -->
     <button onclick="document.getElementById('privacyModal').style.display='none'" style="position:sticky;top:0;float:right;background:none;border:none;color:#aaa;font-size:20px;cursor:pointer;line-height:1;padding:0 0 8px 8px;">✕</button>
     <!-- 제목 -->
-    <h2 style="font-size:16px;font-weight:700;color:#e8c96a;margin:0 0 4px;">개인정보처리방침</h2>
+    <h2 id="privacy_h2" style="font-size:16px;font-weight:700;color:#e8c96a;margin:0 0 4px;">개인정보처리방침</h2>
     <p style="font-size:10px;color:#666;margin:0 0 16px;">JeroTech · Bluff Duel</p>
     <hr style="border:none;border-top:1px solid #333;margin:0 0 16px;">
     <!-- 본문 -->
-    <div style="font-size:12px;color:#ccc;line-height:1.85;">
+    <div id="privacy_body" style="font-size:12px;color:#ccc;line-height:1.85;">
 
       <p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">1. 수집하는 개인정보</p>
       <p style="margin:0 0 14px;">본 서비스(Bluff Duel)는 <strong>회원가입을 제공하지 않으며</strong>, 이름·전화번호·주민등록번호 등 개인정보를 직접 수집하지 않습니다.</p>
@@ -351,9 +364,9 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 
     </div>
     <hr style="border:none;border-top:1px solid #333;margin:20px 0 12px;">
-    <p style="font-size:10px;color:#555;margin:0;text-align:center;">본 방침은 서비스 정책 변경 시 사전 공지 없이 수정될 수 있습니다.</p>
+    <p id="privacy_footer" style="font-size:10px;color:#555;margin:0;text-align:center;">본 방침은 서비스 정책 변경 시 사전 공지 없이 수정될 수 있습니다.</p>
     <!-- 닫기 버튼 (하단) -->
-    <button onclick="document.getElementById('privacyModal').style.display='none'" style="display:block;width:100%;margin-top:16px;padding:10px;background:#e8c96a;border:none;border-radius:8px;color:#111;font-size:13px;font-weight:700;cursor:pointer;">확인</button>
+    <button id="privacy_confirm_btn" onclick="document.getElementById('privacyModal').style.display='none'" style="display:block;width:100%;margin-top:16px;padding:10px;background:#e8c96a;border:none;border-radius:8px;color:#111;font-size:13px;font-weight:700;cursor:pointer;">확인</button>
   </div>
 </div>
 </div>
@@ -364,11 +377,11 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
     <!-- 닫기 버튼 -->
     <button onclick="document.getElementById('termsModal').style.display='none'" style="position:sticky;top:0;float:right;background:none;border:none;color:#aaa;font-size:20px;cursor:pointer;line-height:1;padding:0 0 8px 8px;">✕</button>
     <!-- 제목 -->
-    <h2 style="font-size:16px;font-weight:700;color:#e8c96a;margin:0 0 4px;">이용약관</h2>
+    <h2 id="terms_h2" style="font-size:16px;font-weight:700;color:#e8c96a;margin:0 0 4px;">이용약관</h2>
     <p style="font-size:10px;color:#666;margin:0 0 16px;">JeroTech · Bluff Duel</p>
     <hr style="border:none;border-top:1px solid #333;margin:0 0 16px;">
     <!-- 본문 -->
-    <div style="font-size:12px;color:#ccc;line-height:1.85;">
+    <div id="terms_body" style="font-size:12px;color:#ccc;line-height:1.85;">
 
       <p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제1조 (목적)</p>
       <p style="margin:0 0 14px;">본 약관은 <strong>참·거짓(Bluff Duel)</strong> 서비스의 이용 조건 및 운영 기준을 규정함을 목적으로 합니다.</p>
@@ -400,36 +413,36 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 
     </div>
     <hr style="border:none;border-top:1px solid #333;margin:20px 0 12px;">
-    <p style="font-size:10px;color:#555;margin:0;text-align:center;">본 약관은 서비스 정책 변경 시 사전 공지 없이 수정될 수 있습니다.</p>
+    <p id="terms_footer" style="font-size:10px;color:#555;margin:0;text-align:center;">본 약관은 서비스 정책 변경 시 사전 공지 없이 수정될 수 있습니다.</p>
     <!-- 닫기 버튼 (하단) -->
-    <button onclick="document.getElementById('termsModal').style.display='none'" style="display:block;width:100%;margin-top:16px;padding:10px;background:#e8c96a;border:none;border-radius:8px;color:#111;font-size:13px;font-weight:700;cursor:pointer;">확인</button>
+    <button id="terms_confirm_btn" onclick="document.getElementById('termsModal').style.display='none'" style="display:block;width:100%;margin-top:16px;padding:10px;background:#e8c96a;border:none;border-radius:8px;color:#111;font-size:13px;font-weight:700;cursor:pointer;">확인</button>
   </div>
 </div>
 
 <!-- LOCAL SETUP -->
 <div class="screen" id="slocal" style="overflow-y:auto;">
-  <div class="gtop"><span class="gtit">👥 혼자 플레이</span><button class="btn sec" onclick="showScreen('st')" style="width:auto;padding:6px 10px;font-size:11px;">닫기</button></div>
+  <div class="gtop"><span class="gtit">👥 <span id="slocal_title">혼자 플레이</span></span><button id="slocal_close" class="btn sec" onclick="showScreen('st')" style="width:auto;padding:6px 10px;font-size:11px;">닫기</button></div>
   <div style="padding:16px;display:flex;flex-direction:column;gap:12px;max-width:400px;margin:0 auto;">
     <div class="sbox">
-      <div class="slbl">인원 수</div>
+      <div id="lbl_lpcount" class="slbl">인원 수</div>
       <div style="display:flex;gap:8px;align-items:center;">
         <button class="nbtn" onclick="adjLP(-1)">−</button>
         <span id="lpnum" style="font-family:'Black Han Sans',sans-serif;font-size:22px;color:var(--gold);min-width:30px;text-align:center;">2</span>
         <button class="nbtn" onclick="adjLP(1)">+</button>
-        <span style="font-size:12px;color:var(--dim)">명 (2~6)</span>
+        <span id="lbl_lpcount_unit" style="font-size:12px;color:var(--dim)">명 (2~6)</span>
       </div>
-      <div class="slbl">플레이어 이름</div>
+      <div id="lbl_lpnames" class="slbl">플레이어 이름</div>
       <div id="lplist" style="display:flex;flex-direction:column;gap:6px;"></div>
-      <div class="slbl">게임 모드</div>
+      <div id="lbl_lpmode" class="slbl">게임 모드</div>
       <select id="lpmode">
-        <option value="speedrun">⚡ 스피드런 (카드 12장)</option>
-        <option value="hardcore">💀 하드코어 (주화 5개)</option>
-        <option value="classic">🃏 클래식 (주화 10개)</option>
-        <option value="chaos">🌀 카오스 (조커 4장)</option>
-        <option value="highroller">💰 하이롤러 (주화 20개)</option>
+        <option value="speedrun" data-ko="⚡ 스피드런 (카드 12장)" data-en="⚡ Speedrun (12 cards)">⚡ 스피드런 (카드 12장)</option>
+        <option value="hardcore" data-ko="💀 하드코어 (주화 5개)" data-en="💀 Hardcore (5 coins)">💀 하드코어 (주화 5개)</option>
+        <option value="classic" data-ko="🃏 클래식 (주화 10개)" data-en="🃏 Classic (10 coins)">🃏 클래식 (주화 10개)</option>
+        <option value="chaos" data-ko="🌀 카오스 (조커 4장)" data-en="🌀 Chaos (4 jokers)">🌀 카오스 (조커 4장)</option>
+        <option value="highroller" data-ko="💰 하이롤러 (주화 20개)" data-en="💰 High Roller (20 coins)">💰 하이롤러 (주화 20개)</option>
       </select>
     </div>
-    <button class="btn" onclick="startLocalGame()">게임 시작 ▶</button>
+    <button class="btn" id="btn_startlocal" onclick="startLocalGame()">게임 시작 ▶</button>
   </div>
 </div>
 
@@ -451,12 +464,12 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 
 <!-- GAME -->
 <div class="screen" id="savatar" style="overflow-y:auto;">
-  <div class="gtop"><span class="gtit">🎭 캐릭터 선택</span></div>
+  <div class="gtop"><span class="gtit">🎭 <span id="av_title">캐릭터 선택</span></span></div>
   <div style="padding:12px 8px;max-width:500px;margin:0 auto;">
-    <div style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:10px;">나를 대표할 캐릭터를 골라요</div>
-    <div style="font-size:11px;color:var(--dim);text-align:center;margin-bottom:6px;letter-spacing:2px;">남자 캐릭터</div>
+    <div id="av_sub" style="font-size:13px;color:var(--dim);text-align:center;margin-bottom:10px;">나를 대표할 캐릭터를 골라요</div>
+    <div id="av_lbl_male" style="font-size:11px;color:var(--dim);text-align:center;margin-bottom:6px;letter-spacing:2px;">남자 캐릭터</div>
     <div id="av-male" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px;"></div>
-    <div style="font-size:11px;color:var(--dim);text-align:center;margin-bottom:6px;letter-spacing:2px;">여자 캐릭터</div>
+    <div id="av_lbl_female" style="font-size:11px;color:var(--dim);text-align:center;margin-bottom:6px;letter-spacing:2px;">여자 캐릭터</div>
     <div id="av-female" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:10px;"></div>
     <div style="font-size:11px;color:#c9a84c;text-align:center;margin-bottom:6px;letter-spacing:2px;font-weight:700;">⚡ EPIC</div>
     <div id="av-epic" style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px;"></div>
@@ -467,14 +480,14 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 <div class="screen" id="sg">
   <div class="gtop">
     <button onclick="showGameMenu()" style="background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:0 4px;">☰</button>
-    <span class="gtit">참·거짓 DUEL</span>
+    <span class="gtit" id="sg_title">참·거짓 DUEL</span>
     <span id="rlbl" style="font-size:11px;color:var(--dim);"></span>
   </div>
   <div class="gi">
     <div id="turnorder" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;padding:4px 0;"></div>
     <div id="opzone"></div>
     <div class="tbox" id="tbox">
-      <div class="tlbl">테이블</div>
+      <div class="tlbl" id="tbl_lbl">테이블</div>
       <div id="tcards" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:6px;"></div>
       <div id="tclaim" style="font-size:13px;background:var(--cb);border-radius:6px;padding:6px 10px;line-height:1.6;"></div>
     </div>
@@ -522,43 +535,43 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 
 <!-- GUIDE -->
 <div class="screen" id="sguide" style="overflow-y:auto;">
-  <div class="gtop"><span class="gtit">📖 게임 방법</span><button class="btn sec" onclick="showScreen('st')" style="width:auto;padding:6px 10px;font-size:11px;">닫기</button></div>
+  <div class="gtop"><span class="gtit">📖 <span id="guide_top_title">게임 방법</span></span><button id="guide_top_close" class="btn sec" onclick="showScreen('st')" style="width:auto;padding:6px 10px;font-size:11px;">닫기</button></div>
   <div style="padding:14px;display:flex;flex-direction:column;gap:12px;max-width:480px;margin:0 auto;">
 
     <a href="https://youtube.com/shorts/ckGdqVfyYfo?si=xcGa5MgwoWS9gfir" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#f5c842,#e0a800);border-radius:14px;padding:14px;text-decoration:none;">
       <span style="font-size:24px;">▶</span>
-      <span style="font-family:'Black Han Sans',sans-serif;font-size:17px;color:#1a1000;letter-spacing:1px;">플레이 영상 보기</span>
+      <span id="guide_video_btn" style="font-family:'Black Han Sans',sans-serif;font-size:17px;color:#1a1000;letter-spacing:1px;">플레이 영상 보기</span>
     </a>
 
     <div style="background:var(--sf);border:2px solid var(--gold);border-radius:14px;padding:16px;">
-      <div style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">🏆 어떻게 이기나요?</div>
-      <div style="font-size:14px;line-height:2;">
+      <div id="guide_win_title" style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">🏆 어떻게 이기나요?</div>
+      <div id="guide_win_body" style="font-size:14px;line-height:2;">
         ✅ 내 카드를 <b style="color:var(--green)">전부 내면</b> 이겨요!<br>
         💀 주화가 <b style="color:var(--red)">0개</b>가 되면 져요!
       </div>
     </div>
 
     <div style="background:var(--sf);border:1px solid var(--bdr);border-radius:14px;padding:16px;">
-      <div style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">🎮 어떻게 하나요?</div>
+      <div id="guide_h2_title" style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">🎮 어떻게 하나요?</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="background:var(--cb);border-radius:10px;padding:12px;">
-          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">① 내 차례 — 카드 내기</div>
-          <div style="font-size:13px;line-height:1.8;color:var(--dim);">
+          <div id="guide_h2_s1t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">① 내 차례 — 카드 내기</div>
+          <div id="guide_h2_s1b" style="font-size:13px;line-height:1.8;color:var(--dim);">
             카드 2~6장 고르고 숫자를 말해요.<br>
             <span style="color:var(--gold)">⚠️ 거짓말해도 돼요!</span><br>
             예) 실제론 5,7인데 "🔢 7 두 장!" 이라고 말하기
           </div>
         </div>
         <div style="background:var(--cb);border-radius:10px;padding:12px;">
-          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">② 상대 차례 — 믿을까 말까?</div>
-          <div style="font-size:13px;line-height:1.8;color:var(--dim);">
+          <div id="guide_h2_s2t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">② 상대 차례 — 믿을까 말까?</div>
+          <div id="guide_h2_s2b" style="font-size:13px;line-height:1.8;color:var(--dim);">
             ✅ <b>참</b> 누르면 → 그냥 넘어가요. 이제 내가 카드 낼 차례!<br>
             ❌ <b>거짓!</b> 누르면 → 카드를 공개해요
           </div>
         </div>
         <div style="background:var(--cb);border-radius:10px;padding:12px;">
-          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">③ 거짓! 외쳤을 때</div>
-          <div style="font-size:13px;line-height:1.8;color:var(--dim);">
+          <div id="guide_h2_s3t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">③ 거짓! 외쳤을 때</div>
+          <div id="guide_h2_s3b" style="font-size:13px;line-height:1.8;color:var(--dim);">
             <span style="color:var(--red)">🎭 진짜 거짓말이었다</span> → 낸 사람이 카드 전부 도로 가져가요<br>
             <span style="color:var(--green)">✅ 사실 참말이었다</span> → 거짓! 외친 사람이 카드 전부 가져가요
           </div>
@@ -567,8 +580,8 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
     </div>
 
     <div style="background:var(--sf);border:1px solid var(--bdr);border-radius:14px;padding:16px;">
-      <div style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">💰 주화 베팅은 뭔가요?</div>
-      <div style="font-size:13px;line-height:1.9;color:var(--dim);">
+      <div id="guide_bet_title" style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">💰 주화 베팅은 뭔가요?</div>
+      <div id="guide_bet_body" style="font-size:13px;line-height:1.9;color:var(--dim);">
         거짓! 을 외치면 카드를 낸 사람(A)이 먼저 선택해요:<br><br>
 
         <div style="background:var(--cb);border-radius:10px;padding:12px;margin-bottom:8px;">
@@ -618,16 +631,16 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
     </div>
 
     <div style="background:var(--sf);border:1px solid var(--bdr);border-radius:14px;padding:16px;">
-      <div style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">🃏 조커 카드</div>
-      <div style="font-size:13px;line-height:1.8;color:var(--dim);">
+      <div id="guide_joker_title" style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:10px;">🃏 조커 카드</div>
+      <div id="guide_joker_body" style="font-size:13px;line-height:1.8;color:var(--dim);">
         조커는 <b style="color:var(--gold)">어떤 숫자로든</b> 쓸 수 있어요!<br>
         예) 조커 카드를 내면서 "7이에요" 해도 돼요 ✅
       </div>
     </div>
 
     <div style="background:rgba(82,192,122,0.1);border:1px solid var(--green);border-radius:14px;padding:16px;">
-      <div style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--green);margin-bottom:10px;">💡 꿀팁!</div>
-      <div style="font-size:13px;line-height:2;color:var(--dim);">
+      <div id="guide_tip_title" style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--green);margin-bottom:10px;">💡 꿀팁!</div>
+      <div id="guide_tip_body" style="font-size:13px;line-height:2;color:var(--dim);">
         • 카드가 적을수록 유리해요 — 빨리 내세요!<br>
         • 상대가 거짓말인지 헷갈리면 그냥 ✅참 눌러도 돼요<br>
         • 주화는 아껴야 오래 살아요 💰
@@ -635,27 +648,27 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
     </div>
 
     <div style="background:var(--sf);border:1px solid var(--bdr);border-radius:14px;padding:16px;">
-      <div style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:12px;">🎲 게임 모드</div>
+      <div id="guide_modes_title" style="font-family:'Black Han Sans',sans-serif;font-size:16px;color:var(--gold);margin-bottom:12px;">🎲 게임 모드</div>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <div style="background:var(--cb);border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:18px;">⚡</span>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">스피드런</div><div style="font-size:12px;color:var(--dim);line-height:1.6;">카드 12장, 빠르게 끝내는 단판 승부</div></div>
+          <div><div id="guide_mode1_t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">스피드런</div><div id="guide_mode1_d" style="font-size:12px;color:var(--dim);line-height:1.6;">카드 12장, 빠르게 끝내는 단판 승부</div></div>
         </div>
         <div style="background:var(--cb);border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:18px;">💀</span>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">하드코어</div><div style="font-size:12px;color:var(--dim);line-height:1.6;">주화 5개, 실수 한 번이 치명적</div></div>
+          <div><div id="guide_mode2_t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">하드코어</div><div id="guide_mode2_d" style="font-size:12px;color:var(--dim);line-height:1.6;">주화 5개, 실수 한 번이 치명적</div></div>
         </div>
         <div style="background:var(--cb);border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:18px;">🃏</span>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">클래식</div><div style="font-size:12px;color:var(--dim);line-height:1.6;">54장 풀덱, 룰 그대로. 진짜 실력으로 승부</div></div>
+          <div><div id="guide_mode3_t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">클래식</div><div id="guide_mode3_d" style="font-size:12px;color:var(--dim);line-height:1.6;">54장 풀덱, 룰 그대로. 진짜 실력으로 승부</div></div>
         </div>
         <div style="background:var(--cb);border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:18px;">🌀</span>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">카오스</div><div style="font-size:12px;color:var(--dim);line-height:1.6;">조커 4장, 예측 불가능한 혼돈의 판</div></div>
+          <div><div id="guide_mode4_t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">카오스</div><div id="guide_mode4_d" style="font-size:12px;color:var(--dim);line-height:1.6;">조커 4장, 예측 불가능한 혼돈의 판</div></div>
         </div>
         <div style="background:var(--cb);border-radius:10px;padding:12px;display:flex;align-items:flex-start;gap:10px;">
           <span style="font-size:18px;">💰</span>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">하이롤러</div><div style="font-size:12px;color:var(--dim);line-height:1.6;">주화 20개, 여유롭게 즐기는 장기전</div></div>
+          <div><div id="guide_mode5_t" style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;">하이롤러</div><div id="guide_mode5_d" style="font-size:12px;color:var(--dim);line-height:1.6;">주화 20개, 여유롭게 즐기는 장기전</div></div>
         </div>
       </div>
     </div>
@@ -665,7 +678,7 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 
 <!-- REPLAY -->
 <div class="screen" id="srp" style="overflow-y:auto;">
-  <div class="gtop"><span class="gtit">🎬 리플레이</span><button class="btn sec" onclick="showScreen('sg')" style="width:auto;padding:6px 10px;font-size:11px;">닫기</button></div>
+  <div class="gtop"><span id="rp_title" class="gtit">🎬 리플레이</span><button id="rp_close" class="btn sec" onclick="showScreen('sg')" style="width:auto;padding:6px 10px;font-size:11px;">닫기</button></div>
   <div style="padding:12px;" id="rpbody"></div>
 </div>
 
@@ -682,11 +695,11 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
 <!-- GAME MENU -->
 <div class="modal" id="gamemenu">
   <div class="mbox" style="max-width:280px;">
-    <div class="mtit">⚙️ 메뉴</div>
-    <button class="btn sec" onclick="closeGameMenu();showScreen('srp');buildReplay()">🎬 리플레이</button>
-    <button class="btn sec" onclick="closeGameMenu();showScreen('sguide')">📖 게임 방법</button>
-    <button class="btn" onclick="closeGameMenu();" style="background:var(--cb);color:var(--text);">계속하기</button>
-    <button class="btn red" onclick="confirmQuit()" style="margin-top:4px;">🚪 게임 포기</button>
+    <div id="gm_title" class="mtit">⚙️ 메뉴</div>
+    <button id="gm_replay" class="btn sec" onclick="closeGameMenu();showScreen('srp');buildReplay()">🎬 리플레이</button>
+    <button id="gm_guide" class="btn sec" onclick="closeGameMenu();showScreen('sguide')">📖 게임 방법</button>
+    <button id="gm_continue" class="btn" onclick="closeGameMenu();" style="background:var(--cb);color:var(--text);">계속하기</button>
+    <button id="gm_quit" class="btn red" onclick="confirmQuit()" style="margin-top:4px;">🚪 게임 포기</button>
   </div>
 </div>
 
@@ -723,6 +736,7 @@ function openModal(){document.getElementById('modal').classList.add('open');}
 function closeModal(){document.getElementById('modal').classList.remove('open');}
 function showGameMenu(){document.getElementById('gamemenu').classList.add('open');}
 function closeGameMenu(){document.getElementById('gamemenu').classList.remove('open');}
+function isEN(){return typeof currentLang!=='undefined'&&currentLang==='en';}
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
 function midToast(icon,title,sub,color){
   document.querySelectorAll('.mid-toast').forEach(e=>e.remove());
@@ -768,7 +782,7 @@ function showSubmitImpact(num,count){
   document.querySelectorAll('.submit-banner,.bluff-banner,.bet-banner').forEach(e=>e.remove());
   const f=document.createElement('div');f.className='submit-flash';document.body.appendChild(f);setTimeout(()=>f.remove(),600);
   const b=document.createElement('div');b.className='submit-banner';
-  b.innerHTML=`<div class="bnum">${num}</div><div class="bsub">${count}장 제출!</div>`;
+  b.innerHTML=`<div class="bnum">${num}</div><div class="bsub">${isEN()?`Played ${count}!`:count+'장 제출!'}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),1500);
   if(navigator.vibrate)navigator.vibrate([30,20,60]);
 }
@@ -776,7 +790,7 @@ function showBluffImpact(isBluff){
   document.querySelectorAll('.submit-banner,.bluff-banner,.bet-banner').forEach(e=>e.remove());
   const f=document.createElement('div');f.className='bluff-flash';document.body.appendChild(f);setTimeout(()=>f.remove(),600);
   const b=document.createElement('div');b.className='bluff-banner';
-  b.innerHTML=isBluff?'<div class="bico">💥</div><div class="btxt">거짓 적발!</div>':'<div class="bico">✅</div><div class="btxt">참말이었다!</div>';
+  b.innerHTML=isBluff?`<div class="bico">💥</div><div class="btxt">${isEN()?'Bluff caught!':'거짓 적발!'}</div>`:`<div class="bico">✅</div><div class="btxt">${isEN()?'It was true!':'참말이었다!'}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),1700);
   if(navigator.vibrate)navigator.vibrate(isBluff?[50,30,100]:[30,20,30]);
 }
@@ -806,14 +820,24 @@ function listenPopup(code){
     if(!snap.exists())return;
     const {type,data,t,sender}=snap.val();
     if(t<=lastT)return; lastT=t;
-    // 내가 보낸 팝업은 이미 로컬에서 실행했으니 무시
-    if(sender===ME.name)return;
+    // 완주/탈락 알림은 보낸 사람 포함 전체에게 표시
+    if(sender===ME.name&&type!=='complete'&&type!=='eliminate')return;
     if(type==='submit')showSubmitImpact(data.num,data.count);
     else if(type==='bluff')showBluffImpact(data.isBluff);
-    else if(type==='bet')showBetPopup(data.label,data.sub,data.color);
+    else if(type==='bet'){
+      const betLabels={
+        counter:[isEN()?'🤔 Counter-bet!':'🤔 되묻기!', isEN()?`${data.name} bet 🪙${data.amt}`:`${data.name} 이(가) 🪙${data.amt} 걸었어요`],
+        withdraw:[isEN()?'🏳️ Withdrawn!':'🏳️ 철회!', isEN()?`${data.name} withdrew the bluff call`:`${data.name} 이(가) 거짓 외침을 취소했어요`],
+        confirm:[isEN()?'💪 Confident!':'💪 확신!', isEN()?`${data.name} matched with 🪙${data.amt}`:`${data.name} 이(가) 🪙${data.amt} 맞받아쳤어요`],
+      };
+      const lbl=betLabels[data.kind]||[data.label||'',data.sub||''];
+      showBetPopup(lbl[0],lbl[1],data.color);
+    }
     else if(type==='reveal'&&data.cards)showRevealAnimation(data.cards,()=>{});
     else if(type==='lastcard')showLastCardImpact(data.name,false);
     else if(type==='allin')showAllinImpact(data.name,false);
+    else if(type==='complete')midToast('🏆',isEN()?`${data.name} cleared their hand!`:`${data.name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');
+    else if(type==='eliminate')midToast('💀',isEN()?`${data.name} is out!`:`${data.name} 탈락!`,isEN()?'Out of coins — game continues':'주화 소진 — 경기 계속','var(--red)');
   });
 }
 function showAllinImpact(name,isMe){
@@ -828,7 +852,7 @@ function showAllinImpact(name,isMe){
   b.innerHTML=`
     <div style="font-size:54px;line-height:1;">💸</div>
     <div style="font-family:\'Black Han Sans\',sans-serif;font-size:32px;color:#e05252;text-shadow:0 0 40px #e05252aa;margin-top:4px;">ALL IN!</div>
-    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?'주화 전부 걸었어요!':name+' 올인!'}</div>`;
+    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?(isEN()?'Bet all your coins!':'주화 전부 걸었어요!'):(isEN()?name+' is all in!':name+' 올인!')}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),2000);
   // 사운드 — 드라마틱한 하강음
   if(!_ac)try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
@@ -853,8 +877,8 @@ function showLastCardImpact(name,isMe){
   b.style.cssText=`position:fixed;top:35%;left:50%;transform:translate(-50%,-50%);z-index:601;pointer-events:none;text-align:center;animation:bn 2.2s ease-out forwards;`;
   b.innerHTML=`
     <div style="font-size:52px;line-height:1;">🃏</div>
-    <div style="font-family:'Black Han Sans',sans-serif;font-size:28px;color:var(--gold);text-shadow:0 0 30px #c9a84c;margin-top:6px;">${isMe?'마지막 카드!':name}</div>
-    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?'이제 판정만 남았어요':'의 마지막 카드!'}</div>`;
+    <div style="font-family:'Black Han Sans',sans-serif;font-size:28px;color:var(--gold);text-shadow:0 0 30px #c9a84c;margin-top:6px;">${isMe?(isEN()?'Last card!':'마지막 카드!'):name}</div>
+    <div style="font-size:14px;color:#fff;margin-top:4px;letter-spacing:2px;">${isMe?(isEN()?'Time for the verdict':'이제 판정만 남았어요'):(isEN()?"'s last card!":'의 마지막 카드!')}</div>`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),2200);
   // 사운드 — 고조되는 3음
   if(!_ac)try{_ac=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
@@ -884,7 +908,7 @@ window.adjLP=function(d){
   let n=Math.min(6,Math.max(2,(parseInt(el.textContent)||2)+d));
   el.textContent=n;
   const pl=document.getElementById('lplist');pl.innerHTML='';
-  for(let i=0;i<n;i++){const inp=document.createElement('input');inp.type='text';inp.placeholder=`플레이어 ${i+1}`;inp.id=`lpn${i}`;pl.appendChild(inp);}
+  for(let i=0;i<n;i++){const inp=document.createElement('input');inp.type='text';inp.placeholder=isEN()?`Player ${i+1}`:`플레이어 ${i+1}`;inp.id=`lpn${i}`;pl.appendChild(inp);}
 }
 window.startLocalGame=function(){
   if(!ME_AVATAR){showAvatarSelect(()=>startLocalGame());return;}
@@ -933,18 +957,18 @@ window.localSubmit=function(){
   const maxCards=Math.min(handLen,6);
   const wouldLeaveOne=sel.length===handLen-1;
   if(sel.length<2||sel.length>maxCards||wouldLeaveOne){
-    if(wouldLeaveOne)toast(`카드 1장이 남아요 — ${handLen}장 전부 내거나 ${handLen-2}장 이하로 내세요`);
-    else toast('카드 2~6장 선택하세요');
+    if(wouldLeaveOne)toast(isEN()?`1 card would remain — play all ${handLen} cards or ${handLen-2} or fewer`:`카드 1장이 남아요 — ${handLen}장 전부 내거나 ${handLen-2}장 이하로 내세요`);
+    else toast(isEN()?'Select 2–6 cards':'카드 2~6장 선택하세요');
     return;
   }
-  if(!G._dn){toast('선언 숫자를 선택하세요');return;}
+  if(!G._dn){toast(isEN()?'Select a declared number':'선언 숫자를 선택하세요');return;}
   snd('submit'); showSubmitImpact(G._dn,sel.length);
   const cards=[...sel].sort((a,b)=>b-a).map(i=>p.hand.splice(i,1)[0]);
   const ab=cards.some(c=>!(c.j||c.joker)&&(c.n||c.num)!==G._dn);
   G.table={cards,claim:G._dn,pi:G.cur,ab,ci:null,bet:0};
   G.replay.push({type:'submit',player:p.name,cards:[...cards],claim:G._dn,ab});
   G.phase='judge'; G._dn=null; p._sel=[];
-  addLog(`${p.name}: "${G.table.claim}" ${cards.length}장 제출`,'act');
+  addLog(isEN()?`${p.name}: played ${cards.length} card(s) of "${G.table.claim}"`:`${p.name}: "${G.table.claim}" ${cards.length}장 제출`,'act');
   if(p.hand.length===0)showLastCardImpact(p.name,G.cur===ME.idx);
   let nextS=(G.cur+1)%G.players.length;
   for(let i=0;i<G.players.length;i++){if(!G.players[nextS].eliminated)break;nextS=(nextS+1)%G.players.length;}
@@ -954,18 +978,18 @@ window.localSubmit=function(){
 window.localTruth=function(){
   snd('coin');
   const submitter=G.players[G.table.pi];
-  addLog(`${G.players[G.cur].name}: 참으로 통과`);
+  addLog(isEN()?`${G.players[G.cur].name}: trusted it`:`${G.players[G.cur].name}: 참으로 통과`);
   G.replay.push({type:'truth',player:G.players[G.cur].name});
   if(G.table)G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
   G.round++;
   if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
-    submitter.eliminated=true;recordWin(submitter.name);midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
+    submitter.eliminated=true;recordWin(submitter.name);midToast('🏆',isEN()?`${submitter.name} cleared their hand!`:`${submitter.name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');addLog(isEN()?`🏆 ${submitter.name} emptied their hand — cleared!`:`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     const activeT=G.players.filter(p=>!p.eliminated);
-    if(activeT.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+    if(activeT.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
   }
   const active=G.players.filter(p=>p.coins>0&&!p.eliminated);
-  if(active.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+  if(active.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
   // G.cur 재조정 — 탈락자 건너뜀
   let nextT=G.cur;
   for(let i=0;i<G.players.length;i++){if(!G.players[nextT].eliminated)break;nextT=(nextT+1)%G.players.length;}
@@ -975,7 +999,7 @@ window.localTruth=function(){
 window.localBluff=function(){
   snd('bluff');
   const ci=G.cur;
-  addLog(`${G.players[ci].name}: 거짓! 외침`,'bl');
+  addLog(isEN()?`${G.players[ci].name}: calls Bluff!`:`${G.players[ci].name}: 거짓! 외침`,'bl');
   G.replay.push({type:'bluff',player:G.players[ci].name});
   G.table.ci=ci; G.phase='betA'; G.cur=G.table.pi;
   localRefresh();
@@ -988,23 +1012,23 @@ window.localReveal=function(wasBet,betAmt){
     const all=[...tc,...(G.discard||[])];G.discard=[];
     A.hand.push(...all);
     snd('bluff');showBluffImpact(true);
-    addLog(`판정: ${A.name} 거짓 적발${wasBet?` — ${B?B.name:''} 🪙${betAmt} 획득`:''} — ${all.length}장 먹음!`,'bl');
+    addLog(isEN()?`Reveal: ${A.name} was bluffing${wasBet?` — ${B?B.name:''} won 🪙${betAmt}`:''} — took ${all.length} card(s)!`:`판정: ${A.name} 거짓 적발${wasBet?` — ${B?B.name:''} 🪙${betAmt} 획득`:''} — ${all.length}장 먹음!`,'bl');
   }else{
     if(wasBet)A.coins+=betAmt*2;
     const all=[...tc,...(G.discard||[])];G.discard=[];
     if(B)B.hand.push(...all);
     snd('coin');showBluffImpact(false);
-    addLog(`판정: ${A.name} 참말${wasBet?` — ${A.name} 🪙${betAmt} 획득`:''} — ${B?B.name+' '+all.length+'장 먹음!':''}`, 'wi');
+    addLog(isEN()?`Reveal: ${A.name} was telling the truth${wasBet?` — ${A.name} won 🪙${betAmt}`:''} — ${B?`${B.name} took ${all.length} card(s)!`:''}`:`판정: ${A.name} 참말${wasBet?` — ${A.name} 🪙${betAmt} 획득`:''} — ${B?B.name+' '+all.length+'장 먹음!':''}`, 'wi');
   }
   G.table=null; G.phase='submit';
   G.replay.push({type:'reveal',ab,cards:tc});
   // 판정 팝업(1.7초) 동안 화면 유지 후 갱신
   setTimeout(()=>{
-    if(!ab&&A.hand.length===0&&!A.eliminated){A.eliminated=true;recordWin(A.name);midToast('🏆',`${A.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');}
-    G.players.forEach(p=>{if(p.hand.length===0&&!p.eliminated){p.eliminated=true;recordWin(p.name);midToast('🏆',`${p.name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');}});
-    G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 경기 계속','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
+    if(!ab&&A.hand.length===0&&!A.eliminated){A.eliminated=true;recordWin(A.name);midToast('🏆',isEN()?`${A.name} cleared their hand!`:`${A.name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');addLog(isEN()?`🏆 ${A.name} emptied their hand — cleared!`:`🏆 ${A.name} 손패 소진 — 완주!`,'wi');}
+    G.players.forEach(p=>{if(p.hand.length===0&&!p.eliminated){p.eliminated=true;recordWin(p.name);midToast('🏆',isEN()?`${p.name} cleared their hand!`:`${p.name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');addLog(isEN()?`🏆 ${p.name} emptied their hand — cleared!`:`🏆 ${p.name} 손패 소진 — 완주!`,'wi');}});
+    G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',isEN()?`${p.name} is out!`:`${p.name} 탈락!`,isEN()?'Out of coins — game continues':'주화 소진 — 경기 계속','var(--red)');addLog(isEN()?`💀 ${p.name} ran out of coins — eliminated!`:`💀 ${p.name} 주화 소진 — 탈락!`,'bl');}});
     const active=G.players.filter(p=>!p.eliminated);
-    if(active.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+    if(active.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
     let next=bi!=null?bi:0;
     for(let i=0;i<G.players.length;i++){if(!G.players[next].eliminated)break;next=(next+1)%G.players.length;}
     G.cur=next; G.round++;
@@ -1016,23 +1040,23 @@ window.localCounterBet=function(amt){
   const isAllin=G.players[G.cur].coins===amt;
   G.players[G.cur].coins-=amt;
   G.table.bet=amt; G.phase='betB'; G.cur=G.table.ci;
-  addLog(`${name}: 되묻기 🪙${amt}${isAllin?' (올인!)':''}`);
+  addLog(isEN()?`${name}: counter-bet 🪙${amt}${isAllin?' (All-in!)':''}`:`${name}: 되묻기 🪙${amt}${isAllin?' (올인!)':''}`);
   if(isAllin)showAllinImpact(name,true);
-  else showBetPopup(`🤔 되묻기!`,`${name} 이(가) 🪙${amt} 걸었어요`,`var(--gold)`);
+  else showBetPopup(isEN()?`🤔 Counter-bet!`:`🤔 되묻기!`,isEN()?`${name} bet 🪙${amt}`:`${name} 이(가) 🪙${amt} 걸었어요`,`var(--gold)`);
   localRefresh();
 }
 window.localWithdraw=function(){
   const ai=G.table.pi,pc=G.table.ci;
   const name=G.players[G.cur].name;
   G.players[ai].coins+=G.table.bet||0;
-  addLog(`${name}: 거짓 철회`);
-  showBetPopup(`🏳️ 철회!`,`${name} 이(가) 거짓 외침을 취소했어요`,`var(--blue)`);
+  addLog(isEN()?`${name}: withdrew the bluff call`:`${name}: 거짓 철회`);
+  showBetPopup(isEN()?`🏳️ Withdrawn!`:`🏳️ 철회!`,isEN()?`${name} withdrew the bluff call`:`${name} 이(가) 거짓 외침을 취소했어요`,`var(--blue)`);
   G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
   if(G.players[ai].hand.length===0&&!G.players[ai].eliminated){
-    G.players[ai].eliminated=true;recordWin(G.players[ai].name);midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 경기 계속','var(--gold)');addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
+    G.players[ai].eliminated=true;recordWin(G.players[ai].name);midToast('🏆',isEN()?`${G.players[ai].name} cleared their hand!`:`${G.players[ai].name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');addLog(isEN()?`🏆 ${G.players[ai].name} emptied their hand — cleared!`:`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
     const activeW=G.players.filter(p=>!p.eliminated);
-    if(activeW.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+    if(activeW.length<=1){showWinScreen(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
   }
   let nextW=(pc+1)%G.players.length;
   for(let i=0;i<G.players.length;i++){if(!G.players[nextW].eliminated)break;nextW=(nextW+1)%G.players.length;}
@@ -1044,7 +1068,7 @@ window.localConfirm=function(amt){
   const isAllin=G.players[G.cur].coins===amt;
   G.players[G.cur].coins-=amt;
   if(isAllin)showAllinImpact(name,true);
-  else showBetPopup(`💪 확신!`,`${name} 이(가) 🪙${amt} 맞받아쳤어요`,`var(--red)`);
+  else showBetPopup(isEN()?`💪 Confident!`:`💪 확신!`,isEN()?`${name} matched with 🪙${amt}`:`${name} 이(가) 🪙${amt} 맞받아쳤어요`,`var(--red)`);
   localReveal(true,amt);
 }
 
@@ -1066,7 +1090,7 @@ window.renderGame=function(){
   const isGameScreen=document.getElementById('sg')&&document.getElementById('sg').classList.contains('active');
   if(tb){
     if(isGameScreen){
-      tb.innerHTML=`<b>${G.players[G.cur].name}</b> 의 턴`;
+      tb.innerHTML=isEN()?`<b>${G.players[G.cur].name}</b>'s turn`:`<b>${G.players[G.cur].name}</b> 의 턴`;
       tb.className=isMT?'turn-banner my':'turn-banner op';
     } else {
       tb.innerHTML=''; tb.className='turn-banner';
@@ -1084,13 +1108,13 @@ window.renderGame=function(){
     const avImg=p.avatar&&AVATARS[p.avatar]?`<img src="${AVATARS[p.avatar].img}" style="width:36px;height:36px;border-radius:6px;image-rendering:pixelated;border:1px solid var(--bdr);flex-shrink:0;">`:'';
     const pRankLabel=(()=>{
       if(!p.eliminated)return {label:'',icon:''};
-      const wo=G.winOrder||[];const lo=G.loseOrder||[];
-      const wi=wo.indexOf(p.name);const li=lo.indexOf(p.name);
-      if(wi!==-1)return {label:(wi+1)+'위',icon:'🏆'};
-      if(li!==-1)return {label:(wo.length+1+(lo.length-1-li))+'위',icon:'💀'};
+      const wo=G.winOrder||[];
+      const wi=wo.indexOf(p.name);
+      if(wi!==-1)return {label:isEN()?`#${wi+1}`:(wi+1)+'위',icon:'🏆'};
+      // 주화소진(탈락): 게임 진행 중에는 최종 순위가 확정되지 않으므로 숫자 없이 해골만 표시
       return {label:'',icon:'💀'};
     })();
-    h.innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${avImg}<span style="font-size:13px;font-weight:700;color:${p.eliminated?'#555':'inherit'};">${p.eliminated?pRankLabel.label+' '+pRankLabel.icon+' ':G.cur===i&&!LOCAL?'▶ ':''}${p.name}</span></div><span style="display:flex;gap:6px;"><span style="background:#2a1a00;border:1px solid ${p.eliminated?'#444':'var(--gold)'};border-radius:8px;padding:2px 8px;font-size:12px;color:${p.eliminated?'#555':'var(--gold)'};font-weight:700;">🪙${p.coins}</span><span style="background:var(--cb);border:1px solid #4a4a6a;border-radius:8px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:700;">🃏${p.hand.length}장</span></span>`;
+    h.innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${avImg}<span style="font-size:13px;font-weight:700;color:${p.eliminated?'#555':'inherit'};">${p.eliminated?pRankLabel.label+' '+pRankLabel.icon+' ':G.cur===i&&!LOCAL?'▶ ':''}${p.name}</span></div><span style="display:flex;gap:6px;"><span style="background:#2a1a00;border:1px solid ${p.eliminated?'#444':'var(--gold)'};border-radius:8px;padding:2px 8px;font-size:12px;color:${p.eliminated?'#555':'var(--gold)'};font-weight:700;">🪙${p.coins}</span><span style="background:var(--cb);border:1px solid #4a4a6a;border-radius:8px;padding:2px 8px;font-size:12px;color:#ccc;font-weight:700;">🃏${p.hand.length}${isEN()?'':'장'}</span></span>`;
     d.appendChild(h);
     const cc=document.createElement('div');cc.style.cssText='position:relative;height:50px;margin-top:6px;';
     const cnt=p.hand.length,maxW=window.innerWidth-60,gap=cnt>1?Math.min(20,(maxW-32)/(cnt-1)):0;
@@ -1103,24 +1127,26 @@ window.renderGame=function(){
   if(G.table&&G.table.cards){
     G.table.cards.forEach(()=>{const c=document.createElement('div');c.className='cback';const img=document.createElement('img');img.src=backSrc();c.appendChild(img);tc.appendChild(c);});
     const dc=G.discard||[],dg=dc.length>1?Math.min(18,240/dc.length):0;
-    const dhtml=dc.length>0?`<div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><span style="font-size:11px;color:var(--red);white-space:nowrap;">🗑 ${dc.length}장</span><div style="position:relative;height:36px;flex:1;">${dc.slice(-8).map((c,k)=>`<div class="dc" style="left:${k*dg}px;z-index:${k};"><img src="${backSrc()}" style="width:100%;height:100%;object-fit:cover;"></div>`).join('')}</div></div>`:`<span style="font-size:11px;color:var(--dim);">🗑 버림더미 0장</span>`;
-    document.getElementById('tclaim').innerHTML=`"<b>${G.table.claim}</b>" · ${G.table.cards.length}장 · <span style="color:var(--dim);">${G.players[G.table.pi].name}</span><br>${dhtml}`;
+    const dhtml=dc.length>0?`<div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><span style="font-size:11px;color:var(--red);white-space:nowrap;">🗑 ${dc.length}${isEN()?'':'장'}</span><div style="position:relative;height:36px;flex:1;">${dc.slice(-8).map((c,k)=>`<div class="dc" style="left:${k*dg}px;z-index:${k};"><img src="${backSrc()}" style="width:100%;height:100%;object-fit:cover;"></div>`).join('')}</div></div>`:`<span style="font-size:11px;color:var(--dim);">🗑 ${isEN()?'Discard pile 0':'버림더미 0장'}</span>`;
+    document.getElementById('tclaim').innerHTML=`"<b>${G.table.claim}</b>" · ${G.table.cards.length}${isEN()?' card(s)':'장'} · <span style="color:var(--dim);">${G.players[G.table.pi].name}</span><br>${dhtml}`;
   }else{
     const dc=G.discard||[],dg=dc.length>1?Math.min(18,240/dc.length):0;
-    const dhtml=dc.length>0?`<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:var(--red);white-space:nowrap;">🗑 ${dc.length}장</span><div style="position:relative;height:36px;flex:1;">${dc.slice(-8).map((c,k)=>`<div class="dc" style="left:${k*dg}px;z-index:${k};"><img src="${backSrc()}" style="width:100%;height:100%;object-fit:cover;"></div>`).join('')}</div></div>`:`<span style="font-size:11px;color:var(--dim);">🗑 버림더미 0장</span>`;
-    document.getElementById('tclaim').innerHTML=`<span style="color:var(--dim);font-size:13px;">테이블 비어있음</span><br>${dhtml}`;
+    const dhtml=dc.length>0?`<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:11px;color:var(--red);white-space:nowrap;">🗑 ${dc.length}${isEN()?'':'장'}</span><div style="position:relative;height:36px;flex:1;">${dc.slice(-8).map((c,k)=>`<div class="dc" style="left:${k*dg}px;z-index:${k};"><img src="${backSrc()}" style="width:100%;height:100%;object-fit:cover;"></div>`).join('')}</div></div>`:`<span style="font-size:11px;color:var(--dim);">🗑 ${isEN()?'Discard pile 0':'버림더미 0장'}</span>`;
+    document.getElementById('tclaim').innerHTML=`<span style="color:var(--dim);font-size:13px;">${isEN()?'Table is empty':'테이블 비어있음'}</span><br>${dhtml}`;
   }
 
   // 로그
   const lb=document.getElementById('logbox');lb.innerHTML='';
   const logHeader=document.createElement('div');
   logHeader.style.cssText='font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;';
-  logHeader.textContent='게임 로그';lb.appendChild(logHeader);
+  logHeader.textContent=isEN()?'GAME LOG':'게임 로그';lb.appendChild(logHeader);
   (G.log||[]).slice(0,8).forEach(e=>{const d=document.createElement('div');d.className='loge'+(e.cls?' '+e.cls:'');d.textContent=e.msg;lb.appendChild(d);});
 
   // 턴 순서 표시
   const to=document.getElementById('turnorder');to.innerHTML='';
-  const phaseLabel={submit:'📤 제출',judge:'⚖️ 판단',betA:'💬 되묻기',betB:'🎯 확신/철회'}[G.phase]||G.phase;
+  const phaseLabel=(isEN()
+    ?{submit:'📤 Submit',judge:'⚖️ Judge',betA:'💬 Counter-bet',betB:'🎯 Confirm/Withdraw'}
+    :{submit:'📤 제출',judge:'⚖️ 판단',betA:'💬 되묻기',betB:'🎯 확신/철회'})[G.phase]||G.phase;
   G.players.forEach((p,i)=>{
     if(i>0){const arr=document.createElement('span');arr.style.cssText='color:var(--dim);font-size:12px;';arr.textContent='→';to.appendChild(arr);}
     const chip=document.createElement('div');
@@ -1135,11 +1161,10 @@ window.renderGame=function(){
       position:relative;`;
     const elimRank=(()=>{
       if(!isElim)return '';
-      const wo=G.winOrder||[];const lo=G.loseOrder||[];
-      const wi=wo.indexOf(p.name);const li=lo.indexOf(p.name);
-      if(wi!==-1){return (wi+1)+'위 🏆';}
-      // 주화소진: 전체인원 - loseOrder인덱스 (늦게탈락=높은순위)
-      if(li!==-1){const wo2=G.winOrder||[];return (wo2.length+1+(lo.length-1-li))+'위 💀';}
+      const wo=G.winOrder||[];
+      const wi=wo.indexOf(p.name);
+      if(wi!==-1){return (isEN()?`#${wi+1}`:(wi+1)+'위')+' 🏆';}
+      // 주화소진(탈락): 게임 진행 중에는 최종 순위가 확정되지 않으므로 숫자 없이 해골만 표시
       return '💀';
     })();
     chip.textContent=(isElim?elimRank+' ':isActive?'▶ ':'')+p.name;
@@ -1149,17 +1174,22 @@ window.renderGame=function(){
   phaseBadge.style.cssText='font-size:10px;color:var(--dim);text-align:center;margin-top:2px;width:100%;';
   phaseBadge.textContent=phaseLabel;to.appendChild(phaseBadge);
 
-  // 내 정보 (아바타 포함) — 관전자면 관전 배너만
+    // 내 정보 (아바타 포함) — 관전자면 관전 배너만
   if(isSpectator){
     // 내가 탈락한 경우 내 원래 정보 찾기
     const myP=ME.name?G.players.find(p=>p.name===ME.name):null;
-    document.getElementById('myname').innerHTML=`<div style="display:flex;align-items:center;gap:8px;"><div style="font-size:13px;color:var(--blue);">👁 관전 중${myP?' ('+myP.name+')':('')} </div></div>`;
+    const myIsWin=myP&&G.winOrder&&G.winOrder.includes(myP.name);
+    // 주의: 게임이 아직 진행 중일 때는 최종 순위를 알 수 없음(아직 안 탈락한 사람들의
+    // 순서가 안 정해짐). loseOrder 길이만 보고 역순 순위를 매기면 "1번째 탈락자가
+    // 임시로 1위"처럼 보이는 오류가 생기므로, 게임 종료 전에는 순위 숫자를 표시하지 않음.
+    const myRankLabel='';
+    document.getElementById('myname').innerHTML=`<div style="display:flex;align-items:center;gap:8px;"><div style="font-size:13px;color:${myIsWin?'var(--gold)':'var(--blue)'};">👁 ${isEN()?'Spectating':'관전 중'}${myP?' ('+myP.name+(myRankLabel?' '+myRankLabel:'')+')':('')} </div></div>`;
     document.getElementById('mycoins').innerHTML=myP?`<span style="background:#2a1a00;border:1px solid #555;border-radius:8px;padding:2px 8px;font-size:12px;color:#777;">🪙${myP.coins}</span>`:'';
-    document.getElementById('myhand').innerHTML='<div style="text-align:center;padding:20px;color:var(--dim);font-size:13px;">💀 탈락 — 관전 모드</div>';
+    document.getElementById('myhand').innerHTML=`<div style="text-align:center;padding:20px;color:var(--dim);font-size:13px;">${myIsWin?(isEN()?'🏆 Cleared — Spectator mode':'🏆 완주 — 관전 모드'):(isEN()?'💀 Eliminated — Spectator mode':'💀 탈락 — 관전 모드')}</div>`;
     document.getElementById('seli').textContent=' ';
   }else{
     const myAv=ME_AVATAR&&AVATARS[ME_AVATAR]?`<img src="${AVATARS[ME_AVATAR].img}" style="width:${isMT?'40px':'32px'};height:${isMT?'40px':'32px'};border-radius:8px;image-rendering:pixelated;border:2px solid ${isMT?'var(--gold)':'var(--bdr)'};transition:all .3s;flex-shrink:0;">`:'';
-    document.getElementById('myname').innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${myAv}<div><div style="font-size:${isMT?'16px':'13px'};font-weight:${isMT?'700':'400'};color:${isMT?'var(--gold)':'var(--dim)'};">${me.name}</div><span style="background:var(--cb);border:1px solid ${isMT?'var(--gold)':'#4a4a6a'};border-radius:8px;padding:2px 8px;font-size:${isMT?'12px':'10px'};color:${isMT?'#fff':'#ccc'};">🃏${me.hand.length}장</span></div></div>`;
+    document.getElementById('myname').innerHTML=`<div style="display:flex;align-items:center;gap:8px;">${myAv}<div><div style="font-size:${isMT?'16px':'13px'};font-weight:${isMT?'700':'400'};color:${isMT?'var(--gold)':'var(--dim)'};">${me.name}</div><span style="background:var(--cb);border:1px solid ${isMT?'var(--gold)':'#4a4a6a'};border-radius:8px;padding:2px 8px;font-size:${isMT?'12px':'10px'};color:${isMT?'#fff':'#ccc'};">🃏${me.hand.length}${isEN()?'':'장'}</span></div></div>`;
     document.getElementById('mycoins').innerHTML=`<span style="background:#2a1a00;border:1px solid var(--gold);border-radius:8px;padding:2px 8px;font-size:12px;color:var(--gold);font-weight:700;">🪙${me.coins}</span>`;
     // 손패
     renderHand(me);
@@ -1243,7 +1273,7 @@ function renderHand(me){
       el.appendChild(d);
     });
   }
-  document.getElementById('seli').textContent=(me._sel.length>0)?`${me._sel.length}장 선택됨`:' ';
+  document.getElementById('seli').textContent=(me._sel.length>0)?(isEN()?`${me._sel.length} card(s) selected`:`${me._sel.length}장 선택됨`):' ';
 }
 
 window.renderActions=function(me,mi){
@@ -1255,56 +1285,56 @@ window.renderActions=function(me,mi){
   // 관전자면 대기 표시만
   if(!LOCAL&&ME.idx===-1){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--blue);text-align:center;padding:12px;';
-    lbl.textContent='👁 관전 중';act.appendChild(lbl);
+    lbl.textContent=isEN()?'👁 Spectating':'👁 관전 중';act.appendChild(lbl);
     return;
   }
 
   // AI 대전 중 AI 턴이면 대기 표시
   if(AI_MODE&&G.cur===1){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--gold);text-align:center;padding:12px;';
-    lbl.innerHTML=`🤖 <b>${G.players[1].name}</b> 이(가) 생각 중...`;act.appendChild(lbl);
+    lbl.innerHTML=isEN()?`🤖 <b>${G.players[1].name}</b> is thinking...`:`🤖 <b>${G.players[1].name}</b> 이(가) 생각 중...`;act.appendChild(lbl);
     return;
   }
 
   // 온라인: 내 턴 아니면 대기 표시만
   if(!LOCAL&&G.cur!==mi){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--dim);text-align:center;padding:12px;';
-    lbl.textContent=`${G.players[G.cur].name}의 턴...`;act.appendChild(lbl);
+    lbl.textContent=isEN()?`${G.players[G.cur].name}'s turn...`:`${G.players[G.cur].name}의 턴...`;act.appendChild(lbl);
     return;
   }
 
   if(G.table&&G.table.pi!==mi&&G.phase==='judge'){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--dim);text-align:center;padding:4px;';
-    lbl.textContent=`${G.players[G.table.pi].name}의 제출 — 참 또는 거짓?`;act.appendChild(lbl);
+    lbl.textContent=isEN()?`${G.players[G.table.pi].name} played — truth or bluff?`:`${G.players[G.table.pi].name}의 제출 — 참 또는 거짓?`;act.appendChild(lbl);
     const row=document.createElement('div');row.className='brow';
-    const tb=document.createElement('button');tb.className='btn grn';tb.textContent='✅ 참';
-    const fb=document.createElement('button');fb.className='btn red';fb.textContent='❌ 거짓!';
+    const tb=document.createElement('button');tb.className='btn grn';tb.textContent=isEN()?'✅ Truth':'✅ 참';
+    const fb=document.createElement('button');fb.className='btn red';fb.textContent=isEN()?'❌ Bluff!':'❌ 거짓!';
     tb.onclick=()=>LOCAL?localTruth():actionTruth();
     fb.onclick=()=>LOCAL?localBluff():actionCallBluff();
     row.appendChild(tb);row.appendChild(fb);act.appendChild(row);
   }else if(G.phase==='betA'&&G.table&&G.table.pi===mi){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--gold);text-align:center;padding:4px;';
-    lbl.textContent='거짓 외침을 받았습니다!';act.appendChild(lbl);
+    lbl.textContent=isEN()?'A bluff call was made!':'거짓 외침을 받았습니다!';act.appendChild(lbl);
     const row=document.createElement('div');row.className='brow';
-    const rb=document.createElement('button');rb.className='btn';rb.textContent='즉시 공개';
+    const rb=document.createElement('button');rb.className='btn';rb.textContent=isEN()?'Reveal now':'즉시 공개';
     rb.onclick=()=>{
       if(!G.table)return;
       const cards=[...G.table.cards];
       showRevealAnimation(cards,()=>LOCAL?localReveal(false,0):actionReveal(false,0));
     };
-    const cb=document.createElement('button');cb.className='btn sec';cb.textContent='되묻기 🪙';
+    const cb=document.createElement('button');cb.className='btn sec';cb.textContent=isEN()?'Counter-bet 🪙':'되묻기 🪙';
     cb.onclick=()=>showCBUI();
     row.appendChild(rb);row.appendChild(cb);act.appendChild(row);
   }else if(G.phase==='betB'&&G.table&&G.table.ci===mi){
     const amt=G.table.bet||1;
     const isAllin=G.players[mi].coins===amt;
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--gold);text-align:center;padding:4px;';
-    lbl.textContent=`상대가 🪙${amt}개를 걸었습니다`;act.appendChild(lbl);
+    lbl.textContent=isEN()?`Opponent bet 🪙${amt}`:`상대가 🪙${amt}개를 걸었습니다`;act.appendChild(lbl);
     const row=document.createElement('div');row.className='brow';
-    const wb=document.createElement('button');wb.className='btn sec';wb.textContent='철회';
+    const wb=document.createElement('button');wb.className='btn sec';wb.textContent=isEN()?'Withdraw':'철회';
     wb.onclick=()=>LOCAL?localWithdraw():actionWithdraw();
     const cfb=document.createElement('button');cfb.className='btn red';
-    cfb.textContent=isAllin?`💸${amt} ALL IN!`:`확신 🪙${amt}`;
+    cfb.textContent=isAllin?`💸${amt} ALL IN!`:(isEN()?`Confident 🪙${amt}`:`확신 🪙${amt}`);
     cfb.onclick=()=>{
       if(!G.table)return;
       const cards=[...G.table.cards];
@@ -1313,16 +1343,16 @@ window.renderActions=function(me,mi){
     row.appendChild(wb);row.appendChild(cfb);act.appendChild(row);
   }else if(G.phase==='submit'&&(!G.table||G.table.pi===mi)){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--dim);text-align:center;padding:4px;';
-    lbl.textContent='카드 2~6장 선택 → 숫자 선언 → 제출';act.appendChild(lbl);
+    lbl.textContent=isEN()?'Select 2–6 cards → declare a number → submit':'카드 2~6장 선택 → 숫자 선언 → 제출';act.appendChild(lbl);
     const ns=document.createElement('div');ns.className='numsel';
     for(let n=1;n<=13;n++){const b=document.createElement('button');b.className='nsbtn'+(G._dn===n?' on':'');b.textContent=n;b.onclick=()=>{G._dn=n;renderActions(me);};ns.appendChild(b);}
     act.appendChild(ns);
-    const sub=document.createElement('button');sub.className='btn';sub.textContent='카드 제출 ▶';
+    const sub=document.createElement('button');sub.className='btn';sub.textContent=isEN()?'Submit cards ▶':'카드 제출 ▶';
     sub.onclick=()=>LOCAL?localSubmit():actionSubmit(me);
     act.appendChild(sub);
   }else if(!LOCAL){
     const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--dim);text-align:center;padding:12px;';
-    lbl.textContent=`${G.players[G.cur].name}의 턴...`;act.appendChild(lbl);
+    lbl.textContent=isEN()?`${G.players[G.cur].name}'s turn...`:`${G.players[G.cur].name}의 턴...`;act.appendChild(lbl);
   }
 }
 
@@ -1331,7 +1361,7 @@ function showCBUI(){
   const me=G.players[G.cur];
   const maxBet=Math.min(5,me.coins);
   const lbl=document.createElement('div');lbl.style.cssText='font-size:13px;color:var(--gold);text-align:center;margin-bottom:6px;';
-  lbl.textContent='주화 몇 개? (최대 5개)';act.appendChild(lbl);
+  lbl.textContent=isEN()?'How many coins? (max 5)':'주화 몇 개? (최대 5개)';act.appendChild(lbl);
   const row=document.createElement('div');row.className='brow';row.style.flexWrap='wrap';
   for(let amt=1;amt<=maxBet;amt++){
     const isAllin=amt===me.coins;
@@ -1343,7 +1373,7 @@ function showCBUI(){
     row.appendChild(b);
   }
   act.appendChild(row);
-  const back=document.createElement('button');back.className='btn sec';back.style.marginTop='4px';back.textContent='← 취소';
+  const back=document.createElement('button');back.className='btn sec';back.style.marginTop='4px';back.textContent=isEN()?'← Cancel':'← 취소';
   back.onclick=()=>renderActions(G.players[G.cur],G.cur);
   act.appendChild(back);
 }
@@ -1381,25 +1411,25 @@ function showRevealAnimation(cards, cb){
 }
 // ── AI 대전 ──
 let AI_MODE=false;
-const AI_NAME='AI 블러퍼';
+const AI_NAME=()=>isEN()?'AI Bluffer':'AI 블러퍼';
 const AI_AVATARS=['킹','갬블러','해적','닌자','탐정','기사','과학자','해적선장','로봇','뱀파이어','승려','도적'];
 
 window.startAIGame=function(){
   if(!ME_AVATAR){showAvatarSelect(()=>startAIGame());return;}
-  const name=document.getElementById('myNameInput').value.trim()||'플레이어';
+  const name=document.getElementById('myNameInput').value.trim()||(isEN()?'Player':'플레이어');
   const mode=document.getElementById('gmode').value;
   // AI 아바타 랜덤 선택
   const aiAv=AI_AVATARS[Math.floor(Math.random()*AI_AVATARS.length)];
   AI_MODE=true; LOCAL=true;
   ME.name=name; ME.idx=0; ME.isHost=true;
-  G=buildState([name, AI_NAME], mode);
+  G=buildState([name, AI_NAME()], mode);
   G.mode=mode;
   G.players[0].avatar=ME_AVATAR;
   G.players[1].avatar=aiAv;
   showScreen('sg');
   ME.idx=0;
   localRefresh();
-  toast('🤖 AI 대전 시작!');
+  toast(isEN()?'🤖 vs AI match started!':'🤖 AI 대전 시작!');
   // AI 첫 턴이면 바로 실행
   if(G.cur===1) setTimeout(aiTakeTurn, 1200);
 };
@@ -1498,6 +1528,25 @@ window.localRefresh=function(){
   }
 };
 let ME_AVATAR=null;
+const AVATAR_EN={
+  '블러퍼':{name:'Bluffer',desc:'Skilled at confusing the opponent'},
+  '킹':{name:'King',desc:'Charismatic type who leads the betting'},
+  '갬블러':{name:'Gambler',desc:'An adventurer who loves bold bets'},
+  '딜러':{name:'Dealer',desc:'Calm, with a sharp read on the situation'},
+  '해적':{name:'Pirate',desc:'Fiercely competitive, values confidence'},
+  '마법사':{name:'Sorceress',desc:'Mysterious, sees through the opponent\u2019s mind'},
+  '닌자':{name:'Ninja',desc:'Quiet, with sharp observation skills'},
+  '귀족':{name:'Noble',desc:'Elegant and dignified'},
+  '상인':{name:'Merchant',desc:'Quick calculator, skilled negotiator'},
+  '탐정':{name:'Detective',desc:'Excellent at catching lies'},
+  '기사':{name:'Knight',desc:'A warrior who blocks bluffs with iron will and shield'},
+  '과학자':{name:'Scientist',desc:'A cold strategist who analyzes lies with data'},
+  '해적선장':{name:'Pirate Captain',desc:'Ruler of the seas, chasing gold with bold bluffs'},
+  '로봇':{name:'Robot',desc:'A mechanical mind that overwhelms with perfect odds'},
+  '뱀파이어':{name:'Vampire',desc:'A lord of the night who breaks wills with a thousand years of mind games'},
+  '승려':{name:'Monk',desc:'A seeker hiding piercing insight behind a calm face'},
+  '도적':{name:'Rogue',desc:'An underworld negotiator who flips the table in an instant'},
+};
 window.showAvatarSelect=function(onConfirm){
   window._avatarCallback=onConfirm;
   ME_AVATAR=null;
@@ -1518,7 +1567,7 @@ window.showAvatarSelect=function(onConfirm){
     img.style.cssText='width:100%;aspect-ratio:1;display:block;image-rendering:pixelated;';
     const label=document.createElement('div');
     label.style.cssText='font-size:9px;text-align:center;padding:2px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
-    label.textContent=av.name;
+    label.textContent=isEN()&&AVATAR_EN[av.name]?AVATAR_EN[av.name].name:av.name;
     card.appendChild(img);card.appendChild(label);
     card.onclick=()=>{
       document.querySelectorAll('.av-card-item').forEach(c=>{
@@ -1527,22 +1576,25 @@ window.showAvatarSelect=function(onConfirm){
       card.style.borderColor=av.color||'var(--gold)';
       card.style.transform='scale(1.06)';
       ME_AVATAR=av.name;
+      const dispName=isEN()&&AVATAR_EN[av.name]?AVATAR_EN[av.name].name:av.name;
+      const dispDesc=isEN()&&AVATAR_EN[av.name]?AVATAR_EN[av.name].desc:av.desc;
       document.getElementById('av-selected').innerHTML=
-        `<div style="font-size:15px;color:var(--gold);font-weight:700;">${av.name}</div>
-         <div style="font-size:11px;color:var(--dim);margin-top:2px;">${av.desc}</div>`;
+        `<div style="font-size:15px;color:var(--gold);font-weight:700;">${dispName}</div>
+         <div style="font-size:11px;color:var(--dim);margin-top:2px;">${dispDesc}</div>`;
       document.getElementById('av-confirm-btn').style.display='block';
     };
     const targetDiv=av.gender==='m'?maleDiv:av.gender==='epic'?(epicDivLive||femaleDiv):femaleDiv;targetDiv.appendChild(card);
   });
 };
 window.confirmAvatar=function(){
-  if(!ME_AVATAR){toast('캐릭터를 선택하세요');return;}
+  if(!ME_AVATAR){toast(isEN()?'Select a character':'캐릭터를 선택하세요');return;}
   if(window._avatarCallback)window._avatarCallback();
 };
 
 function showWinScreen(p,reason){
+  const isEN=(typeof currentLang!=='undefined'&&currentLang==='en');
   snd('win');launchConfetti();if(navigator.vibrate)navigator.vibrate([100,50,100,50,200]);
-  document.getElementById('wname').textContent=p.name+' 승리! 🎉';
+  document.getElementById('wname').textContent=p.name+(isEN?' Wins! 🎉':' 승리! 🎉');
   document.getElementById('wreason').textContent=reason;
   const stats=document.getElementById('wstats');
   if(stats&&G.players){
@@ -1553,23 +1605,24 @@ function showWinScreen(p,reason){
       stats.style.display='flex';
       const medals=['🥇','🥈','🥉'];
       const rankings=getRankings(p);
-      stats.innerHTML='<div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">최종 순위</div>'+
+      stats.innerHTML=`<div style="font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:4px;">${isEN?'FINAL RANKING':'최종 순위'}</div>`+
         rankings.map(({name,rank,player})=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bdr);">`+
-          `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}</span>`+
+          `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||(isEN?'#'+rank:rank+'위')} ${name}</span>`+
           `<span style="color:var(--gold)">🪙${G.finalCoins&&G.finalCoins[name]!=null?G.finalCoins[name]:(player?player.coins:0)}</span></div>`).join('');
     }
   }
-  // 재매치 버튼: 로컬이거나 호스트일 때만
+  // 재매치 버튼: 로컬이거나, 원래 이 게임에 참가했던 사람(완주자/탈락자 포함)이면 항상 표시
   const rb=document.getElementById('rematchBtn');
   const sjb=document.getElementById('spectatorJoinBtn');
+  const wasPlayer=!LOCAL&&G&&G.players&&ME.name&&G.players.some(p=>p.name===ME.name);
   if(rb){
-    rb.style.display=(LOCAL||ME.isHost||(!LOCAL&&ME.idx>=0))?'block':'none';
-    rb.textContent='🔄 재매치';
+    rb.style.display=(LOCAL||ME.isHost||wasPlayer)?'block':'none';
+    rb.textContent=isEN?'🔄 Rematch':'🔄 재매치';
     rb.disabled=false;
   }
-  // 관전자면 재게임 참가 버튼 표시
+  // 진짜 신규 관전자(원래 게임에 참가하지 않았던 사람)만 "재게임 참가" 버튼 표시
   if(sjb){
-    sjb.style.display=(!LOCAL&&ME.idx===-1)?'block':'none';
+    sjb.style.display=(!LOCAL&&ME.idx===-1&&!wasPlayer)?'block':'none';
   }
   ME_AVATAR=null; // 다음 게임 시 캐릭터 다시 선택
   // 온라인 상태는 유지 (false로 바꾸면 listenDisconnect가 방을 폭파시킴)
@@ -1599,7 +1652,7 @@ window.doRematch=async function(){
       G=buildState(names,mode);G.mode=mode;ME.idx=0;
       G.players[0].avatar=ME_AVATAR;
       if(AI_MODE&&G.players[1]){G.players[1].avatar=AI_AVATARS[Math.floor(Math.random()*AI_AVATARS.length)];}
-      showScreen('sg');localRefresh();toast('🔄 재매치 시작!');
+      showScreen('sg');localRefresh();toast(isEN()?'🔄 Rematch started!':'🔄 재매치 시작!');
     };
     if(!ME_AVATAR){showAvatarSelect(doLocalRematch);return;}
     doLocalRematch();return;
@@ -1607,8 +1660,8 @@ window.doRematch=async function(){
     if(!ME.roomId)return;
     // 재매치 투표 — 내 준비 상태 저장
     await db.ref(`rooms/${ME.roomId}/rematch/${ME.name}`).set(true);
-    toast('✅ 재매치 준비 완료! 상대방을 기다리는 중...');
-    document.getElementById('rematchBtn').textContent='⏳ 상대방 대기 중...';
+    toast(isEN()?'✅ Ready for rematch! Waiting for the other player...':'✅ 재매치 준비 완료! 상대방을 기다리는 중...');
+    document.getElementById('rematchBtn').textContent=isEN()?'⏳ Waiting for opponent...':'⏳ 상대방 대기 중...';
     document.getElementById('rematchBtn').disabled=true;
   }
 }
@@ -1633,9 +1686,9 @@ function listenRematch(code){
       // 리스너 먼저 off
       db.ref(`rooms/${code}/rematch`).off();
       await db.ref(`rooms/${code}/rematch`).set(null);
+      // 관전자 중 참가 원하는 사람 포함 — 호스트/비호스트 모두 동일하게 계산
+      const allNames=[...playerNames,...spectatorJoins];
       if(ME.isHost){
-        // 관전자 중 참가 원하는 사람 포함
-        const allNames=[...playerNames,...spectatorJoins];
         const mode=G.mode||'classic';
         const newG=buildState(allNames,mode);
         newG.mode=mode;newG.winner=null;
@@ -1645,16 +1698,12 @@ function listenRematch(code){
         await saveState();
         await db.ref(`rooms/${ME.roomId}/status`).set('playing');
       }
-      // 재매치 시작: 탈락자도 정식 플레이어로 복원
-      if(ME.idx===-1){
-        const pSnap2=await db.ref(`rooms/${code}/players`).once('value');
-        const pNames=pSnap2.val()||[];
-        const myIdx=pNames.indexOf(ME.name);
-        if(myIdx!==-1) ME.idx=myIdx;
-      }
+      // 재매치 시작: 모든 플레이어(탈락자 포함)가 새 게임의 player 순서로 ME.idx 복원
+      const myNewIdx=allNames.indexOf(ME.name);
+      if(myNewIdx!==-1) ME.idx=myNewIdx;
       closeModal();
       showScreen('sg');
-      toast('🔄 재매치 시작!');
+      toast(isEN()?'🔄 Rematch started!':'🔄 재매치 시작!');
       // 다음 재매치를 위해 리스너 재등록
       listenRematch(code);
     }
@@ -1664,7 +1713,7 @@ function listenRematch(code){
 window.spectatorJoinRematch=async function(){
   if(!ME.roomId||!ME.name)return;
   await db.ref(`rooms/${ME.roomId}/spectators/${ME.name}`).set(true);
-  toast('✅ 재게임 참가 신청 완료!');
+  toast(isEN()?'✅ Joined the next game!':'✅ 재게임 참가 신청 완료!');
 }
 // 순위 기록: 손패소진(완주) vs 주화소진(탈락) 분리
 function recordWin(name){  // 손패소진 — 완주 순서대로 1위,2위...
@@ -1693,12 +1742,11 @@ function enterSpectatorIfMe(name){
   if(ME.name===name&&ME.idx!==-1){
     // 1:1 대전이면 관전 모드로 전환하지 않음 (saveWinAndShow가 곧 게임 종료 처리)
     if(G&&G.players&&G.players.length<=2) return;
-    // 손패 소진 완주자는 관전 모드로 전환하지 않음 (승리 화면을 봐야 함)
-    if(G&&G.winOrder&&G.winOrder.includes(name)) return;
+    const isWin=G&&G.winOrder&&G.winOrder.includes(name);
     ME.idx=-1;
-    toast('💀 탈락! 관전 모드로 전환됩니다 👁');
+    toast(isWin?(isEN()?'🏆 Cleared! Switching to spectator mode 👁':'🏆 완주! 관전 모드로 전환됩니다 👁'):(isEN()?'💀 Eliminated! Switching to spectator mode 👁':'💀 탈락! 관전 모드로 전환됩니다 👁'));
     const tb=document.getElementById('turnbanner');
-    if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
+    if(tb){tb.innerHTML=isEN()?'👁 Spectating':'👁 관전 중';tb.className='turn-banner op';}
   }
 }
 
@@ -1726,31 +1774,32 @@ function getRankings(winner){
 
 // 결과 모달 — 관전자(탈락자)용
 function showResultModal(winner,reason){
+  const isEN=(typeof currentLang!=='undefined'&&currentLang==='en');
   const rankings=getRankings(winner);
   const medals=['🥇','🥈','🥉'];
   openModal();
-  document.getElementById('mtit').textContent='🏁 게임 종료';
+  document.getElementById('mtit').textContent=isEN?'🏁 Game Over':'🏁 게임 종료';
   document.getElementById('mbody').innerHTML=
-    `<div style="font-size:13px;color:var(--dim);margin-bottom:8px;">${winner.name} 승리 — ${reason}</div>`+
+    `<div style="font-size:13px;color:var(--dim);margin-bottom:8px;">${winner.name} ${isEN?'Wins':'승리'} — ${reason}</div>`+
     rankings.map(({name,rank,player})=>
       `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bdr);">`+
-      `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||rank+'위'} ${name}${ME.name===name?' <span style="color:var(--blue);font-size:11px;">(나)</span>':''}</span>`+
+      `<span style="font-weight:${rank===1?'700':'400'};color:${rank===1?'var(--gold)':'var(--text)'};">${medals[rank-1]||(isEN?'#'+rank:rank+'위')} ${name}${ME.name===name?` <span style="color:var(--blue);font-size:11px;">${isEN?'(Me)':'(나)'}</span>`:''}</span>`+
       `<span style="color:var(--gold);font-size:13px;">🪙${G.finalCoins&&G.finalCoins[name]!=null?G.finalCoins[name]:(player?player.coins:0)}</span></div>`
     ).join('');
   document.getElementById('mcards').innerHTML='';
   const btns=document.getElementById('mbtns');btns.innerHTML='';
   const row=document.createElement('div');row.className='brow';
   // 탈락자도 재매치 투표 가능
-  const rb=document.createElement('button');rb.className='btn grn';rb.textContent='🔄 재매치';
+  const rb=document.createElement('button');rb.className='btn grn';rb.textContent=isEN?'🔄 Rematch':'🔄 재매치';
   rb.onclick=async function(){
     if(!ME.roomId)return;
-    rb.disabled=true;rb.textContent='⏳ 대기 중...';
+    rb.disabled=true;rb.textContent=isEN?'⏳ Waiting...':'⏳ 대기 중...';
     await db.ref(`rooms/${ME.roomId}/rematch/${ME.name}`).set(true);
-    toast('✅ 재매치 준비! 다른 플레이어를 기다리는 중...');
+    toast(isEN?'✅ Ready for rematch! Waiting for other players...':'✅ 재매치 준비! 다른 플레이어를 기다리는 중...');
   };
   const cb=document.createElement('button');cb.className='btn sec';
   // 탈락자(관전중)면 "계속 관전", 아니면 "닫기"
-  cb.textContent=(ME.idx===-1)?'계속 관전':'닫기';
+  cb.textContent=(ME.idx===-1)?(isEN?'Keep Watching':'계속 관전'):(isEN?'Close':'닫기');
   cb.onclick=closeModal;
   row.appendChild(rb);row.appendChild(cb);btns.appendChild(row);
 }
@@ -1775,13 +1824,13 @@ async function saveWinAndShow(p,reason){
 // ── 메뉴/포기 ──
 window.confirmQuit=function(){
   closeGameMenu();openModal();
-  document.getElementById('mtit').textContent='🚪 게임 포기';
-  document.getElementById('mbody').innerHTML='정말 포기하고 홈으로?<br><span style="color:var(--dim);font-size:12px;">진행 중 게임은 저장 안 돼요</span>';
+  document.getElementById('mtit').textContent=isEN()?'🚪 Quit Game':'🚪 게임 포기';
+  document.getElementById('mbody').innerHTML=isEN()?'Really quit and go home?<br><span style="color:var(--dim);font-size:12px;">The game in progress won\u2019t be saved</span>':'정말 포기하고 홈으로?<br><span style="color:var(--dim);font-size:12px;">진행 중 게임은 저장 안 돼요</span>';
   document.getElementById('mcards').innerHTML='';
   const btns=document.getElementById('mbtns');btns.innerHTML='';
   const row=document.createElement('div');row.className='brow';
-  const cb=document.createElement('button');cb.className='btn sec';cb.textContent='취소';cb.onclick=closeModal;
-  const qb=document.createElement('button');qb.className='btn red';qb.textContent='포기';
+  const cb=document.createElement('button');cb.className='btn sec';cb.textContent=isEN()?'Cancel':'취소';cb.onclick=closeModal;
+  const qb=document.createElement('button');qb.className='btn red';qb.textContent=isEN()?'Quit':'포기';
   qb.onclick=async()=>{
     closeModal();stopTimer();
     AI_MODE=false;
@@ -1821,16 +1870,18 @@ function startTimer(s,cb){
 // ── 리플레이 ──
 window.buildReplay=function(){
   const body=document.getElementById('rpbody');body.innerHTML='';
-  if(!G.replay||!G.replay.length){body.innerHTML='<div style="color:var(--dim);text-align:center;padding:40px">기록 없음</div>';return;}
-  const labels={submit:'카드 제출',truth:'참 통과',bluff:'거짓 외침',withdraw:'철회',confirm:'확신',reveal:'결과'};
+  if(!G.replay||!G.replay.length){body.innerHTML=`<div style="color:var(--dim);text-align:center;padding:40px">${isEN()?'No history':'기록 없음'}</div>`;return;}
+  const labels=isEN()
+    ?{submit:'Played cards',truth:'Trusted',bluff:'Called Bluff',withdraw:'Withdrawn',confirm:'Confident',reveal:'Result'}
+    :{submit:'카드 제출',truth:'참 통과',bluff:'거짓 외침',withdraw:'철회',confirm:'확신',reveal:'결과'};
   G.replay.forEach((ev,i)=>{
     const d=document.createElement('div');d.style.cssText='background:var(--sf);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:8px;';
     d.innerHTML=`<div style="font-size:11px;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">#${i+1} ${ev.player||''} — ${labels[ev.type]||ev.type}</div>`;
     if(ev.cards){
       const row=document.createElement('div');row.style.cssText='display:flex;gap:6px;flex-wrap:wrap;align-items:center;';
       ev.cards.forEach(c=>{const m=document.createElement('div');m.style.cssText='width:30px;height:42px;border-radius:4px;overflow:hidden;border:1px solid #555;';const img=document.createElement('img');img.src=cardSrc(c);img.style.cssText='width:100%;height:100%;object-fit:cover;';m.appendChild(img);row.appendChild(m);});
-      if(ev.claim!=null){const s=document.createElement('span');s.style.cssText='font-size:12px;color:var(--dim);';s.textContent=`선언:${ev.claim}`;row.appendChild(s);}
-      if(ev.ab!=null||ev.isBluff!=null){const bl=ev.ab??ev.isBluff;const s=document.createElement('span');s.style.cssText=`font-size:12px;color:${bl?'var(--red)':'var(--green)'};`;s.textContent=bl?'거짓':'참말';row.appendChild(s);}
+      if(ev.claim!=null){const s=document.createElement('span');s.style.cssText='font-size:12px;color:var(--dim);';s.textContent=(isEN()?'Declared:':'선언:')+ev.claim;row.appendChild(s);}
+      if(ev.ab!=null||ev.isBluff!=null){const bl=ev.ab??ev.isBluff;const s=document.createElement('span');s.style.cssText=`font-size:12px;color:${bl?'var(--red)':'var(--green)'};`;s.textContent=bl?(isEN()?'Bluff':'거짓'):(isEN()?'Truth':'참말');row.appendChild(s);}
       d.appendChild(row);
     }
     body.appendChild(d);
@@ -1861,7 +1912,7 @@ window.sendChat=function(){
 }
 window.sendHomeChat=function(){
   const inp=document.getElementById('homechatinput');const msg=inp.value.trim();if(!msg)return;inp.value='';
-  const name=document.getElementById('myNameInput').value.trim()||'익명';
+  const name=document.getElementById('myNameInput').value.trim()||(isEN()?'Anonymous':'익명');
   db.ref('global_chat').push({name,msg,t:Date.now()});
 }
 function listenHomeChat(){
@@ -1917,24 +1968,25 @@ function listenRoomList(){
 }
 window.spectateRoom=async function(code){
   const snap=await db.ref(`rooms/${code}`).once('value');
-  if(!snap.exists()){toast('방을 찾을 수 없어요');return;}
-  const name=ME.name||(prompt('관전자 이름을 입력하세요')||'관전자');
+  if(!snap.exists()){toast(isEN()?'Room not found':'방을 찾을 수 없어요');return;}
+  const name=ME.name||(prompt(isEN()?'Enter a spectator name':'관전자 이름을 입력하세요')||(isEN()?'Spectator':'관전자'));
   ME.roomId=code; ME.idx=-1; ME.name=name; ME.isHost=false;
   LOCAL=false;
   showScreen('sg');
   listenGameState(code);
   listenEmotes(code);
   listenPopup(code);
-  toast('👁 관전 모드로 입장했습니다');
+  listenRematch(code);
+  toast(isEN()?'👁 Entered spectator mode':'👁 관전 모드로 입장했습니다');
 }
 window.quickJoin=async function(code){
   if(!ME_AVATAR){showAvatarSelect(()=>quickJoin(code));return;}
   const snap=await db.ref(`rooms/${code}`).once('value');
-  if(!snap.exists()){toast('방을 찾을 수 없어요');return;}
+  if(!snap.exists()){toast(isEN()?'Room not found':'방을 찾을 수 없어요');return;}
   const room=snap.val();
-  if(room.status!=='waiting'){toast('이미 시작된 게임이에요');return;}
+  if(room.status!=='waiting'){toast(isEN()?'This game has already started':'이미 시작된 게임이에요');return;}
   const players=room.players||[];
-  if(players.length>=6){toast('방이 가득 찼어요 (최대 6명)\n관전은 방 목록에서 👁 버튼을 이용하세요');return;}
+  if(players.length>=6){toast(isEN()?'Room is full (max 6)\nUse the 👁 button in the room list to spectate':'방이 가득 찼어요 (최대 6명)\n관전은 방 목록에서 👁 버튼을 이용하세요');return;}
   const autoName='P'+(players.length+1);
   const name=document.getElementById('myNameInput').value.trim()||autoName;
   ME.name=name; ME.idx=players.length; ME.isHost=false; ME.roomId=code;
@@ -1982,13 +2034,13 @@ window.goCreateRoom=async function(){
 window.goJoinRoom=async function(){
   if(!ME_AVATAR){showAvatarSelect(()=>goJoinRoom());return;}
   const code=document.getElementById('joinCodeInput').value.trim();
-  if(!code){toast('방 코드를 입력하세요');return;}
+  if(!code){toast(isEN()?'Enter a room code':'방 코드를 입력하세요');return;}
   const snap=await db.ref(`rooms/${code}`).once('value');
-  if(!snap.exists()){toast('방을 찾을 수 없어요');return;}
+  if(!snap.exists()){toast(isEN()?'Room not found':'방을 찾을 수 없어요');return;}
   const room=snap.val();
-  if(room.status!=='waiting'){toast('이미 시작된 게임이에요');return;}
+  if(room.status!=='waiting'){toast(isEN()?'This game has already started':'이미 시작된 게임이에요');return;}
   const players=room.players||[];
-  if(players.length>=6){toast('방이 가득 찼어요 (최대 6명)\n관전은 방 목록에서 👁 버튼을 이용하세요');return;}
+  if(players.length>=6){toast(isEN()?'Room is full (max 6)\nUse the 👁 button in the room list to spectate':'방이 가득 찼어요 (최대 6명)\n관전은 방 목록에서 👁 버튼을 이용하세요');return;}
   const autoName='P'+(players.length+1);
   const name=document.getElementById('myNameInput').value.trim()||autoName;
   ME.name=name; ME.idx=players.length; ME.isHost=false; ME.roomId=code;
@@ -2023,7 +2075,7 @@ window.leaveLobby=async function(){
   ME={idx:null,name:'',roomId:null,isHost:false};
   showScreen('st');
 }
-window.copyLobCode=function(){navigator.clipboard.writeText(ME.roomId).then(()=>toast('코드 복사됨! '+ME.roomId));}
+window.copyLobCode=function(){navigator.clipboard.writeText(ME.roomId).then(()=>toast((isEN()?'Code copied! ':'코드 복사됨! ')+ME.roomId));}
 
 function listenLobby(code){
   db.ref(`rooms/${code}/players`).on('value',snap=>{
@@ -2031,7 +2083,7 @@ function listenLobby(code){
     document.getElementById('lobPlayers').innerHTML=pl.map((p,i)=>`<div style="background:var(--cb);border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;font-size:14px;">${i===0?'👑':'👤'} ${p}</div>`).join('');
     const sb=document.getElementById('lobStartBtn');
     if(ME.isHost)sb.style.display=pl.length>=2?'':'none';
-    document.getElementById('lobStatus').textContent=pl.length>=2?`${pl.length}명 참가됨!`:'친구가 참가하길 기다리는 중...';
+    document.getElementById('lobStatus').textContent=pl.length>=2?(isEN()?`${pl.length} players joined!`:`${pl.length}명 참가됨!`):(isEN()?'Waiting for friends to join...':'친구가 참가하길 기다리는 중...');
     // 방에 아무도 없으면 방 삭제
     if(pl.length===0){
       db.ref(`rooms/${code}`).remove();
@@ -2066,7 +2118,7 @@ function listenLobby(code){
     if(newHost===ME.name&&!ME.isHost){
       ME.isHost=true;
       document.getElementById('lobStartBtn').style.display='';
-      toast('👑 방장이 되었어요!');
+      toast(isEN()?'👑 You are now the host!':'👑 방장이 되었어요!');
     }
   });
   db.ref(`rooms/${code}/status`).on('value',snap=>{
@@ -2077,7 +2129,7 @@ function listenLobby(code){
     if(!snap.exists()&&!ME.isHost){
       db.ref(`rooms/${code}`).off();
       ME={idx:null,name:'',roomId:null,isHost:false};
-      toast('🚨 방이 사라졌어요. 홈으로 돌아갑니다.');
+      toast(isEN()?'🚨 The room has closed. Returning to home.':'🚨 방이 사라졌어요. 홈으로 돌아갑니다.');
       showScreen('st');
     }
   });
@@ -2111,7 +2163,7 @@ function enterGame(code){
       db.ref(`rooms/${code}`).off();
       stopTimer();
       LOCAL=false;G={};ME={idx:null,name:'',roomId:null,isHost:false};
-      toast('🚨 방이 사라졌어요. 홈으로 돌아갑니다.');
+      toast(isEN()?'🚨 The room has closed. Returning to home.':'🚨 방이 사라졌어요. 홈으로 돌아갑니다.');
       showScreen('st');
     }
   });
@@ -2121,7 +2173,7 @@ function enterGame(code){
     const newHost=snap.val();
     if(newHost===ME.name&&!ME.isHost){
       ME.isHost=true;
-      toast('👑 방장이 되었어요!');
+      toast(isEN()?'👑 You are now the host!':'👑 방장이 되었어요!');
     }
   });
   showScreen('sg');
@@ -2149,7 +2201,7 @@ function listenDisconnect(code){
     // 1명만 남으면 즉시 승리
     if(ME.isHost&&activePlayers.length===1&&G.phase!=='winner'){
       await saveState();
-      saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||activePlayers[0]:activePlayers[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));
+      saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||activePlayers[0]:activePlayers[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));
       return;
     }
     // 2명 이상 게임 중, 한 명이 오프라인 감지
@@ -2169,7 +2221,7 @@ function listenDisconnect(code){
       if(onlinePlayers.length>0&&onlinePlayers[0].name===ME.name){
         await db.ref(`rooms/${code}/host`).set(ME.name);
         ME.isHost=true;
-        toast('👑 방장이 되었어요!');
+        toast(isEN()?'👑 You are now the host!':'👑 방장이 되었어요!');
       }
     }
   });
@@ -2181,10 +2233,10 @@ async function handlePlayerLeave(name){
   if(pi<0)return;
   const p=G.players[pi];
   if(p.eliminated)return;
-  addLog(`⚠️ ${name} 이(가) 나갔습니다 — 카드 버림`,'bl');
+  addLog(isEN()?`⚠️ ${name} left the game — cards discarded`:`⚠️ ${name} 이(가) 나갔습니다 — 카드 버림`,'bl');
   // 카드 전부 버림더미로
   G.discard.push(...(p.hand||[]));
-  p.hand=[];p.eliminated=true;recordElimination(p.name);midToast('🚪',`${p.name} 이탈`,'경기 계속','var(--dim)');
+  p.hand=[];p.eliminated=true;recordElimination(p.name);midToast('🚪',isEN()?`${p.name} left`:`${p.name} 이탈`,isEN()?'Game continues':'경기 계속','var(--dim)');
   // 테이블에 관련있으면 정리
   if(G.table&&(G.table.pi===pi||G.table.ci===pi)){
     G.discard.push(...(G.table.cards||[]));
@@ -2197,7 +2249,7 @@ async function handlePlayerLeave(name){
   const active=G.players.filter(p=>!p.eliminated);
   if(active.length<=1){
     await saveState();
-    saveWinAndShow(active[0]||G.players[0],'상대방 이탈로 승리 👑');
+    saveWinAndShow(active[0]||G.players[0],isEN()?'Won by opponent leaving 👑':'상대방 이탈로 승리 👑');
     return;
   }
   await saveState();
@@ -2241,25 +2293,30 @@ function listenGameState(code){
       }
       return;
     }
-    // Firebase에서 받은 상태에서 내가 eliminated면 관전 전환 (1:1 제외, 손패소진 완주자 제외)
+    // 재매치로 새 게임이 시작된 경우: ME.idx를 새 players 배열 기준으로 즉시 복원
+    // (listenRematch의 비동기 타이밍에 의존하면 관전 모드가 잘못 남는 경쟁상태가 생김)
+    if(ME.name){
+      const myNewIdx=G.players.findIndex(p=>p.name===ME.name);
+      if(myNewIdx!==-1) ME.idx=myNewIdx;
+    }
+    // Firebase에서 받은 상태에서 내가 eliminated면 관전 전환 (1:1 제외)
+    // 완주자(winOrder)든 탈락자(loseOrder)든 게임이 끝날 때까지는 동일하게 관전 모드로 전환
     if(ME.idx!==-1&&ME.name){
       const myP=G.players.find(p=>p.name===ME.name);
-      const isWinElim=myP&&myP.eliminated&&G.winOrder&&G.winOrder.includes(ME.name);
-      if(myP&&myP.eliminated&&!isWinElim&&!(G.players&&G.players.length<=2)){
+      if(myP&&myP.eliminated&&!(G.players&&G.players.length<=2)){
         ME.idx=-1;
         const tb=document.getElementById('turnbanner');
-        if(tb){tb.innerHTML='👁 관전 중';tb.className='turn-banner op';}
+        if(tb){tb.innerHTML=isEN()?'👁 Spectating':'👁 관전 중';tb.className='turn-banner op';}
       }
     }
-    // 완주/탈락 토스트 표시 중이면 renderGame 잠시 보류
-    if(!G._bannerLocked) renderGame();
+    renderGame();
   });
 }
 
 async function saveState(){
   if(!ME.roomId)return;
   const state=JSON.parse(JSON.stringify(G,(k,v)=>{
-    if(['_sel','_ti','_passCb','_bannerLocked'].includes(k))return undefined;
+    if(['_sel','_ti','_passCb'].includes(k))return undefined;
     return v;
   }));
   // 내 아바타 항상 포함
@@ -2300,11 +2357,11 @@ async function actionSubmit(me){
   const maxCards=Math.min(handLen,6);
   const wouldLeaveOne=sel.length===handLen-1;
   if(sel.length<2||sel.length>maxCards||wouldLeaveOne){
-    if(wouldLeaveOne)toast(`카드 1장이 남아요 — ${handLen}장 전부 내거나 ${handLen-2}장 이하로 내세요`);
-    else toast('카드 2~6장 선택하세요');
+    if(wouldLeaveOne)toast(isEN()?`1 card would remain — play all ${handLen} cards or ${handLen-2} or fewer`:`카드 1장이 남아요 — ${handLen}장 전부 내거나 ${handLen-2}장 이하로 내세요`);
+    else toast(isEN()?'Select 2–6 cards':'카드 2~6장 선택하세요');
     return;
   }
-  if(!G._dn){toast('선언 숫자를 선택하세요');return;}
+  if(!G._dn){toast(isEN()?'Select a declared number':'선언 숫자를 선택하세요');return;}
   if(!Array.isArray(player.hand))player.hand=Object.values(player.hand);
   snd('submit');showSubmitImpact(G._dn,sel.length);
   broadcastPopup('submit',{num:G._dn,count:sel.length});
@@ -2313,7 +2370,7 @@ async function actionSubmit(me){
   G.table={cards,claim:G._dn,pi:G.cur,ab,ci:null,bet:0};
   G.replay.push({type:'submit',player:player.name,cards:[...cards],claim:G._dn,ab});
   G.phase='judge'; G._dn=null; player._sel=[];
-  addLog(`${player.name}: "${G.table.claim}" ${cards.length}장 제출`,'act');
+  addLog(isEN()?`${player.name}: played ${cards.length} card(s) of "${G.table.claim}"`:`${player.name}: "${G.table.claim}" ${cards.length}장 제출`,'act');
   if(player.hand.length===0){
     showLastCardImpact(player.name,true);
     broadcastPopup('lastcard',{name:player.name});
@@ -2326,7 +2383,7 @@ async function actionSubmit(me){
 async function actionTruth(){
   snd('coin');
   const submitter=G.players[G.table.pi];
-  addLog(`${G.players[G.cur].name}: 참으로 통과`);
+  addLog(isEN()?`${G.players[G.cur].name}: trusted it`:`${G.players[G.cur].name}: 참으로 통과`);
   G.replay.push({type:'truth',player:G.players[G.cur].name});
   if(G.table)G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
@@ -2334,18 +2391,17 @@ async function actionTruth(){
   // 제출자 손패 0이면 탈락 처리
   if(submitter&&submitter.hand.length===0&&!submitter.eliminated){
     submitter.eliminated=true;recordWin(submitter.name);
-    G._bannerLocked=true;
-    midToast('🏆',`${submitter.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
-    setTimeout(()=>{G._bannerLocked=false;renderGame();},2900);
-    addLog(`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
+    midToast('🏆',isEN()?`${submitter.name} cleared their hand!`:`${submitter.name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');
+    await broadcastPopup('complete',{name:submitter.name});
+    addLog(isEN()?`🏆 ${submitter.name} emptied their hand — cleared!`:`🏆 ${submitter.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(submitter.name);
     const activeT=G.players.filter(p=>!p.eliminated);
-    if(activeT.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+    if(activeT.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeT[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
   }
   // 주화소진 탈락 체크
-  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 관전 모드로 전환','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
+  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',isEN()?`${p.name} is out!`:`${p.name} 탈락!`,isEN()?'Out of coins — switching to spectator':'주화 소진 — 관전 모드로 전환','var(--red)');addLog(isEN()?`💀 ${p.name} ran out of coins — eliminated!`:`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
   const active=G.players.filter(p=>!p.eliminated);
-  if(active.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+  if(active.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
   // G.cur 재조정 — 탈락자 건너뜀
   let nextT=G.cur;
   for(let i=0;i<G.players.length;i++){if(!G.players[nextT].eliminated)break;nextT=(nextT+1)%G.players.length;}
@@ -2355,7 +2411,7 @@ async function actionTruth(){
 async function actionCallBluff(){
   snd('bluff');
   const ci=G.cur;
-  addLog(`${G.players[ci].name}: 거짓! 외침`,'bl');
+  addLog(isEN()?`${G.players[ci].name}: calls Bluff!`:`${G.players[ci].name}: 거짓! 외침`,'bl');
   G.replay.push({type:'bluff',player:G.players[ci].name});
   G.table.ci=ci; G.phase='betA'; G.cur=G.table.pi;
   await saveState();
@@ -2368,12 +2424,12 @@ async function actionReveal(wasBet,betAmt){
     if(wasBet&&B)B.coins+=betAmt*2;
     const all=[...tc,...(G.discard||[])];G.discard=[];A.hand.push(...all);
     snd('bluff');showBluffImpact(true);broadcastPopup('bluff',{isBluff:true});
-    addLog(`판정: ${A.name} 거짓 적발${wasBet?` — ${B?B.name:''} 🪙${betAmt} 획득`:''} — ${all.length}장 먹음!`,'bl');
+    addLog(isEN()?`Reveal: ${A.name} was bluffing${wasBet?` — ${B?B.name:''} won 🪙${betAmt}`:''} — took ${all.length} card(s)!`:`판정: ${A.name} 거짓 적발${wasBet?` — ${B?B.name:''} 🪙${betAmt} 획득`:''} — ${all.length}장 먹음!`,'bl');
   }else{
     if(wasBet)A.coins+=betAmt*2;
     const all=[...tc,...(G.discard||[])];G.discard=[];if(B)B.hand.push(...all);
     snd('coin');showBluffImpact(false);broadcastPopup('bluff',{isBluff:false});
-    addLog(`판정: ${A.name} 참말${wasBet?` — ${A.name} 🪙${betAmt} 획득`:''} — ${B?B.name+' '+all.length+'장 먹음!':''}`, 'wi');
+    addLog(isEN()?`Reveal: ${A.name} was telling the truth${wasBet?` — ${A.name} won 🪙${betAmt}`:''} — ${B?`${B.name} took ${all.length} card(s)!`:''}`:`판정: ${A.name} 참말${wasBet?` — ${A.name} 🪙${betAmt} 획득`:''} — ${B?B.name+' '+all.length+'장 먹음!':''}`, 'wi');
   }
   G.table=null; G.phase='submit';
   G.replay.push({type:'reveal',ab,cards:tc});
@@ -2383,26 +2439,24 @@ async function actionReveal(wasBet,betAmt){
   if(!ab&&A.hand.length===0&&!A.eliminated){
     A.eliminated=true;
     recordWin(A.name);
-    G._bannerLocked=true;
-    midToast('🏆',`${A.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
-    setTimeout(()=>{G._bannerLocked=false;renderGame();},2900);
-    addLog(`🏆 ${A.name} 손패 소진 — 완주!`,'wi');
+    midToast('🏆',isEN()?`${A.name} cleared their hand!`:`${A.name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');
+    await broadcastPopup('complete',{name:A.name});
+    addLog(isEN()?`🏆 ${A.name} emptied their hand — cleared!`:`🏆 ${A.name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(A.name);
   }
   G.players.forEach(p=>{
     if(p.hand.length===0&&!p.eliminated){
       p.eliminated=true;
       recordWin(p.name);
-      G._bannerLocked=true;
-      midToast('🏆',`${p.name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
-      setTimeout(()=>{G._bannerLocked=false;renderGame();},2900);
-      addLog(`🏆 ${p.name} 손패 소진 — 완주!`,'wi');
+      midToast('🏆',isEN()?`${p.name} cleared their hand!`:`${p.name} 완주!`,isEN()?'Hand emptied — game continues':'손패 소진 — 경기 계속','var(--gold)');
+      broadcastPopup('complete',{name:p.name});
+      addLog(isEN()?`🏆 ${p.name} emptied their hand — cleared!`:`🏆 ${p.name} 손패 소진 — 완주!`,'wi');
       enterSpectatorIfMe(p.name);
     }
   });
-  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',`${p.name} 탈락!`,'주화 소진 — 관전 모드로 전환','var(--red)');addLog(`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
+  G.players.forEach(p=>{if(p.coins<=0&&!p.eliminated){p.eliminated=true;recordLose(p.name);midToast('💀',isEN()?`${p.name} is out!`:`${p.name} 탈락!`,isEN()?'Out of coins — switching to spectator':'주화 소진 — 관전 모드로 전환','var(--red)');addLog(isEN()?`💀 ${p.name} ran out of coins — eliminated!`:`💀 ${p.name} 주화 소진 — 탈락!`,'bl');enterSpectatorIfMe(p.name);}});
   const active=G.players.filter(p=>!p.eliminated);
-  if(active.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+  if(active.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:active[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
   let next=bi!=null?bi:0;
   for(let i=0;i<G.players.length;i++){if(!G.players[next].eliminated)break;next=(next+1)%G.players.length;}
   G.cur=next; G.round++;
@@ -2412,28 +2466,28 @@ async function actionCounterBet(amt){
   const name=G.players[G.cur].name;
   const isAllin=G.players[G.cur].coins===amt;
   G.players[G.cur].coins-=amt; G.table.bet=amt; G.phase='betB'; G.cur=G.table.ci;
-  addLog(`${name}: 되묻기 🪙${amt}${isAllin?' (올인!)':''}`);
+  addLog(isEN()?`${name}: counter-bet 🪙${amt}${isAllin?' (All-in!)':''}`:`${name}: 되묻기 🪙${amt}${isAllin?' (올인!)':''}`);
   if(isAllin){showAllinImpact(name,true);broadcastPopup('allin',{name});}
-  else{showBetPopup(`🤔 되묻기!`,`${name} 이(가) 🪙${amt} 걸었어요`,`var(--gold)`);broadcastPopup('bet',{label:'🤔 되묻기!',sub:`${name} 이(가) 🪙${amt} 걸었어요`,color:'var(--gold)'});}
+  else{showBetPopup(isEN()?`🤔 Counter-bet!`:`🤔 되묻기!`,isEN()?`${name} bet 🪙${amt}`:`${name} 이(가) 🪙${amt} 걸었어요`,`var(--gold)`);broadcastPopup('bet',{kind:'counter',name,amt,color:'var(--gold)'});}
   await saveState();
 }
 async function actionWithdraw(){
   const ai=G.table.pi,pc=G.table.ci;
   const name=G.players[G.cur].name;
   G.players[ai].coins+=G.table.bet||0;
-  addLog(`${name}: 거짓 철회`);
-  showBetPopup(`🏳️ 철회!`,`${name} 이(가) 거짓 외침을 취소했어요`,`var(--blue)`);
-  broadcastPopup('bet',{label:'🏳️ 철회!',sub:`${name} 이(가) 거짓 외침을 취소했어요`,color:'var(--blue)'});
+  addLog(isEN()?`${name}: withdrew the bluff call`:`${name}: 거짓 철회`);
+  showBetPopup(isEN()?`🏳️ Withdrawn!`:`🏳️ 철회!`,isEN()?`${name} withdrew the bluff call`:`${name} 이(가) 거짓 외침을 취소했어요`,`var(--blue)`);
+  broadcastPopup('bet',{kind:'withdraw',name,color:'var(--blue)'});
   G.discard.push(...G.table.cards);
   G.table=null; G.phase='submit';
   if(G.players[ai].hand.length===0&&!G.players[ai].eliminated){
     G.players[ai].eliminated=true;
     recordWin(G.players[ai].name);
-    midToast('🏆',`${G.players[ai].name} 완주!`,'손패 소진 — 관전 모드로 전환','var(--gold)');
-    addLog(`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
+    midToast('🏆',isEN()?`${G.players[ai].name} cleared their hand!`:`${G.players[ai].name} 완주!`,isEN()?'Hand emptied — switching to spectator':'손패 소진 — 관전 모드로 전환','var(--gold)');
+    addLog(isEN()?`🏆 ${G.players[ai].name} emptied their hand — cleared!`:`🏆 ${G.players[ai].name} 손패 소진 — 완주!`,'wi');
     enterSpectatorIfMe(G.players[ai].name);
     const activeW=G.players.filter(p=>!p.eliminated);
-    if(activeW.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?'손패 소진 완주! 🏆':'주화 최후 승자 👑'));return;}
+    if(activeW.length<=1){saveWinAndShow(G.winOrder&&G.winOrder.length>0?G.players.find(p=>p.name===G.winOrder[0])||G.players[0]:activeW[0]||G.players[0],(G.winOrder&&G.winOrder.length>0?(isEN()?'Cleared their hand! 🏆':'손패 소진 완주! 🏆'):(isEN()?'Last one with coins 👑':'주화 최후 승자 👑')));return;}
   }
   let nextW=(pc+1)%G.players.length;
   for(let i=0;i<G.players.length;i++){if(!G.players[nextW].eliminated)break;nextW=(nextW+1)%G.players.length;}
@@ -2446,7 +2500,7 @@ async function actionConfirm(amt){
   G.players[G.cur].coins-=amt;
   G.replay.push({type:'confirm',player:name,amount:amt});
   if(isAllin){showAllinImpact(name,true);broadcastPopup('allin',{name});}
-  else{showBetPopup(`💪 확신!`,`${name} 이(가) 🪙${amt} 맞받아쳤어요`,`var(--red)`);broadcastPopup('bet',{label:'💪 확신!',sub:`${name} 이(가) 🪙${amt} 맞받아쳤어요`,color:'var(--red)'});}
+  else{showBetPopup(isEN()?`💪 Confident!`:`💪 확신!`,isEN()?`${name} matched with 🪙${amt}`:`${name} 이(가) 🪙${amt} 맞받아쳤어요`,`var(--red)`);broadcastPopup('bet',{kind:'confirm',name,amt,color:'var(--red)'});}
   await actionReveal(true,amt);
 }
 
@@ -2488,11 +2542,13 @@ setInterval(cleanStaleRooms,60*1000);
 // ── 공유 & 설치 ──
 function shareWithFriend(){
   const url=location.href.split('?')[0];
-  const data={title:'참·거짓 | Bluff Duel',text:'거짓말과 심리전으로 승부하는 온라인 블러핑 카드게임! 최대 6인까지 같이 해요 🃏',url};
+  const data=isEN()
+    ? {title:'Bluff Duel',text:'An online bluffing card game decided by lies and mind games! Play with up to 6 friends 🃏',url}
+    : {title:'참·거짓 | Bluff Duel',text:'거짓말과 심리전으로 승부하는 온라인 블러핑 카드게임! 최대 6인까지 같이 해요 🃏',url};
   if(navigator.share){navigator.share(data).catch(()=>{});}
   else{
-    navigator.clipboard.writeText(url).then(()=>toast('링크가 복사됐어요! 친구에게 공유해보세요 🔗')).catch(()=>{
-      prompt('아래 링크를 복사해서 친구에게 보내세요:',url);
+    navigator.clipboard.writeText(url).then(()=>toast(isEN()?'Link copied! Share it with a friend 🔗':'링크가 복사됐어요! 친구에게 공유해보세요 🔗')).catch(()=>{
+      prompt(isEN()?'Copy the link below and send it to a friend:':'아래 링크를 복사해서 친구에게 보내세요:',url);
     });
   }
 }
@@ -2502,13 +2558,13 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwaPrompt=
 function installPWA(){
   if(_pwaPrompt){
     _pwaPrompt.prompt();
-    _pwaPrompt.userChoice.then(r=>{if(r.outcome==='accepted')toast('홈화면에 추가됐어요! 📱');_pwaPrompt=null;});
+    _pwaPrompt.userChoice.then(r=>{if(r.outcome==='accepted')toast(isEN()?'Added to home screen! 📱':'홈화면에 추가됐어요! 📱');_pwaPrompt=null;});
   } else if(navigator.standalone||window.matchMedia('(display-mode: standalone)').matches){
-    toast('이미 홈화면에 설치되어 있어요 ✅');
+    toast(isEN()?'Already installed on your home screen ✅':'이미 홈화면에 설치되어 있어요 ✅');
   } else {
     const ua=navigator.userAgent.toLowerCase();
-    if(/iphone|ipad/.test(ua)){toast('Safari에서 공유 버튼 → "홈 화면에 추가"를 탭하세요 📲');}
-    else{toast('브라우저 메뉴(⋮) → "홈 화면에 추가"를 선택해주세요 📲');}
+    if(/iphone|ipad/.test(ua)){toast(isEN()?'In Safari, tap Share → "Add to Home Screen" 📲':'Safari에서 공유 버튼 → "홈 화면에 추가"를 탭하세요 📲');}
+    else{toast(isEN()?'Open the browser menu (⋮) → "Add to Home Screen" 📲':'브라우저 메뉴(⋮) → "홈 화면에 추가"를 선택해주세요 📲');}
   }
 }
 
@@ -2525,10 +2581,26 @@ function showQRCode(){
 }
 
 // ── 언어 전환 ──────────────────────────────────────────
-let currentLang = 'ko';
+// 브라우저 언어가 한국어가 아니면 자동으로 영어로 시작
+function detectInitialLang() {
+  try {
+    const langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || navigator.userLanguage || ''];
+    const isKorean = langs.some(l => l && l.toLowerCase().startsWith('ko'));
+    return isKorean ? 'ko' : 'en';
+  } catch (e) {
+    return 'ko';
+  }
+}
+let currentLang = detectInitialLang();
+
 function toggleLang() {
   currentLang = currentLang === 'ko' ? 'en' : 'ko';
+  applyLang();
+}
+
+function applyLang() {
   const isEN = currentLang === 'en';
+  document.documentElement.lang = isEN ? 'en' : 'ko';
 
   // 버튼 UI 업데이트
   document.getElementById('langKO').style.color = isEN ? 'rgba(201,168,76,0.35)' : '#c9a84c';
@@ -2566,6 +2638,36 @@ function toggleLang() {
     txt_privacy:  ['개인정보처리방침', 'Privacy Policy'],
     txt_terms:    ['이용약관', 'Terms of Service'],
     guide_title:  ['게임 방법', 'How to Play'],
+    guide_top_title: ['게임 방법', 'How to Play'],
+    guide_top_close: ['닫기', 'Close'],
+    guide_video_btn: ['플레이 영상 보기', 'Watch Gameplay Video'],
+    guide_win_title: ['🏆 어떻게 이기나요?', '🏆 How Do I Win?'],
+    gm_title:    ['⚙️ 메뉴', '⚙️ Menu'],
+    gm_replay:   ['🎬 리플레이', '🎬 Replay'],
+    gm_guide:    ['📖 게임 방법', '📖 How to Play'],
+    gm_continue: ['계속하기', 'Continue'],
+    gm_quit:     ['🚪 게임 포기', '🚪 Forfeit Game'],
+    rp_title:    ['🎬 리플레이', '🎬 Replay'],
+    rp_close:    ['닫기', 'Close'],
+    av_title:    ['캐릭터 선택', 'Choose Character'],
+    av_sub:      ['나를 대표할 캐릭터를 골라요', 'Pick a character to represent you'],
+    av_lbl_male: ['남자 캐릭터', 'Male Characters'],
+    av_lbl_female: ['여자 캐릭터', 'Female Characters'],
+    'av-confirm-btn': ['이 캐릭터로 시작 ▶', 'Start with This Character ▶'],
+    sg_title:    ['참·거짓 DUEL', 'Bluff Duel'],
+    tbl_lbl:     ['테이블', 'Table'],
+    slocal_title: ['혼자 플레이', 'Local Play'],
+    slocal_close: ['닫기', 'Close'],
+    lbl_lpcount:  ['인원 수', 'Number of Players'],
+    lbl_lpcount_unit: ['명 (2~6)', 'players (2–6)'],
+    lbl_lpnames:  ['플레이어 이름', 'Player Names'],
+    lbl_lpmode:   ['게임 모드', 'Game Mode'],
+    btn_startlocal: ['게임 시작 ▶', 'Start Game ▶'],
+    guide_h2_title: ['🎮 어떻게 하나요?', '🎮 How to Play'],
+    guide_h2_s1t: ['① 내 차례 — 카드 내기', '① Your Turn — Play Cards'],
+    guide_h2_s2t: ['② 상대 차례 — 믿을까 말까?', "② Opponent's Turn — Trust or Doubt?"],
+    guide_h2_s3t: ['③ 거짓! 외쳤을 때', '③ When "Bluff!" Is Called'],
+    guide_bet_title: ['💰 주화 베팅은 뭔가요?', '💰 What Are Coin Bets?'],
     guide_l1:     ['플레이어는 12장의 카드를 받아, 2~6장의 숫자 중복 카드를 냅니다.', 'Each player gets 12 cards and plays 2–6 cards of the same number.'],
     guide_ex:     ['ex) "4" 2장 제출!, "5" 3장 제출!', 'ex) Play "4" ×2!, Play "5" ×3!'],
     guide_l2:     ['카드를 참으로도, 거짓으로도 낼 수 있으며, 카드를 다 소진하면 승리합니다.', 'You can play truthfully or bluff — empty your hand to win.'],
@@ -2574,6 +2676,19 @@ function toggleLang() {
     guide_opt2:   ['거짓이 의심되면 확인 요청 가능', 'Suspect a bluff — call it out'],
     guide_l4:     ['의심받은 플레이어는 주화를 베팅해 추가 블러핑을 할 수 있습니다.', 'The doubter can bet coins to raise the stakes.'],
     guide_l5:     ['카드 소진 또는 상대 주화 소진 시 승리!', 'Empty your hand or outlast opponents to win!'],
+    guide_joker_title: ['🃏 조커 카드', '🃏 Joker Card'],
+    guide_tip_title:   ['💡 꿀팁!', '💡 Pro Tips!'],
+    guide_modes_title: ['🎲 게임 모드', '🎲 Game Modes'],
+    guide_mode1_t: ['스피드런', 'Speedrun'],
+    guide_mode1_d: ['카드 12장, 빠르게 끝내는 단판 승부', '12 cards — a fast, single-round match'],
+    guide_mode2_t: ['하드코어', 'Hardcore'],
+    guide_mode2_d: ['주화 5개, 실수 한 번이 치명적', '5 coins — one mistake can be fatal'],
+    guide_mode3_t: ['클래식', 'Classic'],
+    guide_mode3_d: ['54장 풀덱, 룰 그대로. 진짜 실력으로 승부', 'Full 54-card deck, standard rules. Pure skill.'],
+    guide_mode4_t: ['카오스', 'Chaos'],
+    guide_mode4_d: ['조커 4장, 예측 불가능한 혼돈의 판', '4 jokers — an unpredictable, chaotic match'],
+    guide_mode5_t: ['하이롤러', 'High Roller'],
+    guide_mode5_d: ['주화 20개, 여유롭게 즐기는 장기전', '20 coins — a relaxed, long-haul match'],
   };
 
   for (const [id, vals] of Object.entries(texts)) {
@@ -2605,6 +2720,244 @@ function toggleLang() {
       : '플레이어는 <b style="color:#fff;">12장의 카드</b>를 받아, 2~6장의 숫자 중복 카드를 냅니다.';
   }
 
+  // 어떻게 이기나요? 본문 (bold 포함) 특수 처리
+  const gWinBody = document.getElementById('guide_win_body');
+  if (gWinBody) {
+    gWinBody.innerHTML = isEN
+      ? '✅ Play <b style="color:var(--green)">all your cards</b> to win!<br>'
+      + '💀 Lose when your coins hit <b style="color:var(--red)">0</b>!'
+      : '✅ 내 카드를 <b style="color:var(--green)">전부 내면</b> 이겨요!<br>'
+      + '💀 주화가 <b style="color:var(--red)">0개</b>가 되면 져요!';
+  }
+
+  // 조커 카드 설명 (bold 포함) 특수 처리
+  const gJokerBody = document.getElementById('guide_joker_body');
+  if (gJokerBody) {
+    gJokerBody.innerHTML = isEN
+      ? 'A joker can be used as <b style="color:var(--gold)">any number</b>!<br>'
+      + 'e.g. play a joker and say "It\'s a 7" ✅'
+      : '조커는 <b style="color:var(--gold)">어떤 숫자로든</b> 쓸 수 있어요!<br>'
+      + '예) 조커 카드를 내면서 "7이에요" 해도 돼요 ✅';
+  }
+
+  // 꿀팁! 본문 특수 처리
+  const gTipBody = document.getElementById('guide_tip_body');
+  if (gTipBody) {
+    gTipBody.innerHTML = isEN
+      ? '• Fewer cards is better — play them fast!<br>'
+      + '• If you\'re not sure it\'s a bluff, just tap ✅Truth<br>'
+      + '• Save your coins to survive longer 💰'
+      : '• 카드가 적을수록 유리해요 — 빨리 내세요!<br>'
+      + '• 상대가 거짓말인지 헷갈리면 그냥 ✅참 눌러도 돼요<br>'
+      + '• 주화는 아껴야 오래 살아요 💰';
+  }
+
+  // "어떻게 하나요?" 단계별 설명 (rich HTML) 특수 처리
+  const gh2s1b = document.getElementById('guide_h2_s1b');
+  if (gh2s1b) {
+    gh2s1b.innerHTML = isEN
+      ? 'Pick 2–6 cards and announce a number.<br>'
+      + '<span style="color:var(--gold)">⚠️ You can lie!</span><br>'
+      + 'e.g. you actually have 5,7 but say "🔢 Two 7s!"'
+      : '카드 2~6장 고르고 숫자를 말해요.<br>'
+      + '<span style="color:var(--gold)">⚠️ 거짓말해도 돼요!</span><br>'
+      + '예) 실제론 5,7인데 "🔢 7 두 장!" 이라고 말하기';
+  }
+  const gh2s2b = document.getElementById('guide_h2_s2b');
+  if (gh2s2b) {
+    gh2s2b.innerHTML = isEN
+      ? '✅ Tap <b>Truth</b> → play continues. Now it\'s your turn to play!<br>'
+      + '❌ Tap <b>Bluff!</b> → the cards get revealed'
+      : '✅ <b>참</b> 누르면 → 그냥 넘어가요. 이제 내가 카드 낼 차례!<br>'
+      + '❌ <b>거짓!</b> 누르면 → 카드를 공개해요';
+  }
+  const gh2s3b = document.getElementById('guide_h2_s3b');
+  if (gh2s3b) {
+    gh2s3b.innerHTML = isEN
+      ? '<span style="color:var(--red)">🎭 It really was a bluff</span> → the player who played takes back all the cards<br>'
+      + '<span style="color:var(--green)">✅ It was actually true</span> → the player who called "Bluff!" takes all the cards'
+      : '<span style="color:var(--red)">🎭 진짜 거짓말이었다</span> → 낸 사람이 카드 전부 도로 가져가요<br>'
+      + '<span style="color:var(--green)">✅ 사실 참말이었다</span> → 거짓! 외친 사람이 카드 전부 가져가요';
+  }
+
+  // "주화 베팅은 뭔가요?" 본문 (rich HTML) 특수 처리
+  const gbetBody = document.getElementById('guide_bet_body');
+  if (gbetBody) {
+    gbetBody.innerHTML = isEN
+      ? 'When "Bluff!" is called, the player who played the cards (A) chooses first:<br><br>'
+      + '<div style="background:var(--cb);border-radius:10px;padding:12px;margin-bottom:8px;">'
+      + '<b style="color:var(--text);">📂 Reveal Now</b><br>'
+      + 'Flip the cards immediately, no coins involved.<br>'
+      + 'Only win/lose is decided. No coins change hands!'
+      + '</div>'
+      + '<div style="background:var(--cb);border-radius:10px;padding:12px;margin-bottom:12px;">'
+      + '<b style="color:var(--text);">🤔 Counter-bet (choose 🪙1–5)</b><br>'
+      + 'A bets coins to pressure the opponent.<br>'
+      + '<span style="color:var(--gold);">"You really think it\'s a bluff? I bet 🪙3!"</span><br><br>'
+      + 'Then the player who called "Bluff!" (B) chooses:<br><br>'
+      + '<div style="background:var(--sf);border-radius:8px;padding:10px;margin-bottom:6px;">'
+      + '<b style="color:var(--text);">🏳️ Withdraw</b> — "Sorry, never mind"<br>'
+      + '<span style="color:var(--dim);font-size:12px;">• B withdraws the bluff call<br>'
+      + '• A\'s bet coins are returned 🪙<br>'
+      + '• The cards stay hidden<br>'
+      + '• The cards go to the discard pile</span>'
+      + '</div>'
+      + '<div style="background:var(--sf);border-radius:8px;padding:10px;">'
+      + '<b style="color:var(--text);">💪 Match</b> — "I\'ll match your bet!"<br>'
+      + '<span style="color:var(--dim);font-size:12px;">• B also bets 🪙3 and the cards are revealed</span><br><br>'
+      + '<div style="background:rgba(229,82,82,0.1);border:1px solid var(--red);border-radius:8px;padding:8px;margin-bottom:6px;">'
+      + '<b style="color:var(--red);">😈 It really was a bluff!</b><br>'
+      + 'A loses → A takes all the discard pile cards<br>'
+      + 'B gets their 🪙3 + A\'s 🪙3 = <b style="color:var(--green);">🪙6 total!</b>'
+      + '</div>'
+      + '<div style="background:rgba(82,192,122,0.1);border:1px solid var(--green);border-radius:8px;padding:8px;">'
+      + '<b style="color:var(--green);">😇 It was actually true!</b><br>'
+      + 'B loses → B takes all the discard pile cards<br>'
+      + 'A gets their 🪙3 + B\'s 🪙3 = <b style="color:var(--green);">🪙6 total!</b>'
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div style="background:rgba(201,168,76,0.1);border:1px solid var(--gold);border-radius:10px;padding:10px;font-size:12px;">'
+      + '💡 <b style="color:var(--gold);">Key takeaway</b><br>'
+      + 'Bet more to win more!<br>'
+      + 'But lose more if you\'re wrong. Bet wisely!'
+      + '</div>'
+      : '거짓! 을 외치면 카드를 낸 사람(A)이 먼저 선택해요:<br><br>'
+      + '<div style="background:var(--cb);border-radius:10px;padding:12px;margin-bottom:8px;">'
+      + '<b style="color:var(--text);">📂 즉시 공개</b><br>'
+      + '주화 없이 바로 카드를 뒤집어요.<br>'
+      + '결과에 따라 승패만 갈려요. 주화 이동 없음!'
+      + '</div>'
+      + '<div style="background:var(--cb);border-radius:10px;padding:12px;margin-bottom:12px;">'
+      + '<b style="color:var(--text);">🤔 되묻기 (🪙1~5개 선택)</b><br>'
+      + 'A가 주화를 걸면서 상대를 압박해요.<br>'
+      + '<span style="color:var(--gold);">"정말 거짓이라고 생각해? 🪙3 건다!"</span><br><br>'
+      + '그럼 거짓!을 외친 사람(B)이 선택해요:<br><br>'
+      + '<div style="background:var(--sf);border-radius:8px;padding:10px;margin-bottom:6px;">'
+      + '<b style="color:var(--text);">🏳️ 철회</b> — "미안, 취소할게"<br>'
+      + '<span style="color:var(--dim);font-size:12px;">• B가 거짓 외침을 취소해요<br>'
+      + '• A가 건 주화는 그대로 돌아와요 🪙<br>'
+      + '• 카드는 공개 안 해요<br>'
+      + '• 카드는 버림더미로 넘어가요</span>'
+      + '</div>'
+      + '<div style="background:var(--sf);border-radius:8px;padding:10px;">'
+      + '<b style="color:var(--text);">💪 확신</b> — "나도 같은 수만큼 건다!"<br>'
+      + '<span style="color:var(--dim);font-size:12px;">• B도 똑같이 🪙3 내고 카드를 뒤집어요</span><br><br>'
+      + '<div style="background:rgba(229,82,82,0.1);border:1px solid var(--red);border-radius:8px;padding:8px;margin-bottom:6px;">'
+      + '<b style="color:var(--red);">😈 진짜 거짓말이었다!</b><br>'
+      + 'A가 졌어요 → A는 버림더미 카드 전부 가져가요<br>'
+      + 'B는 건 주화 🪙3 + A가 건 🪙3 = <b style="color:var(--green);">🪙6 획득!</b>'
+      + '</div>'
+      + '<div style="background:rgba(82,192,122,0.1);border:1px solid var(--green);border-radius:8px;padding:8px;">'
+      + '<b style="color:var(--green);">😇 참말이었다!</b><br>'
+      + 'B가 졌어요 → B는 버림더미 카드 전부 가져가요<br>'
+      + 'A는 건 주화 🪙3 + B가 건 🪙3 = <b style="color:var(--green);">🪙6 획득!</b>'
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div style="background:rgba(201,168,76,0.1);border:1px solid var(--gold);border-radius:10px;padding:10px;font-size:12px;">'
+      + '💡 <b style="color:var(--gold);">핵심 정리</b><br>'
+      + '많이 걸수록 이겼을 때 더 많이 받아요!<br>'
+      + '하지만 지면 그만큼 더 잃어요. 신중하게!'
+      + '</div>';
+  }
+
+  // 개인정보처리방침 모달 특수 처리
+  const privacyH2 = document.getElementById('privacy_h2');
+  if (privacyH2) privacyH2.textContent = isEN ? 'Privacy Policy' : '개인정보처리방침';
+  const privacyBody = document.getElementById('privacy_body');
+  if (privacyBody) {
+    privacyBody.innerHTML = isEN
+      ? '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">1. Personal Information Collected</p>'
+      + '<p style="margin:0 0 14px;">This service (Bluff Duel) <strong>does not offer account registration</strong> and does not directly collect personal information such as name, phone number, or national ID.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">2. Chat Data Processing</p>'
+      + '<p style="margin:0 0 14px;">In-game chat content may be <strong>temporarily stored</strong> for service operation, fraud prevention, and quality improvement, and is automatically deleted once its purpose is fulfilled.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">3. Third-Party Advertising and Cookies</p>'
+      + '<p style="margin:0 0 14px;">This service may use third-party advertising services such as <strong>Google AdSense</strong> in the future, and technologies such as <strong>cookies</strong> may be used to serve ads.<br>You can refuse cookies via your browser settings, though this may limit some features.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">4. Firebase Database</p>'
+      + '<p style="margin:0 0 14px;">This service uses Google Firebase Realtime Database. Room information and game-state data generated during online matches are stored on Firebase servers and are automatically deleted after the game ends or after a set period of time.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">5. User Rights</p>'
+      + '<p style="margin:0 0 14px;">Users may contact us at any time regarding this policy or raise objections to related data processing.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">6. Contact</p>'
+      + '<p style="margin:0 0 0;">For privacy-related inquiries, please contact us at the email below.<br>'
+      + '<a href="mailto:fivninlove@naver.com" style="color:#e8c96a;text-decoration:none;">fivninlove@naver.com</a></p>'
+      : '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">1. 수집하는 개인정보</p>'
+      + '<p style="margin:0 0 14px;">본 서비스(Bluff Duel)는 <strong>회원가입을 제공하지 않으며</strong>, 이름·전화번호·주민등록번호 등 개인정보를 직접 수집하지 않습니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">2. 채팅 데이터 처리</p>'
+      + '<p style="margin:0 0 14px;">게임 내 채팅 내용은 서비스 운영·부정 이용 방지·서비스 품질 개선을 위해 <strong>일시적으로 저장</strong>될 수 있으며, 목적 달성 후 자동 삭제됩니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">3. 제3자 광고 및 쿠키</p>'
+      + '<p style="margin:0 0 14px;">본 서비스는 향후 <strong>Google AdSense</strong> 등 제3자 광고 서비스를 이용할 수 있으며, 광고 제공을 위해 <strong>쿠키(Cookie)</strong> 등의 기술이 사용될 수 있습니다.<br>이용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있습니다. 단, 거부 시 일부 서비스 이용이 제한될 수 있습니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">4. Firebase 데이터베이스</p>'
+      + '<p style="margin:0 0 14px;">본 서비스는 Google Firebase Realtime Database를 사용합니다. 온라인 대전 중 생성되는 방 정보, 게임 상태 데이터는 Firebase 서버에 저장되며, 게임 종료 또는 일정 시간 경과 후 자동 삭제됩니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">5. 이용자의 권리</p>'
+      + '<p style="margin:0 0 14px;">이용자는 언제든지 본 방침에 대해 문의하거나 관련 데이터 처리에 대한 이의를 제기할 수 있습니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">6. 문의</p>'
+      + '<p style="margin:0 0 0;">개인정보 관련 문의사항은 아래 이메일로 연락하시기 바랍니다.<br>'
+      + '<a href="mailto:fivninlove@naver.com" style="color:#e8c96a;text-decoration:none;">fivninlove@naver.com</a></p>';
+  }
+  const privacyFooter = document.getElementById('privacy_footer');
+  if (privacyFooter) privacyFooter.textContent = isEN
+    ? 'This policy may be revised without prior notice when service policy changes.'
+    : '본 방침은 서비스 정책 변경 시 사전 공지 없이 수정될 수 있습니다.';
+  const privacyConfirmBtn = document.getElementById('privacy_confirm_btn');
+  if (privacyConfirmBtn) privacyConfirmBtn.textContent = isEN ? 'OK' : '확인';
+
+  // 이용약관 모달 특수 처리
+  const termsH2 = document.getElementById('terms_h2');
+  if (termsH2) termsH2.textContent = isEN ? 'Terms of Service' : '이용약관';
+  const termsBody = document.getElementById('terms_body');
+  if (termsBody) {
+    termsBody.innerHTML = isEN
+      ? '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">Article 1 (Purpose)</p>'
+      + '<p style="margin:0 0 14px;">These Terms set out the conditions and operating standards for use of the <strong>Bluff Duel</strong> service.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">Article 2 (Use of Service)</p>'
+      + '<p style="margin:0 0 14px;">Users must not engage in conduct that disrupts the normal use of the service by themselves or other users.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">Article 3 (Prohibited Conduct)</p>'
+      + '<p style="margin:0 0 6px;">The following actions are prohibited:</p>'
+      + '<ul style="margin:0 0 14px;padding-left:18px;color:#bbb;">'
+      + '<li style="margin-bottom:4px;">Exploiting bugs or errors in the game</li>'
+      + '<li style="margin-bottom:4px;">Abusive language, defamation, spamming, or other disruption of chat order</li>'
+      + '<li style="margin-bottom:4px;">Interfering with the operation of the service</li>'
+      + '<li style="margin-bottom:4px;">Infringing on the rights of others</li>'
+      + '</ul>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">Article 4 (Copyright)</p>'
+      + '<p style="margin:0 0 14px;">Copyright in the game code, images, UI, text, characters, design, and other content of this service belongs to <strong>JeroTech</strong>.<br>Reproduction, distribution, modification, sale, or commercial use without prior permission from the operator is prohibited.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">Article 5 (Service Changes and Termination)</p>'
+      + '<p style="margin:0 0 14px;">The operator may change or terminate part or all of the service.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">Article 6 (Disclaimer)</p>'
+      + '<p style="margin:0 0 14px;">The operator is not liable for damages caused by unavoidable circumstances such as natural disasters, communication failures, or system errors.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">Article 7 (Contact)</p>'
+      + '<p style="margin:0 0 0;">For service-related inquiries, please contact us at the email below.<br>'
+      + '<a href="mailto:fivninlove@naver.com" style="color:#e8c96a;text-decoration:none;">fivninlove@naver.com</a></p>'
+      : '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제1조 (목적)</p>'
+      + '<p style="margin:0 0 14px;">본 약관은 <strong>참·거짓(Bluff Duel)</strong> 서비스의 이용 조건 및 운영 기준을 규정함을 목적으로 합니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제2조 (서비스 이용)</p>'
+      + '<p style="margin:0 0 14px;">이용자는 서비스 및 다른 이용자의 정상적인 게임 이용을 방해하는 행위를 하여서는 안 됩니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제3조 (금지행위)</p>'
+      + '<p style="margin:0 0 6px;">다음 행위를 금지합니다.</p>'
+      + '<ul style="margin:0 0 14px;padding-left:18px;color:#bbb;">'
+      + '<li style="margin-bottom:4px;">게임 오류를 악용하는 행위</li>'
+      + '<li style="margin-bottom:4px;">욕설, 비방, 도배 등 채팅 질서를 해치는 행위</li>'
+      + '<li style="margin-bottom:4px;">서비스 운영을 방해하는 행위</li>'
+      + '<li style="margin-bottom:4px;">타인의 권리를 침해하는 행위</li>'
+      + '</ul>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제4조 (저작권)</p>'
+      + '<p style="margin:0 0 14px;">본 서비스의 게임 코드, 이미지, UI, 텍스트, 캐릭터, 디자인 및 기타 콘텐츠의 저작권은 <strong>JeroTech</strong>에 귀속됩니다.<br>운영자의 사전 허가 없이 복제, 배포, 수정, 판매 또는 상업적으로 이용할 수 없습니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제5조 (서비스 변경 및 종료)</p>'
+      + '<p style="margin:0 0 14px;">운영자는 서비스의 일부 또는 전부를 변경하거나 종료할 수 있습니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제6조 (면책)</p>'
+      + '<p style="margin:0 0 14px;">운영자는 천재지변, 통신 장애, 시스템 오류 등 불가피한 사유로 발생한 손해에 대해 책임을 지지 않습니다.</p>'
+      + '<p style="font-weight:600;color:#e8c96a;margin:0 0 6px;">제7조 (문의)</p>'
+      + '<p style="margin:0 0 0;">서비스 관련 문의는 아래 이메일로 연락하시기 바랍니다.<br>'
+      + '<a href="mailto:fivninlove@naver.com" style="color:#e8c96a;text-decoration:none;">fivninlove@naver.com</a></p>';
+  }
+  const termsFooter = document.getElementById('terms_footer');
+  if (termsFooter) termsFooter.textContent = isEN
+    ? 'These Terms may be revised without prior notice when service policy changes.'
+    : '본 약관은 서비스 정책 변경 시 사전 공지 없이 수정될 수 있습니다.';
+  const termsConfirmBtn = document.getElementById('terms_confirm_btn');
+  if (termsConfirmBtn) termsConfirmBtn.textContent = isEN ? 'OK' : '확인';
+
   // placeholder 전환
   ['myNameInput', 'joinCodeInput', 'homechatinput'].forEach(id => {
     const el = document.getElementById(id);
@@ -2615,6 +2968,12 @@ function toggleLang() {
   const sel = document.getElementById('gmode');
   if (sel) {
     Array.from(sel.options).forEach(opt => {
+      opt.textContent = isEN ? opt.dataset.en : opt.dataset.ko;
+    });
+  }
+  const selLp = document.getElementById('lpmode');
+  if (selLp) {
+    Array.from(selLp.options).forEach(opt => {
       opt.textContent = isEN ? opt.dataset.en : opt.dataset.ko;
     });
   }
@@ -2633,5 +2992,13 @@ function toggleLang() {
     roomListEl.children[0].textContent=isEN?'No public rooms':'공개 방이 없어요';
   }
 }
+
+// 페이지 로드 시 감지된 언어를 즉시 화면에 반영
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applyLang);
+} else {
+  applyLang();
+}
+
 </script>
 </body></html>
