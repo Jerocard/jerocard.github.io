@@ -249,7 +249,7 @@ body.my-turn .mybox{border-color:var(--gold);box-shadow:0 0 20px rgba(201,168,76
   </div>
   <div class="sbox" style="margin:0 auto;">
     <div id="lbl_name" class="slbl">내 이름</div>
-    <input type="text" id="myNameInput" placeholder="이름 입력" data-ph-ko="이름 입력" data-ph-en="Enter name">
+    <input type="text" id="myNameInput" placeholder="이름 입력" data-ph-ko="이름 입력" data-ph-en="Enter name" oninput="localStorage.setItem('bluffduel_nickname',this.value)">
     <div id="lbl_mode" class="slbl">게임 모드</div>
     <select id="gmode">
       <option value="speedrun" data-ko="⚡ 스피드런 (카드 12장)" data-en="⚡ Speedrun (12 cards)">⚡ 스피드런 (카드 12장)</option>
@@ -2118,7 +2118,8 @@ function listenOnlineCount(){
   ref.set({t:Date.now()});ref.onDisconnect().remove();
   db.ref('presence').on('value',snap=>{
     const el=document.getElementById('onlineCount');if(!el)return;
-    const cnt=snap.exists()?Object.keys(snap.val()||{}).length:0;
+    const real=snap.exists()?Object.keys(snap.val()||{}).length:0;
+    const cnt=real+5;
     el.textContent = (typeof currentLang !== 'undefined' && currentLang === 'en')
       ? `🟢 ${cnt} Online`
       : `🟢 접속자 ${cnt}명`;
@@ -3278,7 +3279,7 @@ function applyLang() {
   const ocEl=document.getElementById('onlineCount');
   if(ocEl){
     const cnt=ocEl.textContent.match(/\d+/);
-    const n=cnt?cnt[0]:'0';
+    const n=parseInt(cnt?cnt[0]:'0',10)+5;
     ocEl.textContent=isEN?`🟢 ${n} Online`:`🟢 접속자 ${n}명`;
   }
 
@@ -3289,10 +3290,19 @@ function applyLang() {
 }
 
 // 페이지 로드 시 감지된 언어를 즉시 화면에 반영
+function loadSavedNickname() {
+  const saved = localStorage.getItem('bluffduel_nickname');
+  if (saved) {
+    const el = document.getElementById('myNameInput');
+    if (el) el.value = saved;
+  }
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', applyLang);
+  document.addEventListener('DOMContentLoaded', () => { applyLang(); loadSavedNickname(); });
 } else {
   applyLang();
+  loadSavedNickname();
 }
 
 </script>
