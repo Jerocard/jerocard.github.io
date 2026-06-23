@@ -2802,7 +2802,7 @@ setInterval(cleanStaleRooms,60*1000);
 
 // ── 공유 & 설치 ──
 function shareWithFriend(){
-  const url=location.href.split('?')[0];
+  const url='https://jerocard.github.io/';
   const data=isEN()
     ? {title:'Bluff Duel',text:'An online bluffing card game decided by lies and mind games! Play with up to 6 friends 🃏',url}
     : {title:'참·거짓 | Bluff Duel',text:'거짓말과 심리전으로 승부하는 온라인 블러핑 카드게임! 최대 6인까지 같이 해요 🃏',url};
@@ -2857,7 +2857,7 @@ function installPWA(){
 }
 
 function showQRCode(){
-  const url=location.href.split('?')[0];
+  const url='https://jerocard.github.io/';
   document.getElementById('qrUrlLabel').textContent=url;
   const c=document.getElementById('qrContainer');c.innerHTML='';
   const size=200;
